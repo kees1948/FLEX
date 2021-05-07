@@ -6,3 +6,4 @@ variables and IO buffers and 2 KByte of EEROM.
 The hardware supports the concept of a SUPERVISOR/USER mode. If this is used, no user program can access the
 IO and buffers directly. Access is with SWI type calls to te handler in the ROM.
 
+The connections to the bus connector are fully buffered.
