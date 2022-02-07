@@ -24,4 +24,10 @@ It s the first step, new insights will change things without doubt.
 My aim is to re-create the formatter from the 80's which could handle all
 formats of disks.
 
+2022-01-10
+
+I wrote 2 formatters, one for 5" compatible formats and one for the 8" disk
+formats. Creating one formatter that fits all is too complicated and not worth
+the effort.
+
 

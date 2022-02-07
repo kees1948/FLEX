@@ -1,0 +1,11 @@
+This is the design for my floppy controller board. It supports 
+5" and 8" datarate, both in signle - and double density
+Sector formats 128, 256, 512 and 1024 bytes per sector.
+
+FLEX (r) uses 256 byte/sector
+
+
+The photo's show the first version, the wires do not longer apply
+for the published design files.
+
+
