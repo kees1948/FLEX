@@ -1,0 +1,45 @@
+
+
+How to bring up FLEX 6809 on your CPUXXCMI system
+
+Here are a few FLEX software parts in .S1 format. This allows for to bring a FLEX
+system up on the CPUXXCMI hardware basically from scratch.
+
+It is assumed that you have, at least a 3.5/5.25 inch and a 3.5/5.25" floppy disk 
+with drive available. One diskette should be blank or the contents are not vital.
+
+These disk drives should be connected to the 09FLP disk hardware board and the 
+selects on both drives should be '1', provided that the floppy cable has the 
+famous IBM wire swap in the cable. Drive 0 is the one on the farthest end.
+
+Via the serial communication line adn the 'L' function of the SBUG version for
+the CPUXXCMI card, one can download the flex.sys.s1 file first.
+
+From sbug you can set the PC with ^P to CD00, 'G' will then activate FLEX,
+the date setting will fail. With 'MON' you get back from FLEX into SBUG.
+
+Use the 'L' function again to download one of the newdisk versions, choose
+the one that suits best for diks and drives. When the download is complete,
+start this program at 0100, follow the questions and format a disk, afterwards
+you will return to FLEX.
+
+Copy over the files from your 'other' FLEX disk to the new one, keep in mind
+that you still needs to replace the flex.sys file with the one from this page.
+
+This could be done with the 'save.low' program after a fresh (re) download
+of flex.sys.s1. Save all from C700 up to E15F, start address CD00. 
+
+Bring save.low into memory with 'GET' but don't start it only after the 
+download of flex.sys.s1 has been completed. save.low starts at 0100.
+SAVE.LOW,0.FLEX.SYS,C700,E15F,CD00
+
+For the newdisk programs, download those via the serial communication line
+into memory and save them then afterwards.
+
++++MON    brings you to sbug
+L start hex loader, completes on the S9 record
+^P CD03
+G         this should bring you back into flex
++++SAVE,NEWDISK5.CMD,0100,080F,0100  (or NEWDISK8.CMD)
+
+2022-05-18 Rev 0.2 CS
