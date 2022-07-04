@@ -1,6 +1,6 @@
 
 
-How to bring up FLEX 6809 on your CPUXXCMI system  (with 68X09/63X09 CPU present)
+How to bring up FLEX 6800 on your CPUXXCMI system  (with the 68X02 CPU present)
 
 Here are a few FLEX software parts in .S1 format. This allows for to bring a FLEX
 system up on the CPUXXCMI hardware basically from scratch.
@@ -15,7 +15,7 @@ famous IBM wire swap in the cable. Drive 0 is the one on the farthest end.
 Via the serial communication line adn the 'L' function of the SBUG version for
 the CPUXXCMI card, one can download the flex.sys.s1 file first.
 
-From sbug you can set the PC with ^P to CD00, 'G' will then activate FLEX,
+From mikbug you can set the PC to AD00, 'G' will then activate FLEX,
 the date setting will fail. With 'MON' you get back from FLEX into SBUG.
 
 Use the 'L' function again to download one of the newdisk versions, choose
@@ -27,21 +27,35 @@ Copy over the files from your 'other' FLEX disk to the new one, keep in mind
 that you still needs to replace the flex.sys file with the one from this page.
 
 This could be done with the 'save.low' program after a fresh (re) download
-of flex.sys.s1. Save all from C700 up to E15F, start address CD00. 
+of flex.sys.s1. Save all from A700 up to BFFF, start address AD00. 
 
-BEWARE, in this directory these are 6809 code programs!!!
+BEWARE, in this directory these are 6800 code programs!!!
 
 Bring save.low into memory with 'GET' but don't start it only after the 
 download of flex.sys.s1 has been completed. save.low starts at 0100.
-SAVE.LOW,0.FLEX.SYS,C700,E15F,CD00
+SAVE.LOW,0.FLEX.SYS,A700,BFFF,AD00
 
 For the newdisk programs, download those via the serial communication line
 into memory and save them then afterwards.
 
 +++MON    brings you to sbug
 L start hex loader, completes on the S9 record
-^P CD03
+set PC to  AD03 and G
 G         this should bring you back into flex
 +++SAVE,NEWDISK5.CMD,0100,080F,0100  (or NEWDISK8.CMD)
 
-2022-05-18 Rev 0.2 CS
+2022-06-15 Rev 0.2 CS
+
+2022-07-02 I found that there is no bug free bootable FLEX version for 6800.
+So I did a dynamite session for the FMS part. While editing the resulting file
+I put back in the original labels as TSC assigned them to variables and 
+functions. During that I found two glaring bugs in the code which I corrected.
+Further I added a call to the driver init function, as the later FLEX09 versions
+also have. I assembled the code and compared it with the original. Besides my
+changes the code is identical. Maybe I will do the same for the DOS part, the
+spooler part and the initialization part. That will provide a very solid code
+base to build on.
+
+But the first excercises with the 6800 FLEX are encouraging for me.
+
+
