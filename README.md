@@ -1,6 +1,8 @@
 # FLEX
 Some spin-off items from the UniFLEX project for FLEX (r)
 
+![example system](./FLEX_System.png)
+
 
 2021-11-03: Photo is off a minimal FLEX (r) hardware system for floppy
 drives.
