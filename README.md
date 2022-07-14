@@ -4,7 +4,7 @@ Some spin-off items from the UniFLEX project for FLEX (r)
 ![example system](./FLEX_System.jpg)
 
 
-2021-11-03: Photo is off a minimal FLEX (r) hardware system for floppy
+2021-11-03: Photo is of a minimal FLEX (r) hardware system for floppy
 drives.
 
 CPUXXCMI  (CPU, SBUG ROM, system RAM, console port), CPU09FLX (minimally 
