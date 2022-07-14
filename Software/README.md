@@ -1,33 +1,14 @@
-2021-10-16:
+Here are the software parts for the CPU09 FLEX system.
 
-Slowly I am getting there. 
+I am working on both a 6809 FLEX version and a 6800 FLEX version.
 
-With FLEX4UniFLEX I started creating FLEX disks on 3.5 inch. Another step
-was writing a 2 sector boot again for the CPUXXCMI environment.
+In the CPUXXCMI folder you may find the (adapted) monitor ROM
+files. 
 
-In the mean time I have ported SBUG to the CPUXXCMI environment too, I believe
-I did it well amd modified the 5" boot code so it can handle a CPU09FLX and 09FLP
-combo. The CPU09FLX has been very minimalistic populated and need a few wires on it.
+In the FLEX6809 folder there are files that allow you to bring up
+your FLEX9 system.
 
-I wrote the serial IO drivers for FLEX on the CMI_SBUG and write diskdrivers
-that may be capable of handling 3.5, 5 1/4 and 8" formats in single and double
-denisty in a mix without any user intervention. I have not been able to test 
-all things completely.
+In the FLEX2(6800) folder will come the files that allow you to 
+bring up your FLEX2 system
 
-The result is: I have a FLEX 3.5" master disk that boots from the CMI_SBUG ROM.
-
-The system has 60 KByte of RAM, FLEX sits on it's usual area from 
-CD00-DFFF with small extra drivers in the E200 area.
-
-It s the first step, new insights will change things without doubt.
-
-My aim is to re-create the formatter from the 80's which could handle all
-formats of disks.
-
-2022-01-10
-
-I wrote 2 formatters, one for 5" compatible formats and one for the 8" disk
-formats. Creating one formatter that fits all is too complicated and not worth
-the effort.
-
-
+ 

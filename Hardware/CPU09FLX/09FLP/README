@@ -4,8 +4,18 @@ Sector formats 128, 256, 512 and 1024 bytes per sector.
 
 FLEX (r) uses 256 byte/sector
 
-
 The photo's show the first version, the wires do not longer apply
 for the published design files.
 
+For the posted gerber file, the floppy connectors are on top of the board.
+
+
+Note:
+The design file 09FLPF_210622.zip in the 
+
+https://github.com/kees1948/UniFLEX/Hardware/CPU09GPP/09FLP
+
+folder has the connectors at the solderside of the board.
+The cut-out in the CPU09FLX boards allows for the connectors to be used
+that way.
 
