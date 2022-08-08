@@ -1,5 +1,7 @@
 Here is the CPU09FLX board
 
+![CPU09FLX](./20220808_120409.jpg)
+
 Provides:
 * address decoding for FEXXX / XEXXX
 * 2K RAM socket
