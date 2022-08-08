@@ -5,8 +5,9 @@ How to bring up FLEX 6809 on your CPUXXCMI system  (with 68X09/63X09 CPU present
 Here are a few FLEX software parts in .S1 format. This allows for to bring a FLEX
 system up on the CPUXXCMI hardware basically from scratch.
 
-It is assumed that you have, at least a 3.5/5.25 inch and a 3.5/5.25" floppy disk 
-with drive available. One diskette should be blank or the contents are not vital.
+It is assumed that you have, at least a 3.5/5.25 inch drive and a 3.5/5.25" floppy 
+disk available. One extra diskette should be blank or the contents are not vital.
+Best is to have 2 disk drives.
 
 These disk drives should be connected to the 09FLP disk hardware board and the 
 selects on both drives should be '1', provided that the floppy cable has the 
@@ -17,9 +18,10 @@ the CPUXXCMI card, one can download the flex.sys.s1 file first.
 
 From sbug you can set the PC with ^P to CD00, 'G' will then activate FLEX,
 the date setting will fail. With 'MON' you get back from FLEX into SBUG.
+This FLEX version supports a multitude of disk formats.{*}
 
 Use the 'L' function again to download one of the newdisk versions, choose
-the one that suits best for diks and drives. When the download is complete,
+the one that suits best for disk and drives. When the download is complete,
 start this program at 0100, follow the questions and format a disk, afterwards
 you will return to FLEX.
 
@@ -45,3 +47,13 @@ G         this should bring you back into flex
 +++SAVE,NEWDISK5.CMD,0100,080F,0100  (or NEWDISK8.CMD)
 
 2022-05-18 Rev 0.2 CS
+
+{*} 
+5" 10 sectors/track (SD)
+5" 18 sectors/track (DD)
+8" 15 sectors/track (SD)
+8" 26 sectors/track (DD)
+
+All formats are supported in in SS and DS. And where DD is active
+track 0 has the proper # of sectors in SD.
+
