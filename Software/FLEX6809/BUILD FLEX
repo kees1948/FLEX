@@ -1,0 +1,95 @@
+                          BUILD a FLEX.SYS
+
+
+Here are a few FLEX software parts in .S1 format. This allows for to bring a FLEX
+system up on the CPUXXCMI hardware basically from scratch.
+
+It is assumed that you have, at least a 3.5/5.25 inch drive and a 3.5/5.25" floppy 
+disk or a GoTek unit available.
+One extra diskette or GoTek IMA should be blank or the contents are not vital.
+Best is to have 2 disk drives.
+
+These disk drives should be connected to the 09FLP disk hardware board and the 
+selects on both drives should be '1', provided that the floppy cable has the 
+famous IBM wire swap in the cable. Drive 0 is the one on the farthest end.
+When using a straigth cable drives should be '0' and '1'.
+
+Via the serial communication line and the 'L' function of the SBUG version for
+the CPUXXCMI card, one can download the flex3cor.s1 file first.
+Depending on the CMI_SBUG version 1.0, 1.1 or 1.3 
+download one of cmi_io2.s1, cmi_io4.s1 or cmi_io4x.s1, 
+ignore >C what? at the end.
+
+From sbug you can set the PC with ^P to CD00, 'G' will then activate FLEX.
+With 'MON' you get back from FLEX into SBUG.
+This FLEX version supports a multitude of disk formats.{*}
+
+Use the 'L' function again to download one of the newdisk or format versions,
+choose the one that suits best for disk and drives. 
+When the download is complete, start this program at 0100, 
+follow the questions and format a disk, afterwards you will return to FLEX.
+
+Copy over the files from your 'other' FLEX disk to the new one, keep in mind
+that you still needs to replace the flex.sys file with the one from this page.
+
+Now we can build a new FLEX:
+  On Windows use Tera Term v4.106.
+   Set baud rate 9600, Transmit Delay: char 1 msec and line 15 msec
+
+  On FLEX
+   +++EDIT FLEX3COR.S1
+   NEWFILE
+          1.00= 
+
+  (now on Tera Term Send FLEX3COR.S1)
+  Wait until S1 sending stops (will take a few minutes)
+  Enter #
+  #S
+  +++ EDIT {CMI_IO2.S1 | CMI_IO4.S1 | CMI_IO4X.S1}
+  NEWFILE
+          1.00= 
+
+  (now on Tera Term Send the cmi_io.s1 you used before)
+  Wait until S1 sending stops (will take a few minutes)
+  Enter #
+  #S
+  +++S1FLEX FLEX3COR.S1,FLEX3.COR
+  +++S1FLEX CMI_IOx.S1,CMI_IOx.BIN,D370,E153 (the cmi_io.s1 from before)
+
+     use FLEX2DRV.SYS - CMI_IO2
+         FLEX4DRV.SYS - CMI_IO4
+         FLEXCMI.SYS  - CMI_IO4X
+
+  +++APPEND FLEX3.COR,CMI_IOx.BIN,FLEXxxx.SYS
+  +++LINK FLEXxxx.SYS
+
+Now try to BOOT from this drive.
+
+
+For the newdisk/format programs and S1FLEX, 
+download those via the serial communication line into memory
+and save them then afterwards.
+
++++MON    brings you to sbug
+L start hex loader, completes on the S9 record
+^P CD03
+G         this should bring you back into flex
+
++++SAVE,FORMNAT5.CMD,0100,096E,0100
++++SAVE,FORMAT8.CMD,0100,092E,0100
+
++++SAVE,NEWDISK5.CMD,0100,08E5,0100
++++SAVE,NEWDISK8.CMD,0100,0903,0100
+
++++SAVE,S1FLEX.CMD,0000,1547,0000
+
+{*} 
+5" 10 sectors/track (SD)
+5" 18 sectors/track (DD)
+8" 15 sectors/track (SD)
+8" 26 sectors/track (DD)
+
+All formats are supported in in SS and DS. And where DD is active
+track 0 has the proper # of sectors in SD.
+
+CdeJ
