@@ -1,0 +1,67 @@
+                       FLEX_images.zip information.
+
+   SIZE:   NAME:                   INFO:
+   318,464 BootName.DSDD35-5.IMA   Empty with BOOT loader
+   179,200 BootName.DSSD35-5.IMA   Empty with BOOT loader
+   159,232 BootName.SSDD35-5.IMA   Empty with BOOT loader
+    89,600 BootName.SSSD35-5.IMA   Empty with BOOT loader
+
+   364,544 BootName.DSDD40-5.IMA   Empty with BOOT loader
+   204,800 BootName.DSSD40-5.IMA   Empty with BOOT loader
+   182,272 BootName.SSDD40-5.IMA   Empty with BOOT loader
+   102,400 BootName.SSSD40-5.IMA
+
+   733,184 BootName.DSDD80-5.IMA   Empty with BOOT loader
+   409,600 BootName.DSSD80-5.IMA   Empty with BOOT loader
+   366,592 BootName.SSDD80-5.IMA   Empty with BOOT loader
+   204,800 BootName.SSSD80-5.IMA   Empty with BOOT loader
+
+ 1,019,392 BootName.DSDD77-8.IMA   Empty with BOOT loader
+   591,360 BootName.DSSD77-8.IMA   Empty with BOOT loader
+   509,696 BootName.SSDD77-8.IMA   Empty with BOOT loader
+   295,680 BootName.SSSD77-8.IMA   Empty with BOOT loader
+
+   733,184 FLEX2DRV.DSDD80-5.IMA   BOOT on FLEX2DRV.SYS
+   733,184 FLEX4DRV.DSDD80-5.IMA   BOOT on FLEX4DRV.SYS
+   733,184  FLEXCMI.DSDD80-5.IMA   BOOT on FLEXCMI.SYS
+
+ 1,019,392 FLEX2DRV.DSDD77-8.IMA   BOOT on FLEXCMI.SYS
+ 1,019,392 FLEX4DRV.DSDD77-8.IMA   BOOT on FLEXCMI.SYS
+ 1,019,392  FLEXCMI.DSDD77-8.IMA   BOOT on FLEXCMI.SYS
+
+
+Files in 'PC cable BOOT' can boot on that cable when using cmi_sbug version 1.0
+Files in 'FLEX cable BOOT' can boot on a straight cable using cmi_sbug version 1.1
+All images will boot on  cmi_sbug version 1.3
+
+If you have a GotTek with 'FlashFloppy' your lucky 
+   you can boot and run FLEX with one of the following.
+
+'PC cable BOOT' also have a FLEX2DRV.DSDD80-5.IMA and FLEX2DRV.DSDD77-8.IMA, 
+   ready to boot and run FLEX2DRV.SYS
+   Jumper both drives as 1 and MOT on.
+
+'FLEX cable BOOT' also have a FLEX4DRV.DSDD80-5.IMA and FLEX4DRV.DSDD77-8.IMA, 
+   ready to boot and run FLEX4DRV.SYS
+   Jumper the drives as 0, 1, 2 and MOT on.
+
+If you are on cmi_sbug version 1.3 you can use from 'FLEX cable BOOT' the
+FLEXCMI.DSDD80-5.IMA or FLEXCMI.DSDD77-8.IMA to boot and run FLEXCMI.SYS
+
+
+To use any IMA copy it to the USB stick together with the files 
+in 'GoTek config files'.
+You can rename the IMA part 'BootName' in a FLEX disk name. 
+
+09-04-2023
+Update IMG.CFG added 8" UniFlex images.
+
+
+
+Note:
+    If you are on cmi_sbug version 1.1 you can boot and use the FLEXCMI images, 
+    but only on a straight cable.
+    Because FLEX can't use the 'auto cable select' flag in de MONITOR.
+
+
+CdeJ
