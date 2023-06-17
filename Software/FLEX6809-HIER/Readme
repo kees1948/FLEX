@@ -1,0 +1,56 @@
+                       HIER_images.zip information.
+
+   SIZE:   NAME:                   INFO:
+
+   733,184 HIER2DRV.DSDD80-5.IMA   BOOT on FLEX2DRV.SYS start HIER
+   733,184 HIER4DRV.DSDD80-5.IMA   BOOT on FLEX4DRV.SYS start HIER
+   733,184  HIERCMI.DSDD80-5.IMA   BOOT on FLEXCMI.SYS  start HIER
+
+ 1,019,392 HIER2DRV.DSDD77-8.IMA   BOOT on FLEX2DRV.SYS start HIER
+ 1,019,392 HIER4DRV.DSDD77-8.IMA   BOOT on FLEX4DRV.SYS start HIER
+ 1,019,392  HIERCMI.DSDD77-8.IMA   BOOT on FLEXCMI.SYS  start HIER
+
+  733,184  HIER.DSDD80-5.IMA       xxx     HIER Utils and sources
+
+
+
+Files in 'PC cable BOOT' can boot on that cable when using cmi_sbug version 1.0
+Files in 'FLEX cable BOOT' can boot on a straight cable using cmi_sbug version 1.1
+All images will boot on  cmi_sbug version 1.3
+
+If you have a GotTek with 'FlashFloppy' your lucky 
+   you can boot and run FLEX + HIER with one of the following.
+
+'PC cable BOOT' also have a HIER2DRV.DSDD80-5.IMA and HIER2DRV.DSDD77-8.IMA, 
+   ready to boot and run HIER2DRV.SYS
+   Jumper both drives as 1 and MOT on.
+
+'FLEX cable BOOT' also have a HIER4DRV.DSDD80-5.IMA and HIER4DRV.DSDD77-8.IMA, 
+   ready to boot and run HIER4DRV.SYS
+   Jumper the drives as 0, 1, 2 and MOT on.
+
+If you are on cmi_sbug version 1.3 you can use from 'FLEX cable BOOT' the
+HIERCMI.DSDD80-5.IMA or HIERCMI.DSDD77-8.IMA to boot and run HIERXCMI.SYS
+
+All the BOOT images contains the HIER 'MANUAL.TXT', read it.
+Always use 'HOME drvnr' when using another floppy or IMA in drive 1, 2 or 3
+To backup a hierarchical floppy with the 'BACKUP.CMD' you will need 3 drives.
+ 
+To use any IMA copy it to the USB stick together with the files 
+in 'GoTek config files'.
+You can rename the IMA part 'BootName' in a disk name. 
+
+
+
+
+Note:
+    The FLEX3.COR and FLEX301.COR are different.
+    	  FLEX3.COR is extracted from the FLEX for UniFlex.
+        FLEX301.COR is extracted from the MicroboxII FLEX.
+
+    If you are on cmi_sbug version 1.1 you can boot and use the HIERCMI images, 
+    but only on a straight cable.
+    Because FLEX can't use the 'auto cable select' flag in de MONITOR.
+
+
+CdeJ
