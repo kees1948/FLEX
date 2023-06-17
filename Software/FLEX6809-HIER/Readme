@@ -1,5 +1,6 @@
                        HIER_images.zip information.
 
+
    SIZE:   NAME:                   INFO:
 
    733,184 HIER2DRV.DSDD80-5.IMA   BOOT on FLEX2DRV.SYS start HIER
@@ -39,6 +40,9 @@ To backup a hierarchical floppy with the 'BACKUP.CMD' you will need 3 drives.
 To use any IMA copy it to the USB stick together with the files 
 in 'GoTek config files'.
 You can rename the IMA part 'BootName' in a disk name. 
+
+
+
 
 
 
