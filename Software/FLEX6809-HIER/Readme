@@ -1,6 +1,5 @@
                        HIER_images.zip information.
 
-
    SIZE:   NAME:                   INFO:
 
    733,184 HIER2DRV.DSDD80-5.IMA   BOOT on FLEX2DRV.SYS start HIER
@@ -35,21 +34,19 @@ HIERCMI.DSDD80-5.IMA or HIERCMI.DSDD77-8.IMA to boot and run HIERXCMI.SYS
 
 All the BOOT images contains the HIER 'MANUAL.TXT', read it.
 Always use 'HOME drvnr' when using another floppy or IMA in drive 1, 2 or 3
-To backup a hierarchical floppy with the 'BACKUP.CMD' you will need 3 drives.
- 
+
 To use any IMA copy it to the USB stick together with the files 
 in 'GoTek config files'.
 You can rename the IMA part 'BootName' in a disk name. 
 
 
-
-
-
+29-07-2023
+Update format/newdisk software BOOT images.
 
 
 Note:
     The FLEX3.COR and FLEX301.COR are different.
-    	  FLEX3.COR is extracted from the FLEX for UniFlex.
+    	FLEX3.COR is extracted from the FLEX for UniFlex.
         FLEX301.COR is extracted from the MicroboxII FLEX.
 
     If you are on cmi_sbug version 1.1 you can boot and use the HIERCMI images, 
