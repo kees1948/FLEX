@@ -54,6 +54,17 @@ G         this should bring you back into flex
 8" 15 sectors/track (SD)
 8" 26 sectors/track (DD)
 
+
+2023-07-29 CdeJ Also this one
+
+3.5" DD Diskette use format5/newdisk5
+3.5" 10 sectors/track (SD)
+3.5" 18 sectors/track (DD)
+
+3.5" HD Diskette use format8/newdisk8
+3.5" 15 sectors/track (SD)
+3.5" 26 sectors/track (DD)
+
 All formats are supported in in SS and DS. And where DD is active
 track 0 has the proper # of sectors in SD.
 
