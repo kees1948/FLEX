@@ -1,6 +1,7 @@
 29-07-2023
 
 Update format/newdisk software.
-	Corrected sector tables.
-	Solved write protect crash.
+
+	 Corrected sector tables.
+	 Solved write protect crash.
 
