@@ -5,3 +5,10 @@ Update format/newdisk software.
 	 Corrected sector tables.
 	 Solved write protect crash.
 
+
+
+11-08-2023
+
+Update format5 corrected cable test
+Update format8 corrected cable test and corrected dens in bootloader
+
