@@ -9,6 +9,8 @@ Most 5.25" PC drives have a jumper for this.
 
 The Mitsubishi MF504C-318BUG did not work with any jumper setting.
 So I removed all the jumpers and put the following back: MM, SR, SS, DS1.
+Remove the resistor array when you put it back,
+the common pin will be in the middle.
 After a year it finally started working.
 I used a 10 year old never used HD floppy and a 45 year old used DD floppy.
 The HD floppy is 100% perfect and the DD floppy has 1 bad sector.
