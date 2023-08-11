@@ -1,8 +1,10 @@
 
 Using floppy disk drives
 
-Very old 3.5" drives maybe have a DC/RDY jumper and DS0, DS1, DS2, DS3 jumper choice.
-Later models are fixed DC and only have DS0 and DS1 jumper selection, some even just DS1.
+Very old 3.5" drives maybe have a DC/RDY jumper and 
+DS0, DS1, DS2, DS3 jumper choice.
+Later models are fixed DC and only have DS0 and DS1 jumper selection, 
+some even just DS1.
 
 
 However, for the FDC we need a Ready signal on pin 34.

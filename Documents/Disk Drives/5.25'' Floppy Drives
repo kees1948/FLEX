@@ -1,0 +1,30 @@
+Using 5.25" PC floppy disk drives
+
+
+
+For the FDC we need a Ready signal on pin 34.
+Most 5.25" PC drives have a jumper for this.
+
+
+
+The Mitsubishi MF504C-318BUG did not work with any jumper setting.
+So I removed all the jumpers and put the following back: MM, SR, SS, DS1.
+After a year it finally started working.
+I used a 10 year old never used HD floppy and a 45 year old used DD floppy.
+The HD floppy is 100% perfect and the DD floppy has 1 bad sector.
+
+
+
+The old Pertec has no diksload switch and pin-34 is not connected 
+so I have to use the 3.5" index pulse circuit.
+
+
+
+
+
+
+
+
+
+
+CdeJ

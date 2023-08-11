@@ -1,13 +1,16 @@
 
 Using 3.5" floppy disk drives
 
-Very old 3.5" drives maybe have a DC/RDY jumper and DS0, DS1, DS2, DS3 jumper choice.
-Later models are fixed DC and only have DS0 and DS1 jumper selection, some even just DS1.
+Very old 3.5" drives maybe have a DC/RDY jumper and 
+DS0, DS1, DS2, DS3 jumper choice.
+Later models are fixed DC and only have DS0 and DS1 jumper selection, 
+some even just DS1.
 
 
 However, for the FDC we need a Ready signal on pin 34.
 So I made two circuits to put Ready on pin 34.
-Since there is not much space in the 3.5" drive, two circuits have been created with four print layouts.
+Since there is not much space in the 3.5" drive, two circuits have been created 
+with four print layouts.
 Took advantage of what I had in stock, sorry used also SMD parts.
 
 The circuits are also usable on 5" drives.
@@ -18,7 +21,8 @@ It has been tested with the following DC-only drives:
 	Sony MPF420
 	Teac FD-235HF 218U
 
-The schematics and print construction as well as adjustment and installation are present in attached files.
+The schematics and print construction as well as adjustment and 
+installation are present in attached files.
 
 All 3 drives have been tested with 3.5" DD Diskettes formatted with format5 and newdisk5 as being 5" 
 and with 3.5" HD Diskettes formatted with format8 and newdisk8 as being 8".
