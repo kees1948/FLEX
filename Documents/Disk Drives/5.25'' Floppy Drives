@@ -6,7 +6,7 @@ For the FDC we need a Ready signal on pin 34.
 Most 5.25" PC drives have a jumper for this.
 
 
-
+1:
 The Mitsubishi MF504C-318BUG did not work with any jumper setting.
 So I removed all the jumpers and put the following back: MM, SR, SS, DS1.
 Remove the resistor array when you put it back,
@@ -16,16 +16,28 @@ I used a 10 year old never used HD floppy and a 45 year old used DD floppy.
 The HD floppy is 100% perfect and the DD floppy has 1 bad sector.
 
 
+2:
+While the Mitsubishi MF504C-318BUG had too many jumpers, 
+the TEAC FD-55GFR-149U had far too few.
+After placing jumpers on I, IS, RY and D1 the drive worked with DD and HD floppies.
+The DD floppy is 100% perfect and the HD floppy has 3 bad sector. 
 
+
+3:
 The old Pertec has no diskload switch and pin-34 is not connected 
 so I have to use the 3.5" index pulse circuit.
+The drive can format but not read, possibly faulty read data circuit,
+need to check that out.
+JIT the 100uH coil L1 in the uA733 12V line seems defect.
 
 
 
 
 
-
-
+Note.
+	Always use the same floppy disks.
+	Performed the format and disk test.
+	Copy FLEX on it and BOOT from them.
 
 
 

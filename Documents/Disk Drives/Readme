@@ -6,13 +6,12 @@ DS0, DS1, DS2, DS3 jumper choice.
 Later models are fixed DC and only have DS0 and DS1 jumper selection, 
 some even just DS1.
 
+On some old 5" floppy drives pin-34 is not connected at all.
 
 However, for the FDC we need a Ready signal on pin 34.
 So I made two circuits to put Ready on pin 34.
-
-On some old 5" floppy drives pin-34 is not connected at all.
-
 These circuits are also usable on 5" drives.
+
 
 If the drive does not have a Disk Load Switch, use the index pulse circuit.
 
