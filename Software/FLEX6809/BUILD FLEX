@@ -17,7 +17,7 @@ When using a straigth cable drives should be '0' and '1'.
 Via the serial communication line and the 'L' function of the SBUG version for
 the CPUXXCMI card, one can download the flex3cor.s1 file first.
 Depending on the CMI_SBUG version 1.0, 1.1 or 1.3 
-download one of cmi_io2.s1, cmi_io4.s1 or cmi_io4x.s1, 
+download one of cmi_io2.s1, cmi_io4.s1, cmi_io4x.s1, cmi_io4A.s1 or cmi_io4B.s1
 ignore >C what? at the end.
 
 From sbug you can set the PC with ^P to CD00, 'G' will then activate FLEX.
@@ -45,7 +45,8 @@ Now we can build a new FLEX:
   Wait until S1 sending stops (will take a few minutes)
   Enter #
   #S
-  +++ EDIT {CMI_IO2.S1 | CMI_IO4.S1 | CMI_IO4X.S1}
+
+  +++ EDIT {CMI_IO2.S1 | CMI_IO4.S1 | CMI_IO4X.S1 | CMI_IO4A.S1 | CMI_IO4B.S1}
   NEWFILE
           1.00= 
 
@@ -53,12 +54,14 @@ Now we can build a new FLEX:
   Wait until S1 sending stops (will take a few minutes)
   Enter #
   #S
+
   +++S1FLEX FLEX3COR.S1,FLEX3.COR
   +++S1FLEX CMI_IOx.S1,CMI_IOx.BIN,D370,E153 (the cmi_io.s1 from before)
 
      use FLEX2DRV.SYS - CMI_IO2
          FLEX4DRV.SYS - CMI_IO4
          FLEXCMI.SYS  - CMI_IO4X
+         FLEX_CMI.SYS - CMI_IO4A or CMI_IO4B
 
   +++APPEND FLEX3.COR,CMI_IOx.BIN,FLEXxxx.SYS
   +++LINK FLEXxxx.SYS
@@ -66,7 +69,7 @@ Now we can build a new FLEX:
 Now try to BOOT from this drive.
 
 
-For the newdisk/format programs and S1FLEX, 
+For the newdisk/format programs S1FLEX and CMISTEP, 
 download those via the serial communication line into memory
 and save them then afterwards.
 
@@ -82,6 +85,10 @@ G         this should bring you back into flex
 +++SAVE,NEWDISK8.CMD,0100,0903,0100
 
 +++SAVE,S1FLEX.CMD,0000,1547,0000
+
++++SAVE,CMISTEP.CMD,0100,03D0,0100
+
+
 
 {*} 
 5" 10 sectors/track (SD)

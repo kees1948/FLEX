@@ -12,15 +12,15 @@ So I removed all the jumpers and put the following back: MM, SR, SS, DS1.
 Remove the resistor array when you put it back,
 the common pin will be in the middle.
 After a year it finally started working.
-I used a 10 year old never used HD floppy and a 45 year old used DD floppy.
-The HD floppy is 100% perfect and the DD floppy has 1 bad sector.
+*1. I used a 10 year old never used HD floppy and a 45 year old used DD floppy.
+    The HD floppy is 100% perfect and the DD floppy has 1 bad sector.
 
 
 2:
 While the Mitsubishi MF504C-318BUG had too many jumpers, 
-the TEAC FD-55GFR-149U had far too few.
+the TEAC FD-55GFR-149U *2 had far too few.
 After placing jumpers on I, IS, RY and D1 the drive worked with DD and HD floppies.
-The DD floppy is 100% perfect and the HD floppy has 3 bad sector. 
+*1. The DD floppy is 100% perfect and the HD floppy has 3 bad sector. 
 
 
 3:
@@ -29,15 +29,31 @@ so I have to use the 3.5" index pulse circuit.
 The drive can format but not read, possibly faulty read data circuit,
 need to check that out.
 JIT the 100uH coil L1 in the uA733 12V line seems defect.
+This drive has a 30msec step rate and the CMI_IOx is fixed on 6msec.
+
+So I made a small program to change the step rate on the driver in memory.
+Usefull for the double step option on 80 track 5.25" drive to read 40 track formats
+and slow drives.
+The program 'cmistep' checks for the driver and will work on these 5 drivers, 
+CMI_IO2, CMI_IO4, CMI_IO4X, CMI_IO4A and CMI_IO4B.
+*1. The DD floppy is 100% perfect.
+
+
+Also I made a hardware double step circuit 
+to read a 40 track floppy in a 80 track drive.
 
 
 
 
+Notes.
+      1. Test:
+	     A. Every drive used the same floppy disks.
+	     B. Performed the format and disk test.
+	     C. Copy FLEX on it and BOOT from them.
 
-Note.
-	Always use the same floppy disks.
-	Performed the format and disk test.
-	Copy FLEX on it and BOOT from them.
+	2. Some drives have the track-0 sensor on the control board, 
+         never unscrew this board!
+	   Track-0 adjustment is done by sliding this board.
 
 
 
