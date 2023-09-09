@@ -1,0 +1,23 @@
+                  Driver info and CMISTEP
+
+
+   Driver     - Use
+
+1. cmi_io2.t  - PC-cable use ‘cmi_sbug’ 
+
+2. cmi_io4.t  - Straight-cable use  ‘cmisbug1’ 
+
+3. cmi_io4x.t - Cable independent use ‘cmisbug3’ 
+
+4. cmi_io4A.t - Cable independent use ‘cmisbug3’ for a slow drive
+
+5. cmi_io4B.t - Cable independent use ‘cmisbug3’ read 40 track disk in 80 track drive
+
+
+The CMISTEP program changes in memory some driver settings.
+It checks the driver version and boot cable used and determines what you can change.
+
+For driver 1, 2 and 3 it can change the step rate for all the drives.
+For driver 4 it can change the step rate for each drive.
+For driver 5 it can change the step rate and set double step for each drive.
+
