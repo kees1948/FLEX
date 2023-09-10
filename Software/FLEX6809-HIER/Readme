@@ -9,6 +9,7 @@
  1,019,392 HIER2DRV.DSDD77-8.IMA   BOOT on FLEX2DRV.SYS start HIER
  1,019,392 HIER4DRV.DSDD77-8.IMA   BOOT on FLEX4DRV.SYS start HIER
  1,019,392  HIERCMI.DSDD77-8.IMA   BOOT on FLEXCMI.SYS  start HIER
+ 1,019,392 HIER_CMI.DSDD77-8.IMA   BOOT on FLEX_CMI.SYS start HIER
 
   733,184  HIER.DSDD80-5.IMA       xxx     HIER Utils and sources
 
@@ -30,9 +31,9 @@ If you have a GotTek with 'FlashFloppy' your lucky
    Jumper the drives as 0, 1, 2 and MOT on.
 
 If you are on cmi_sbug version 1.3 you can use from 'FLEX cable BOOT' the
-HIERCMI.DSDD80-5.IMA or HIERCMI.DSDD77-8.IMA to boot and run HIERXCMI.SYS
+HIERCMI.DSDD80-5.IMA, HIERCMI.DSDD77-8.IMA or HIER_CMI.DSDD77-8.IMA to boot.
 
-All the BOOT images contains the HIER 'MANUAL.TXT', read it.
+All the BOOT images contains the HIER 'MANUAL.TXT' and 'UTIL.TXT, read them.
 Always use 'HOME drvnr' when using another floppy or IMA in drive 1, 2 or 3
 
 To use any IMA copy it to the USB stick together with the files 
@@ -43,11 +44,16 @@ You can rename the IMA part 'BootName' in a disk name.
 29-07-2023
 Update format/newdisk software BOOT images.
 
+10-09-2023
+Update HIER.DSDD80-5.IMA with HIER4CMI.TXT for the FLEX3.COR
+Added  HIER_CMI.DSDD77-8.IMA image, 
+       boot on the FLEX for UniFlex and use the CMI_IO4B.bin driver.
+
 
 Note:
-    The FLEX3.COR and FLEX301.COR are different.
-    	FLEX3.COR is extracted from the FLEX for UniFlex.
-        FLEX301.COR is extracted from the MicroboxII FLEX.
+    The FLEX3.COR and FLX301.COR are different.
+    	  FLEX3COR.S1 = FLEX3.COR is extracted from the FLEX for UniFlex.
+        FLX301.S1   = FLX301.COR is a general version extracted from the MicroboxII FLEX.
 
     If you are on cmi_sbug version 1.1 you can boot and use the HIERCMI images, 
     but only on a straight cable.
