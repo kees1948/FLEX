@@ -54,11 +54,14 @@ in 'GoTek config files'.
 You can rename the IMA part 'BootName' in a FLEX disk name. 
 
 09-04-2023
-Update IMG.CFG added 8" UniFlex images.
+Update IMG.CFG added 8" UniFlex DSK images.
 
 29-07-2023
 Update format software BOOT images
 
+12-12-2023
+You can now also use all IMAs with the SWTPCemuApp.
+Of course the FLEX versions will not boot.
 
 Note:
     If you are on cmi_sbug version 1.1 you can boot and use the FLEXCMI images, 
