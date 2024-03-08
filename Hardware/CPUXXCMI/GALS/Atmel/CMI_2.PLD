@@ -1,14 +1,14 @@
 /** WinCUPL Design Description **/
 
 Name       CPUXXCMI  U14  GAL2;
-Partno     ATF16V8;
+Partno     ATF16V8B;
 Date       06/02/2024;
 Revision   01;
 Designer   CdeJ;
 Company    CPU09;
 Assembly   _CXXCMI_G2;
 Location   U14;
-Device     g16v8;
+Device     g16v8a;
 
 
 /* --------- PIN Declarations ---------- */
