@@ -32,9 +32,12 @@ Any RBRdsk.s1  Error looks like:
 ECAA is the address in the RAM space EC00-EDFF. 
 
 
-24-24-2024 Due to a minor bug fix on the Rev 0.9.1 RAM card, the selection of Hi/Lo byte addresses has been changed.
-           Memory testing has been adopted for this fix and is now running on the Rev 0.9.1 and Rev 0.9.5 cards.
-
+24-24-2024 Due to a minor bug fix on the Rev 0.9.1 RAM card, 
+           the selection of Hi/Lo byte addresses has been changed.
+           Memory testing has been adopted for this fix 
+           and is now running on the Rev 0.9.1 and Rev 0.9.5 cards.
+01-05-2024 Test will run only if at least one dipswitch is set to 1,
+           test $EE01 to see if there is a CARD.
 
 CdeJ
 
