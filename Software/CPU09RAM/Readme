@@ -1,43 +1,25 @@
-                           CPU09RAM card memory test.
+                           CPU09RAM card.
 
 
-The UniFLEX card is tested on the CPU09CMI running 16Mhz.
+The UniFLEX CPU09RAM card is tested on the CPU09CMI running 16Mhz.
 The RAM card need’s jumper J2 (select C4 Ext decode) 
 and the CMI card need’s jumper J6 for this.
-
-RDSKtst.s1  – Will show the switch setting.
-              The first run will check if all pages are unique.
-              The second one will write all 0000 to the ram, 
-              you can change the 0000 at $0130.
-              The third one will write all FFFF to the ram, 
-              you can change the FFFF at $0145.
-
-RBRdsk.s1  – Is a rotating bit memory test.
-
-They both start at $0100.
+Read "CPU09RAM card memory test".
 
 
+Added a large GoTek image "VBackup.ima" and an new "IMG.cfg".
+Added "Virtual9.SSSD80-5.IMA" with "virtual.cmd" a Virtual ram disk driver 
+and "vdisk.cmd" the format program.
+Read "Virtual".
 
-Any RDSKtst.s1  Error looks like:
-		Read  chip: 012
-		Error at:
-		WRITE READ PAGE Chip
-		0803  0800 0003 U6
-		Read  chip: 34567
-
-Any RBRdsk.s1  Error looks like:
-		Error at: 48CB ECAA
-
-48CB is the address stored at $ED00 and $ED01.
-ECAA is the address in the RAM space EC00-EDFF. 
+On the "Virtual9.SSSD80-5.IMA" you also find "newBdisk.cmd" to (re)format the "VBackup.ima".
+The "VBackup.ima" is bootable.
+Formating the "VBackup.ima" wil take some time.
 
 
-24-24-2024 Due to a minor bug fix on the Rev 0.9.1 RAM card, 
-           the selection of Hi/Lo byte addresses has been changed.
-           Memory testing has been adopted for this fix 
-           and is now running on the Rev 0.9.1 and Rev 0.9.5 cards.
-01-05-2024 Test will run only if at least one dipswitch is set to 1,
-           test $EE01 to see if there is a CARD.
+
+
+
 
 CdeJ
 
