@@ -18,6 +18,17 @@ Formating the "VBackup.ima" wil take some time.
 
 
 
+At present the dip-switches have the following assigments:
+    SW2-1,  OFF 
+    SW2-2,  OFF 
+    SW2-3,  OFF
+    SW2-4,  ON = FLEX 512 byte pages
+    SW1-1,  ON = FLEX 1 disk
+    SW1-2,  OFF
+    SW1-3,  OFF
+    SW1-4,  OFF
+
+
 
 
 
