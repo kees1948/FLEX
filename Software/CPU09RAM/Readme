@@ -16,19 +16,36 @@ On the "Virtual9.SSSD80-5.IMA" you also find "newBdisk.cmd" to (re)format the "V
 The "VBackup.ima" is bootable.
 Formating the "VBackup.ima" wil take some time.
 
+If you not have a GoTek use the virtual.s1 en vdisk.s1.
+Open on FLEX:
++++EDIT 1.virtual
+   NEW FILE
+       1.00=
+              SEND virtual.s1 with TeraTerm
+      63.00=S9C100
+      64.00=#
+   #S
++++
 
+Run on FLEX:
++++S1FLEX 1.virtual 1.virtual.cmd
+
+Do the same for vdisk.s1 and you ready to use the ram disk.
+
+
+With the dip-switches SW-1 you can select the VDISK size, only one should be ON !!!
 
 At present the dip-switches have the following assigments:
-    SW2-1,  OFF 
-    SW2-2,  OFF 
-    SW2-3,  OFF
-    SW2-4,  ON = FLEX 512 byte pages
-    SW1-1,  ON = FLEX 1 disk
-    SW1-2,  OFF
-    SW1-3,  OFF
-    SW1-4,  OFF
 
+    SW2-4,  OFF 
+    SW2-3,  OFF 
+    SW2-2,  OFF
+    SW2-1,  ON = FLEX 512 byte pages, card present flag.
 
+    SW1-4,  ON = FLEX 4MB disk
+    SW1-3,  ON = FLEX 8" DSDD
+    SW1-2,  ON = FLEX 5" DSDD
+    SW1-1,  OFF
 
 
 
