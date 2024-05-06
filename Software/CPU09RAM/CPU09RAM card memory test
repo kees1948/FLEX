@@ -37,6 +37,16 @@ ECAA is the address in the RAM space EC00-EDFF.
 
 02-05-2024 Added RAM card is present test, at least one DIPswitch must be ON.
 
+06-05-2024 I put the ram disk test software on the "Virtual9.SSSD80-5.IMA".
+
+           RAMDSK  .CMD - Runs in FLEX and will only run the page check.
+           RBRDSK  .CMD - Runs in FLEX.
+           RDSKTST .CMD - Runs in the CMI_SBUG monitor and runs 3 passes: page check, $0000 and $FFFF check.
+           RBRDSKM .CMD - Runs in the CMI_SBUG.
+
+           The CMI_SBUG programs loads from FLEX and will stop in the Monitor (ctrl-P CD03, G to return in FLEX).
+           The memory test software will destroy the VDISK, so do firt a 'SET <' to unload the driver.
+
 
 
 CdeJ

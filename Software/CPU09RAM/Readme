@@ -4,6 +4,7 @@
 The UniFLEX CPU09RAM card is tested on the CPU09CMI running 16Mhz.
 The RAM card need’s jumper J2 (select C4 Ext decode) 
 and the CMI card need’s jumper J6 for this.
+Put the test software on the "Virtual9.SSSD80-5.IMA" disk.
 Read "CPU09RAM card memory test".
 
 
@@ -46,6 +47,10 @@ At present the dip-switches have the following assigments:
     SW1-3,  ON = FLEX 8" DSDD
     SW1-2,  ON = FLEX 5" DSDD
     SW1-1,  OFF
+
+
+
+06-05-2024 Resolved a bug in virtual driver.
 
 
 
