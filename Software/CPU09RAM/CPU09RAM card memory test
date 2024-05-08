@@ -8,9 +8,9 @@ and the CMI card need’s jumper J6 for this.
 RDSKtst.s1  – Will show the switch setting.
               The first run will check if all pages are unique.
               The second one will write all 0000 to the ram, 
-              you can change the 0000 at $0130.
+              you can change the 0000 at $0142.
               The third one will write all FFFF to the ram, 
-              you can change the FFFF at $0145.
+              you can change the FFFF at $0157.
 
 RBRdsk.s1  – Is a rotating bit memory test.
 
