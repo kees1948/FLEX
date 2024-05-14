@@ -1,4 +1,4 @@
-2022-06-21
+2022-06-21  Version 1.18
 
 Here you find the ROM monitor for the 68X02 use of the CPUXXCMI board.
 
@@ -6,4 +6,15 @@ It is basically a port of the 6809 SBUG program.
 
 20220621 It has not been fully tested yet, the basic functions appear to
 work, but in the area of breakpoints bugs may lurk.
+
+
+
+2024-05-14  Version 1.18:1
+
+Resolved Punch error, added 'memcon' test, added disk Cable check.
+In the area of breakpoints bugs may lurk.
+
+
+
+
 
