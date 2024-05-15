@@ -505,10 +505,8 @@ BPADJ ldx YTEMP
  RTS
 
 ***** "U" MINIDISK BOOT *****
-MINBOOT TST Comreg
- ldaa #%00000001 select drive 0
+MINBOOT ldaa #%00000001 select drive 0
  staa cable straight cable type
- oraa #%01000000 DRIVE 0 + 5" mode
  STAA Drvreg
  bsr Delay
  ldab Comreg ready?
@@ -516,14 +514,18 @@ MINBOOT TST Comreg
  bra set1 yes
 setPC ldaa #%00000101 drive 0 not found
  staa cable PC cable type
- oraa #%01000000 DRIVE 0 + 5" mode
 * drive select on cable, 1 = FLEX 5 = PC compatible
 set1 staa Drvreg select drive 0
- ldaa cable
  oraa #$30
  jsr OUTCH
+ tst Drvreg
+ ldaa cable
+ oraa #%01000000 DRIVE 0 + 5" mode
+ staa Drvreg
 * delay before issuing restore command
  bsr Delay
+ ldab Comreg
+ bmi loop9
 
  LDAA #$09 *LOAD HEAD, VERIFY, 12msec/step
  STAA Comreg ISSUE RESTORE COMMAND
@@ -559,7 +561,7 @@ LOOP3 LDAB Drvsta FETCH STATUS
  LDAB Comreg
  BITB #$2C CRC ERROR OR LOST DATA?
  BEQ LOOP4
- RTS
+loop9 RTS
 
 LOOP4 tsx
  LDAA #loader/256
@@ -891,12 +893,14 @@ ACINIZ LDX CPORT POINT TO CONTROL PORT ADDRESS
  RTS
 
 ***** "q" memory test *****
-memtst clr BTEMP
- JSR IN2ADR GET BEGIN AND END ADDRESS
+memtst JSR IN2ADR GET BEGIN AND END ADDRESS
  BVS Qend (V) C-CODE SET, EXIT
- ldx XTEMP
- cpx YTEMP
- bgt Qdo
+ ldaa XTEMP+1
+ suba YTEMP+1
+ ldab XTEMP
+ sbcb YTEMP
+ bne Qdo IF BEGIN GREATER THAN END, EXIT
+ bcc Qdo
  rts skip memtst
 Qdo clrb do memtst
 QSTART STA B BTEMP STORE ACCCB
