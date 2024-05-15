@@ -24,6 +24,9 @@
 *       Resolved P command       
 *       Added MEMCON memory test 
 *       auto cable/boot select
+*
+* AGAIN MODIFIED (2024-05-15) CAJ
+*       Resolved loader U command       
 
 *       *** COMMANDS ***
 
@@ -78,6 +81,8 @@ Secreg EQU $F102 SECTOR REGISTER
 Datreg EQU $F103 DATA REGISTER
 Drvreg EQU $F104 drive select
 Drvsta EQU $F108 drive status
+
+loader equ $A100 Boot loader
 
 RCCOFF equ 0
 RRAOFF equ 1
@@ -514,6 +519,9 @@ setPC ldaa #%00000101 drive 0 not found
  oraa #%01000000 DRIVE 0 + 5" mode
 * drive select on cable, 1 = FLEX 5 = PC compatible
 set1 staa Drvreg select drive 0
+ ldaa cable
+ oraa #$30
+ jsr OUTCH
 * delay before issuing restore command
  bsr Delay
 
@@ -527,7 +535,7 @@ LOOP1 LDAB Drvsta
  STAA Secreg SET SECTOR REGISTER TO ONE
  LDAA #$8C LOAD HEAD, DELAY 10msec,
  STAA Comreg AND READ SINGLE RECORD
- LDX #$C100
+ LDX #loader Put it here
  BRA LOOP3
 
 * DELAY BEFORE ISSUING RESTORE COMMAND
@@ -554,11 +562,11 @@ LOOP3 LDAB Drvsta FETCH STATUS
  RTS
 
 LOOP4 tsx
- LDAA #$A1
- LDAB #$00
+ LDAA #loader/256
+ LDAB #loader<<8
  staa RPHOFF,X
  stab RPLOFF,X
- RTI
+ RTI run loader
 
 * for compatibillity
 LRA clra
