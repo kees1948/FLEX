@@ -4,6 +4,9 @@
 The UniFLEX CPU09RAM card is tested on the CPU09CMI running 16Mhz.
 The RAM card need’s jumper J2 (select C4 Ext decode) 
 and the CMI card need’s jumper J6 for this.
+
+We use the UniFLEX GAL, the software split the 512 bytes 2 times 256 byte/sector !
+
 Put the test software on the "Virtual9.SSSD80-5.IMA" disk.
 Read "CPU09RAM card memory test".
 
@@ -38,7 +41,7 @@ With the dip-switches SW-1 you can select the VDISK size, only one should be ON 
 
 At present the dip-switches have the following assigments:
 
-    SW2-4,  OFF 
+    SW2-4,  ON = Reserve room for disk cache (SW1-4 must be OFF). 
     SW2-3,  OFF 
     SW2-2,  OFF
     SW2-1,  ON = FLEX 512 byte pages, card present flag.
@@ -51,6 +54,9 @@ At present the dip-switches have the following assigments:
 
 
 06-05-2024 Resolved a bug in virtual driver.
+15-05-2024 Moved the software location.
+           Added SWITCH test for disk cache.
+           SW2-4 and SW1-4 ON will give a ERROR.
 
 
 
