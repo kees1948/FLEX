@@ -26,7 +26,11 @@
 *       auto cable/boot select
 *
 * AGAIN MODIFIED (2024-05-15) CAJ
-*       Resolved loader U command       
+*       Resolved U save & run BOOT loader
+
+* AGAIN MODIFIED (2024-05-16) CAJ
+*       Modified U to load a BOOT loader
+*       Use $2400 Michael Holley's files
 
 *       *** COMMANDS ***
 
@@ -82,7 +86,9 @@ Datreg EQU $F103 DATA REGISTER
 Drvreg EQU $F104 drive select
 Drvsta EQU $F108 drive status
 
-loader equ $A100 Boot loader
+D5INCH equ %01000000
+DSINGLE equ %00100000
+loader equ $2400 Boot loader
 
 RCCOFF equ 0
 RRAOFF equ 1
@@ -121,6 +127,7 @@ LOOPA ldx XTEMP
  stx YTEMP
  DECB SUBTRACT 1 FROM NUMBER OF BYTES TO MOVE
  BNE LOOPA CONTINUE UNTIL ALL VECTORS MOVED
+ clr flpspd
  LDX #ACIAS GET CONTROL PORT ADDR.
  STX CPORT STORE ADDR. IN RAM
  JSR XBKPNT CLEAR OUTSTANDING BREAKPOINTS
@@ -513,14 +520,20 @@ MINBOOT ldaa #%00000001 select drive 0
  bmi setPC no
  bra set1 yes
 setPC ldaa #%00000101 drive 0 not found
- staa cable PC cable type
-* drive select on cable, 1 = FLEX 5 = PC compatible
-set1 staa Drvreg select drive 0
+set1 staa cable PC cable type
  oraa #$30
  jsr OUTCH
  tst Drvreg
- ldaa cable
- oraa #%01000000 DRIVE 0 + 5" mode
+minbo1 ldab flpspd
+ ldx #MODTAB
+ bitb #D5INCH
+ beq minbo2
+ ldx #MODTAB+4
+minbo2 jsr PDATA
+* drive select on cable, 1 = FLEX 5 = PC compatible
+ ldaa flpspd
+ oraa cable
+ oraa #DSINGLE
  staa Drvreg
 * delay before issuing restore command
  bsr Delay
@@ -530,12 +543,12 @@ set1 staa Drvreg select drive 0
  LDAA #$09 *LOAD HEAD, VERIFY, 12msec/step
  STAA Comreg ISSUE RESTORE COMMAND
 LOOP1 LDAB Drvsta
- BITB #%01000000
- BEQ LOOP1 LOOP UNTIL THRU
+ aslb
+ bpl LOOP1 LOOP UNTIL THRU
 *
  LDAA #1
  STAA Secreg SET SECTOR REGISTER TO ONE
- LDAA #$8C LOAD HEAD, DELAY 10msec,
+ LDAA #$88 LOAD HEAD, DELAY 10msec,
  STAA Comreg AND READ SINGLE RECORD
  LDX #loader Put it here
  BRA LOOP3
@@ -544,6 +557,7 @@ LOOP1 LDAB Drvsta
 Delay LDAB #3
  LDX #0
 LOOP inx
+ tst Drvreg keep active
  CPX #0
  BNE LOOP
  DECB
@@ -556,11 +570,16 @@ LOOP2 LDAA Datreg
 
 LOOP3 LDAB Drvsta FETCH STATUS
  BMI LOOP2
- BITB #%01000000
  BEQ LOOP3
  LDAB Comreg
- BITB #$2C CRC ERROR OR LOST DATA?
+ BITB #%00011100 CRC ERROR OR LOST DATA?
  BEQ LOOP4
+
+ ldaa flpspd
+ eora #D5INCH
+ staa flpspd
+ bita #D5INCH
+ bne minbo1
 loop9 RTS
 
 LOOP4 tsx
@@ -1012,6 +1031,12 @@ MSG18 FCC '  CC: '
 MSG19 FCC '11HINZVC'
 MSG20 FCC 'S1'
  FCB 4
+
+MODTAB equ *
+ fcc ':8"'
+ fcb 4
+ fcc ':5"'
+ fcb 4
 
 * POWER UP/ RESET/ NMI ENTRY POINT
 START equ *

@@ -8,17 +8,21 @@ It is basically a port of the 6809 SBUG program.
 work, but in the area of breakpoints bugs may lurk.
 
 
-
 2024-05-14  Version 1.18:1
 
-Resolved Punch error, added 'memcon' test, added disk Cable check.
-In the area of breakpoints bugs may lurk.
+  Resolved Punch error, added 'memcon' test, added disk Cable check.
+  In the area of breakpoints bugs may lurk.
 
 
-2024-05-14  Version 1.18:1
+2024-05-15  Version 1.18:1
 
-Resolved U commmand run BOOT loader.
-bugs may lurk !
+  Resolved U save & run BOOT loader,
+  bugs may lurk !
+
+
+2024-05-16  Version 1.18:1
+  Modified U to load a BOOT loader
+  Use $2400 for Michael Holley's files to build a FLEX2 system.
 
 
 
