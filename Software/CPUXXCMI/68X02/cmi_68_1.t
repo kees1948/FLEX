@@ -30,7 +30,7 @@
 
 * AGAIN MODIFIED (2024-05-16) CAJ
 *       Modified U to load a BOOT loader
-*       Use $2400 Michael Holley's files
+*       Use TSC's  $A100
 
 *       *** COMMANDS ***
 
@@ -88,7 +88,7 @@ Drvsta EQU $F108 drive status
 
 D5INCH equ %01000000
 DSINGLE equ %00100000
-loader equ $2400 Boot loader
+loader equ $A100 Boot loader
 
 RCCOFF equ 0
 RRAOFF equ 1
