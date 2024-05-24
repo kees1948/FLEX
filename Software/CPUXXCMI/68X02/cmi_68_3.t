@@ -32,6 +32,9 @@
 *       Modified U to load a BOOT loader
 *       Use TSC's  $A100
 
+* AGAIN MODIFIED (2024-05-20) CAJ
+*       auto cable boot select
+
 *       *** COMMANDS ***
 
 * CONTROL A   = ALTER THE "A" ACCUMULATOR
@@ -56,7 +59,10 @@
 * R           = DISPLAY REGISTER CONTENTS
 * S           = DISPLAY STACK FROM ssss TO $DFC0
 * X           = REMOVE ALL BREAKPOINTS
+
 romstk equ $f7af
+loader equ $A100 Boot loader
+dens equ loader+7
 
  ORG $F7C0
 
@@ -88,7 +94,6 @@ fdcsta EQU $F108 drive status
 
 D5INCH equ %01000000
 DSINGLE equ %00100000
-loader equ $A100 Boot loader
 
 RCCOFF equ 0
 RRAOFF equ 1
@@ -582,7 +587,12 @@ LOOP3 LDAB fdcsta FETCH STATUS
  bne minbo1
 loop9 RTS
 
-LOOP4 tsx
+LOOP4 ldx #loader boot code
+ ldaa dens
+ anda #$F0 remove drive
+ oraa cable
+ staa dens
+ tsx
  LDAA #loader/256
  LDAB #loader<<8
  staa RPHOFF,X
@@ -988,8 +998,7 @@ JMPTAB EQU *
 TABEND EQU *
 
 * ** 6802 VECTOR ADDRESSES **
-* FOLLOWING ARE THE ADDRESSES OF THE VECTOR ROUTINES
-* FOR THE 6802 PROCESSOR. DURING INITIALIZATION THEY
+* FOLLOWING ARE THE ADDRESSES OF THE VECTOR ROUTINES3* FOR THE 6802 PROCESSOR. DURING INITIALIZATION THEY
 * ARE RELOCATED TO RAM. THEY ARE RELOCATED TO RAM SO 
 * THAT THE USER MAY REVECTOR TO HIS OWN ROUTINES IF 
 * HE SO DESIRES.
@@ -1000,7 +1009,7 @@ RAMVEC
 
 * PRINTABLE MESSAGE STRINGS
 MSG1 FCB $D,$A,  CR/LF,
- FCC 'SB68 1.8:1 - '
+ FCC 'SB68 1.8:3 - '
  FCB 4
 MSG2 FCB 'K,$D,$A,4
 MSG3 FCC '>'
