@@ -40,6 +40,7 @@ ECAA is the address in the RAM space EC00-EDFF.
 06-05-2024 I put the ram disk test software on the "Virtual9.SSSD80-5.IMA".
 
            RAMDSK  .CMD - Runs in FLEX and will only run the page check.
+           RAMDSK3 .CMD - Runs in FLEX and runs 3 passes: page check, $0000 and $FFFF check.
            RBRDSK  .CMD - Runs in FLEX.
            RDSKTST .CMD - Runs in the CMI_SBUG monitor and runs 3 passes: page check, $0000 and $FFFF check.
            RBRDSKM .CMD - Runs in the CMI_SBUG.

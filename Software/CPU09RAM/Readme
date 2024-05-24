@@ -41,9 +41,9 @@ With the dip-switches SW-1 you can select the VDISK size, only one should be ON 
 
 At present the dip-switches have the following assigments:
 
-    SW2-4,  ON = Reserve room for disk cache (SW1-4 must be OFF). 
-    SW2-3,  OFF 
-    SW2-2,  OFF
+    SW2-4,  OFF
+    SW2-3,  ON = Reserve room for disk cache (SW1-4 must be OFF). 
+    SW2-2,  ON = Try for 2 virtual drives if SW1-3 or SW1-2 is ON. 
     SW2-1,  ON = FLEX 512 byte pages, card present flag.
 
     SW1-4,  ON = FLEX 4MB disk
@@ -56,7 +56,8 @@ At present the dip-switches have the following assigments:
 06-05-2024 Resolved a bug in virtual driver.
 15-05-2024 Moved the software location.
            Added SWITCH test for disk cache.
-           SW2-4 and SW1-4 ON will give a ERROR.
+           SW2-3 and SW1-4 ON will give a ERROR.
+21-05-2024 Rearrange SW2, start option for 2 virtual drives.
 
 
 
