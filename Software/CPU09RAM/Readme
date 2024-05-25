@@ -58,7 +58,8 @@ At present the dip-switches have the following assigments:
            Added SWITCH test for disk cache.
            SW2-3 and SW1-4 ON will give a ERROR.
 21-05-2024 Rearrange SW2, start option for 2 virtual drives.
-
+25-05-2024 VIRTUAL & VDISK can make two 8" DSDD or two 5" DSDD virtual drives.
+           There maybe bugs.
 
 
 CdeJ

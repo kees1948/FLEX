@@ -1,5 +1,5 @@
 VIRTUAL.CMD load the driver.
-VDISK.CMD will format the RAM disk.
+VDISK.CMD will format the RAM disk(s) depending the jumper setting.
 
 
 
