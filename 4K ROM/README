@@ -1,0 +1,57 @@
+                         Use of the CMIxxCPU with 2 x 4Kbyte ROM.
+                               Selection with RA1 jumper J5.
+
+
+See cpuxxcmi_memmap_4K_rom.pdf for the memory map.
+
+Provides:
+Choice for processor: MC68B02 or MC68B09 (HD63C09)@ 2..4MHz busclocks
+56 KByte of contineous RAM 0000...DFFF
+Decoded IO space           E000...E3FF
+Extra 1KByte RAM           E400...E7FF
+4K ROM                     F000...FFFF
+ACIA local console port    E004...E005
+Baudrate generator  0K3...38K4 with 1.2288 MHz bus signal
+IO decoding very simular (but not identical) to CPU09MON
+On board user/system state hardware with LED
+BUS input that disables on-board addressing, allows for external boards
+
+                    *** The modification. ***
+
+We now need A11 on the ROM instead of the RA2 jumper J4.
+    Remove jumper J4 and R12.
+    Connect U8-23 to U9-25.
+    Flash G1 (U13) with CMI-9_1.JED the 16 MHz version.
+    Flash U8 with cmiIOrom.bin and you can still BOOT and run FLEX.
+
+This FLEX is a modified cmi_io4x.t version and is located on the disk:
+                 cmi4Krom.DSDD77-8.IMA
+
+All software set for:
+                     FDC = $E100
+                    ACIA = $E004
+                   cable = $EFEE
+        Read/Write Track = $F000
+                 Monitor = $F800
+
+FLEX disk driver Read and Write track are set in the ROM at $F000.
+
+Modified FLEX software:
+         BOOTLOADER
+         IO/Disk driver
+         FORMAT5.CMD
+         FORMAT8.CMD
+         BOOTON.CMD
+         CMISTEP.CMD
+
+This FLEX version was created to test the CPU09CMI 4K ROM card.
+The 4K ROM makes other operating systems possible, 
+perhaps OS9 level 1.
+         
+Works at all speeds, but tested with 16MHz GAL modification.
+
+
+CdeJ
+
+
+
