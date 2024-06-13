@@ -3,8 +3,8 @@
 ;---------------------------------- Declaration Segment ------------
 TITLE    CPUXXCMI      U13      GAL1 
 PATTERN  Modified 4Mhz card 4K ROM
-REVISION 9.1
-AUTHOR   CS  MOD. CdeJ
+REVISION 4.3
+AUTHOR   CS MOD. CdeJ
 COMPANY  CS
 DATE     12/06/24
 
@@ -43,30 +43,27 @@ EQUATIONS
 ; System ROM, read, enabled on F000-FFFF 
 /U8_CE_ = ((C_A15 * C_A14 * C_A13 * C_A12 * VMA) * C_W_ * (C_E + C_Q)) ; F000-FFFF
 
-; RAM   0000-DFFF,E400-E7FF  (65K) minus ROM/IO, unless /BLK_
-/U9_CE_ = (C_E + C_Q) * ( ( /(C_A15 * C_A14 * C_A13) * BLK_) + (C_A15 * C_A14 * C_A13 * /C_A12 * /C_A11 * C_A10 ) )
+; RAM   0000-DFFF,E400-EFFF  (65K) minus ROM/IO, unless /BLK_
+/U9_CE_ = (C_E + C_Q) * ( ( /(C_A15 * C_A14 * C_A13) * BLK_) 
+        + (C_A15 * C_A14 * C_A13 * /C_A12 * /C_A11 * C_A10 ) 
+        + (C_A15 * C_A14 * C_A13 * /C_A12 * C_A11) * BLK_)
 
 ; Where databuffer direction is selected
-;
 DBDIR   =  C_W_ * (EIODB + /BLK_)
 
 ; IO part  E000-E3FF
 /IOSEL_ = (C_A15 * C_A14 * C_A13 * VMA) * /C_A12 * /C_A11 * /C_A10 ; responds to E000-E3FF/
 
 ; VMA
-;
 ;/OVMA_ = VMA   ; VMA VALID -> /OVMA_ ON U3B PIN 6
 
 ; DATA BUS driver enable
-;
 /DBEN_ = (/BLK_ +  EIODB) * /BA ; EXTERN IO or EXTRNAL DECODING
 
 ; IACK cycles, enter supervisor
-;
 IACK   = /BA * BS  ; IACK
 
 ; Write to ROM, exit supervisor
-;
 /SEL_  = ((C_A15 * C_A14 * C_A13 * C_A12 * VMA) * /C_W_ * C_E) ; WRITE to ROM
 
 ;----------------------------------- Simulation Segment ------------

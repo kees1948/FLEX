@@ -8,7 +8,7 @@ Provides:
 Choice for processor: MC68B02 or MC68B09 (HD63C09)@ 2..4MHz busclocks
 56 KByte of contineous RAM 0000...DFFF
 Decoded IO space           E000...E3FF
-Extra 1KByte RAM           E400...E7FF
+Extra 3KByte RAM           E400...EFFF
 4K ROM                     F000...FFFF
 ACIA local console port    E004...E005
 Baudrate generator  0K3...38K4 with 1.2288 MHz bus signal
@@ -21,20 +21,25 @@ BUS input that disables on-board addressing, allows for external boards
 We now need A11 on the ROM instead of the RA2 jumper J4.
     Remove jumper J4 and R12.
     Connect U8-23 to U9-25.
-    Flash G1 (U13) with CMI-9_1.JED the 16 MHz version.
+    Flash G1 (U13) with CMI-X_1.JED 
+                    use CMI-4X_1.JED for the (12) 16 MHz card version.
     Flash U8 with cmiIOrom.bin and you can still BOOT and run FLEX.
 
-This FLEX is a modified cmi_io4x.t version and is located on the disk:
+                         *** FLEX ***
+
+This FLEX is a modified cmi_io4B.t version and is located on the disk:
                  cmi4Krom.DSDD77-8.IMA
 
 All software set for:
                      FDC = $E100
                     ACIA = $E004
-                   cable = $EFEE
+                   cable = $E7EE
         Read/Write Track = $F000
                  Monitor = $F800
 
-FLEX disk driver Read and Write track are set in the ROM at $F000.
+FLEX disk driver:
+     a part is on $E400,
+     Read and Write track are set in the ROM at $F000.
 
 Modified FLEX software:
          BOOTLOADER
@@ -49,6 +54,8 @@ The 4K ROM makes other operating systems possible,
 perhaps OS9 level 1.
          
 Works at all speeds, but tested with 16MHz GAL modification.
+
+13-06-2024 update GAL's for extra RAM to use CPU9RAM card for virtual disk.
 
 
 CdeJ
