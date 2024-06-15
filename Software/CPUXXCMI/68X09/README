@@ -7,3 +7,16 @@ cmi_sbug is an adapted version of the SBUG 1.8 source.
 CMIMON09 is a port of the famous MikBug ROM to an CPUXXCMI version for 6809.
 
  
+
+
+2024-06-15
+
+    Monitor ROM's info:
+
+       cmi_sbug.bin  - version 1.0 for PC type floppy cable.
+       cmisbug1.bin  - version 1.1 for FLEX type floppy cable.
+       cmisbug3.bin  - version 1.3 auto cable/boot select.
+       cmisbug4.bin  = version 1.3 with extra boot delay for GoTek.
+
+
+CdeJ
