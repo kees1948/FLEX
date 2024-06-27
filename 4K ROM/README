@@ -18,12 +18,8 @@ BUS input that disables on-board addressing, allows for external boards
 
                     *** The modification. ***
 
-We now need A11 on the ROM instead of the RA2 jumper J4.
-    Remove jumper J4 and R12.
-    Connect U8-23 to U9-25.
-    Flash G1 (U13) with CMI-X_1.JED 
-                    use CMI-4X_1.JED for the (12) 16 MHz card version.
-    Flash U8 with cmiIOrom.bin and you can still BOOT and run FLEX.
+Read "The 4K ROM modification.pdf"
+
 
                          *** FLEX ***
 
