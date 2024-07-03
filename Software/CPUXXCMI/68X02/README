@@ -9,20 +9,32 @@ work, but in the area of breakpoints bugs may lurk.
 
 
 2024-05-14  Version 1.18:1
-
   Resolved Punch error, added 'memcon' test, added disk Cable check.
   In the area of breakpoints bugs may lurk.
 
-
 2024-05-15  Version 1.18:1
-
   Resolved U save & run BOOT loader,
   bugs may lurk !
-
 
 2024-05-17  Version 1.18:1
   Modified U to load a BOOT loader
   Use TSC $A100 to build a FLEX2 system.
+
+2024-07-01 Version 1.18.3
+  Resolved E,P,Q command xxxx=yyyy exit.
+  Resolved PUNCH exit.
+
+2024-07-03 Version 1.18.3
+  Resolved BREAKPOINT's
+
+
+  Status:
+      Version 1.18   Don't use it, to many bugs.
+      Version 1.18.1 Don't use it, still to many bugs.
+      Version 1.18.3 Breakpoint table is now working.
+                     
+      Bugs may lurk.
+
 
 
 

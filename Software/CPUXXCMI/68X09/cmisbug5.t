@@ -1,7 +1,6 @@
- nam CMI_BUG (18) cpuxxcmi monitor 1.4
+ name CMI_BUG (18) cpuxxcmi monitor 1.5
  opt pag
  pag
-
 * monitor program for the cpu09xxx system
 * products cpuxxcmi board as commented by....
 * allen clark            wallace watson
@@ -23,6 +22,11 @@
 *
 * auto cable/boot select (2023-03-09) CAJ
 * add Pwr On delay for GoTek on 16MHz system (2024-06-18) CAJ
+*
+* rearranged the v1.4 to make room (2024-06-24) CAJ                   
+* added Michael Evenson's IDE boot (2024-06-25)
+*
+* rearranged the v1.5 to make more room (2024-06-27) CAJ
 
 *
 *       *** commands ***
@@ -39,6 +43,7 @@
 * b hhhh      = set breakpoint at location $hhhh
 * u           = boot a 09flp 5/8 inch floppy
 *               1 = Straight cable, 5 = PC cable
+* w           = boot a IDE device on CMI09IDE
 * e ssss-eeee = examine memory from starting address ssss
 *              -to ending address eeee.
 * g           = continue execution from breakpoint or swi
@@ -55,7 +60,31 @@ vectors equ $fff0
 loader equ $C100
 dens equ loader+4
 
- org $f7c0
+ ORG 0
+
+DISK RMB 1 0=FLOPPY <>0 - WINCHESTER
+DRVNO RMB 1 HARDWARE DRIVE NUMBER - Must be 0 or 1
+STEP RMB 1 Not used was STEP RATE
+INIT RMB 1 0=NOT INITIALIZED
+SHIFT RMB 1 Not used was <9 NUMBER OF SHIFTS >8 DIV
+HMASK RMB 1 Not used was HEAD MASK
+OFFSET RMB 2 Partition OFFSET - number of 16MB offsets
+DRVSIZ EQU *
+
+* ADDRESS DEFINITIONS FOR FLEX LOADER The first 5 bytes of the boot sector
+* contain a jump to threal start, a couple of $FF bytes and then the 
+* logical sector number of the start the FLEX image to load into memory.
+* This is an STX style file.
+
+ ORG loader Address where SECTOR 1 LOADED
+ 
+WLDADR RMB 5 7E C0 16 FF FF
+LTRKNO RMB 2 Logical sector to load FLEX from the IDE
+
+STACK1 EQU $C6FF START ADDRESS OF STACK
+DRVPTR EQU $DE20 DESCRIPTOR POINTER
+
+ org $F7C0
 
 stack rmb 2 top of internal stack / user vector
 trap rmb 2
@@ -81,6 +110,7 @@ fdcsec equ $f102 sector register
 fdcdat equ $f103 data register
 fdcsel equ $f104 drive select
 fdcsta equ $f108 drive status
+fdbasp equ fdccmd/256
 *
 D5INCH equ %01000000
 DSINGLE equ %00100000
@@ -96,6 +126,19 @@ DSINGLE equ %00100000
  fdb pcrlf 0E
  fdb pstrng 10
  fdb lra 12
+*
+*   create a vector to the IDE read routine. The user can use this to 
+*   call the IDE Read routine with an indirect JSR. When called, the
+*
+*       X register = address to load the 256 bytes to
+*       B register = the track  number to load the sector from
+*       A register = the sector number to load the sector from
+
+*   This only works for the first 65536 sectors on the disk.
+
+ fdb IDEINIT 14 - set up the DRVPTR DESCRIPTOR
+ fdb READ 16 - a vector to the IDE READ routine
+ fdb TSKSET 18 - a vector to the TSKSET routine
 
 * monitor
 * vector address string is.....
@@ -109,15 +152,15 @@ loopa lda ,x+ get vector byte
  bne loopa continue until all vectors moved
  clr flpspd set for 8", DD
 
-* contents from to function
-* $f8a1 $fe40 $f7c2 user-v
-* $f8a1 $fe42 $f7c4 swi3-v
-* $f8a1 $fe44 $f7c6 swi2-v
-* $f8a1 $fe46 $f7c8 firq-v
-* $f8a1 $fe48 $f7ca irq-v
-* $fab0 $fe4a $f7cc swi-v
-* $ffff $fe4c $f7ce svc-vo
-* $ffff $fe4e $f7d0 svc-vl
+* contents     from         to      function
+*  $f8a1       $fe40      $f7c2     user-v
+*  $f8a1       $fe42      $f7c4     swi3-v
+*  $f8a1       $fe44      $f7c6     swi2-v
+*  $f8a1       $fe46      $f7c8     firq-v
+*  $f8a1       $fe48      $f7ca     irq-v
+*  $fab0       $fe4a      $f7cc     swi-v
+*  $ffff       $fe4c      $f7ce     svc-vo
+*  $ffff       $fe4e      $f7d0     svc-vl
 
  ldx #acias get control port addr.
  stx cport store addr. in ram
@@ -196,82 +239,78 @@ regstr ldx #msg5 point to msg " - "
 
 * alter "pc" program counter
 altrpc lbsr prtpc print msg " pc = "
- lbsr out1s output space
- lbsr in1adr get new contents for "pc"
+ bsr altrit go long branch hub
  bvs altpcd exit if invalid hex
  stx 12,u poke in new contents
 altpcd rts
 
 * alter "u" user stack pointer
 altru lbsr prtus print msg " us = "
- lbsr out1s output space
- lbsr in1adr
+ bsr altrit go long branch hub
  bvs altud
  stx 10,u
 altud rts
 
 * alter "y" index register
 altry lbsr prtiy print msg " iy = "
- lbsr out1s output space
- lbsr in1adr
+ bsr altrit go long branch hub
  bvs altyd
  stx 8,u
 altyd rts
 
 * alter "x" index register
 altrx lbsr prtix print msg " ix = "
- lbsr out1s output space
- lbsr in1adr
+ bsr altrit go long branch hub
  bvs altxd
  stx 6,u
 altxd rts
 
+altrit lbsr out1s out1s output space
+ lbra in1adr get new contents
+
 * alter "dp" direct page register
 altrdp lbsr prtdp print msg " dp = "
- lbsr out1s output space
- lbsr byte input byte (2 hex char)
+ bsr altrtn go long branch hub
  bvs altdpd
  sta 5,u
 altdpd rts
 
 altre lbsr prte
- lbsr out1s
- lbsr byte
+ bsr altrtn go long branch hub
  bvs alted
  sta 3,u
 alted rts
 
 altrf lbsr prtf
- lbsr out1s
- lbsr byte
+ bsr altrtn go long branch hub
  bvs altfd
  sta 4,u
 altfd rts
 
 * alter "b" accumulator
 altrb lbsr prtb print msg " b = "
- lbsr out1s output space
- lbsr byte input byte (2 hex char)
+ bsr altrtn go long branch hub
  bvs altbd
  sta 2,u
 altbd rts
 
 * alter "a" accumulator
 altra lbsr prta print msg " a = "
- lbsr out1s output space
- lbsr byte input byte (2 hex char)
+ bsr altrtn go long branch hub
  bvs altad
  sta 1,u
 altad rts
 
 * alter "cc" register
 altrcc lbsr prtcc print msg " cc: "
- lbsr out1s output space
- lbsr byte input byte (2 hex char)
+ bsr altrtn go long branch hub
  bvs altccd
  ora #$80 sets "e" flag in print list
  sta ,u
 altccd rts
+
+altrtn lbsr out1s output space
+ lbra byte input byte (2 hex char)
 
 ***** "m" memory examine and change *****
 memchg lbsr in1adr input address
@@ -281,10 +320,10 @@ memc2 ldx #msg5 point to msg " - "
  lbsr pstrng print msg
  tfr y,x fetch address
  lbsr out4h print addr in hex
- lbsr out1s output space
+ bsr out1sm output space
  lda ,y get contents of current addr.
  lbsr out2h output contents in ascii
- lbsr out1s output space
+ bsr out1sm output space
  lbsr byte loop waiting for operator input
  bvc change if valid hex go change mem. loc.
  anda #%11011111 undo 'toupper'
@@ -300,13 +339,15 @@ chrtn rts exit routine
 change sta ,y change byte in memory
  cmpa ,y did memory byte change?
  beq forwrd
- lbsr out1s output space
+ bsr out1sm output space
  lda #'? load question mark
  lbsr outch print it
 forwrd leay 1,y point to next higher mem location
  bra memc2 print location & contents
 back leay -1,y point to last mem location
  bra memc2 print location & contents
+
+out1sm lbra out1s output space
 
 * "s" display stack
 * hex-ascii display of current stack contents from
@@ -334,7 +375,7 @@ edprtn rts
 * if upper addr = $4567
 * upper bounds will be adjusted to = $4570.
 * enter with lower address in x-reg.
-* -upper address on top of stack.
+*           -upper address on top of stack.
 ajdump tfr x,d get upper addr in d-reg
  addd #$10 add 16 to upper address
  andb #$f0 mask to even 16 byte boundry
@@ -353,14 +394,14 @@ skpdmp leas 2,s readjust stack if not dumping
 * for each line throughout address limits.
 edump pshs x push lower addr limit on stack
  ldx #msg5 point to msg " - "
- lbsr pstrng print msg
+  lbsr pstrng print msg
  ldx ,s load lower addr from top of stack
  lbsr out4h print the address
  lbsr out2s print 2 spaces
  ldb #$10 load count of 16 bytes to dump
 eloop lda ,x+ get from memory hex byte to print
  lbsr out2h output hex byte as ascii
- lbsr out1s output space
+ bsr out1sm output space
  decb decrement byte count
  bne eloop continue til 16 hex bytes printed
 
@@ -508,59 +549,68 @@ bpadj leay -3,y move pointer to begin of bp entry
  rts
 
 ***** "u" minidisk boot *****
- clr fdcsel 
- tst cable GoTek PowerOn/Reset 
+*
+* first figure out what type of cable is being used
+*
+minboot ldb #fdbasp
+ setdp fdbasp
+ tfr b,dp
+ clr <fdcsel
+ tst cable GoTek PowerOn/Reset    
  bne NoDel ReBoot
  ldb #6 Wait GoTek 16MHz bus
- jsr Pdelay
+ bsr PDelay
 NoDel lda #%00000001 select drive 0
- sta fdcsel
- jsr Delay
- ldb fdccmd ready?
- bmi set5 no, test PC cable
- bra set1 yes, straight cable
-set5 lda #%00000101 select drive 0
-set1 sta cable Set cable type
+ sta <fdcsel
+ bsr Delay
+ ldb <fdccmd ready?
+ bmi set5 no - try PC cable type
+ bra set1 yes - set straight thru type
+ 
+set5 lda #%00000101 drive 0 not found on straight cable
+set1 sta cable PC cable type
  ora #$30
- lbsr outch Show cable type
- tst fdcsel
+ lbsr outch
+ tst <fdcsel keep MO active
 minbo1 ldb flpspd 8/5"
- andb #D5INCH
- asrb move bit6 to bit2
- asrb
- asrb
- asrb
- ldx #MODTAB 4 byte entry
- abx
- jsr pdata Show disk type
+ lda #$38 show 8" drive type
+ bitb #D5INCH test drive type
+ beq minbo2
+ lda #$35 show 5" drive type
+minbo2 jsr outch
+ 
 * drive select on cable, 1 = FLEX 5 = PC compatible
+
  lda flpspd
  ora #DSINGLE FLEX has SD boot only
- ora cable Select cable type
- sta fdcsel select drive 0
+ ora cable drive 0 or PC cable drive 1
+ sta <fdcsel select drive 0
+
+* we have determined the cable type - now load the boot sector
 * delay before issuing restore command
+
  bsr Delay
- ldb fdccmd
+ ldb <fdccmd
  bmi loop9
 *
  lda #$09 *load head, verify, 12msec/step
- sta fdccmd issue restore command
-loop1 ldb fdcsta
+ sta <fdccmd issue restore command
+loop1 ldb <fdcsta
  aslb fdc INT
  bpl loop1 loop until thru
 *
  lda #1
- sta fdcsec set sector register to one
+ sta <fdcsec set sector register to one
  lda #$88 load head, delay 10msec,
- sta fdccmd and read single record
- ldx #$c100 where to put 1st bootsector
+ sta <fdccmd and read single record
+ ldx #loader where to put 1st bootsector
  bra loop3
-loop2 lda fdcdat
+loop2 lda <fdcdat
  sta ,x+
-loop3 ldb fdcsta fetch status
+loop3 ldb <fdcsta fetch status
  bmi loop2 fdc DRQ
  beq loop3 fdc INT
- ldb fdccmd
+ ldb <fdccmd
  bitb #%00011100 crc error or lost data?
  beq loop4
 *
@@ -570,7 +620,19 @@ loop3 ldb fdcsta fetch status
  bita #D5INCH
  bne minbo1
 *
-loop9 rts
+loop9 clra
+ tfr a,dp
+ rts
+
+Delay ldb #3
+PDelay ldx #0
+loop leax 1,x
+ tst fdcsel keep active
+ cmpx #0
+ bne loop
+ decb
+ bne loop
+ rts
 
 loop4 ldx #loader start boot code
  lda dens
@@ -581,17 +643,9 @@ loop4 ldx #loader start boot code
  tfr u,s
  rti
 
-lra clra
- rts
+ setdp 0
 
-Delay ldb #3
-Pdelay ldx #0
-loop leax 1,x
- tst fdcsel keep active
- cmpx #0
- bne loop
- decb
- bne loop
+lra clra
  rts
 
 ***** "l" load mikbug tape *****
@@ -637,7 +691,9 @@ load16 puls a adjust stack (remove byte count)
 load21 com echo turn echo on
  lda #$13 load 'dc3' cass. read off code
  lbra outch output it
-***** "p" punch mikbug tape *****
+
+*
+* ***** "p" punch mikbug tape *****
 punch clr ,-s clear reserved byte on stack
  lbsr in2adr get begin and end address
  pshs x,y save addresses on stack
@@ -679,51 +735,57 @@ punext lda #$14 load 'dc4' punch off code
  lbsr outch output it
  leas 5,s readjust stack pointer
  rts
+
+pdatal lbra pdata long branch hub
+
 prtsp ldx #msg10 point to msg "sp="
- lbsr pdata print msg
+ bsr pdatal print msg
  tfr u,x
- lbra out4h
+ bra out4hl
 prtus ldx #msg12 point to msg "us="
- lbsr pdata print msg
+ bsr pdatal print msg
  ldx 10,u
- lbra out4h
+ bra out4hl
 prtdp ldx #msg15 point to msg "dp="
- lbsr pdata print msg
+ bsr pdatal print msg
  lda 5,u
- lbra out2h output hex byte as ascii
+ bra out2hl output hex byte as ascii
 prtix ldx #msg14 point to msg "ix="
- lbsr pdata print msg
+ bsr pdatal print msg
  ldx 6,u $fce6
- lbra out4h
+ bra out4hl
 prtiy ldx #msg13 point to msg "iy="
- lbsr pdata print msg
+ bsr pdatal print msg
  ldx 8,u
- lbra out4h
+ bra out4hl
 prtpc ldx #msg11 point to msg "pc="
- lbsr pdata print msg
+ bsr pdatal print msg
  ldx 12,u
- lbra out4h
+ bra out4hl
 prta ldx #msg16 point to msg "a="
- lbsr pdata print msg
+ bsr pdatal print msg
  lda 1,u
- lbra out2h output hex byte as ascii
+ bra out2hl output hex byte as ascii
 prtb ldx #msg17 point to msg "b="
- lbsr pdata print msg
+ bsr pdatal print msg
  lda 2,u
- bra out2h output hex byte as ascii
+out2hl bra out2h output hex byte as ascii
 prte ldx #msg21
- lbsr pdata
+ bsr pdatal
  lda 3,u
  bra out2h
 prtf ldx #msg22
- lbsr pdata
+ bsr pdatal
  lda 4,u
  bra out2h
 prtcc ldx #msg18 point to msg "cc:"
- lbsr pdata print msg
+ bsr pdatal print msg
  lda ,u
  ldx #msg19 point to msg "efhinzvc"
  bra biasci output in binary/ascii format
+
+out4hl bra out4h long branch hub
+
 * the following routine loops waiting for the
 * operator to input two valid hex addresses.
 * the first address input is returned in "iy".
@@ -794,6 +856,7 @@ xascii adda #$30 ascii adj
  ble outc if less, output it
  adda #7 if > make ascii letter
 outc bra outch output char
+
 * binary / ascii --- this routine
 * outputs a byte in enhanced
 * binary format. the enhancement
@@ -922,7 +985,9 @@ jmptab equ *
  fcc 'M'
  fdb memchg *$f93b
  fcc 'P'
- fdb punch *$fc64
+ fdb punch
+ fcc 'W'
+ fdb WBOOT 
  fcc 'Q'
  fdb memtst *$f9ef
  fcc 'R'
@@ -950,9 +1015,10 @@ ramvec fdb swie user-v
  fdb $ffff svc-vl
 * printable message strings
 msg1 fcb $0,$0,$0,$d,$a,$0,$0,$0 * 0, cr/lf, 0
- fcc 'cmi-bug 1.4 - '
+ fcc 'cmi-bug 1.5 - '
  fcb 4
-msg2 fcb 'k,$d,$a,$0,$0,$0,4 k, * cr/lf + 3 nuls
+msg2 fcc 'k' k + <cr/lf> + 3 nuls
+ fcb $d,$a,$0,$0,$0,4 
 msg3 fcc '>'
  fcb 4
 msg4 fcc 'what?'
@@ -992,12 +1058,6 @@ msg19 fcc 'efhinzvc'
 msg20 fcc 's1'
  fcb 4
 
-MODTAB equ *
- fcc ':8S'
- fcb 4
- fcc ':5S'
- fcb 4
-
 * power up/ reset/ nmi entry point
 start equ *
  lds #romstk set stack
@@ -1006,7 +1066,7 @@ start equ *
  tfr a,dp
  fcb $11,$3d,$03 set 63x09
 *
-*  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+* 0 1 2 3 4 5 6 7 8 9 a b c d e f
 * 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k i/o,rom
 *
  lbra monitor initialization is complete
@@ -1038,9 +1098,300 @@ swi3z pulu a,b,x,cc,dp
  ldu 2,u
  jmp [swi3]
 *
+* this is the ROM part of the IDE boot loader to handle the 
+* W command. All it does is load the first sector of disk to
+* memory at loader and transfers control to it at that address. 
+* The first sector of the disk contain the FLEX locator (link 
+* bytes at offset 5 and 6) and the binary file loader that 
+* will load the FLEX specified by the linkage bytes.
+*
+*----------------------------------------------------------
+* Boot from IDE
+*
+***********************
+* 'W' BOOT WINCHESTER *
+***********************
+*
+* Please keep in mind that the CPU09IDE controller is a 16 bit board.
+* You cannot access the registers with the A or B registers. You must 
+* use the D regsiter and then use whatever part of it that you need.
+* This will most likely always be the B regsister since it is the low
+* byte of the D register and we really want to use it as an 8 bit
+* device.
+
+* PORT DEFINITION
+
+BASADR EQU $F180 DIV6 in CPUXXCMI BOARD
+DMAREGS EQU $F190 the address of the IDE DMA registers
+
+* we will be using the drive in LBA mode - not track and sector mode
+* so the registers are LBA00, LBA08, LBA16 and LBA24
+
+DATA    EQU BASADR      data register
+ERROR   EQU BASADR+2    error / feature register
+SECNT   EQU BASADR+4    sector count 0=256
+LBA00   EQU BASADR+6    LBA block address 0...7                    -- was SECNO
+LBA08   EQU BASADR+8    LBA block address 8...15                   -- was CYLLO
+LBA16   EQU BASADR+10   LBA block address 16...23                  -- was CYLHI
+LBA24   EQU BASADR+12   LBA block address 24...27, drvsel, LBA_ENB -- was SDH
+STATUS  EQU BASADR+14   status register
+COMREG  EQU BASADR+14   command register
+
+* COMMAND DEFINITIONS
+
+READCM EQU $20 READ COMMAND
+
+IDEINIT LDX #DESCRIP
+ STX DRVPTR
+ RTS
+
+* Since this part will reside in ROM, it needs to be short and sweet.
+* It also needs to be locateable by the FLEX locator and loader, so
+* we need some sort of known location to access the READ. To simplify
+* things we will make this a JMP to the READ sector routine. So lets 
+* put that at $FFED (just before the hardware vectors).
+*
+WBOOT LDS #STACK1
+
+* for debugging only
+
+ ldaa #'C clear DMA
+ bsr outchs
+ 
+* disable the DMA by clearing all of it's registers
+ 
+ ldx #DMAREGS point at the DMA registers
+ ldab #16 set number of registers to clear
+ ldaa #$0
+clrdma staa 0,x+
+ decb
+ bne clrdma 
+
+* for debugging only
+ ldaa #'I IDE Init call
+ bsr outchs
+ 
+ ldd #$10 reset command
+ std COMREG issue command
+ 
+ bsr IDEINIT
+
+* for debugging only
+ ldaa #'L load boot sector
+ bsr outchs
+
+ ldd #$0001 first boot sector is sector 1
+ ldx #WLDADR load address for boot sector
+ bsr READ returns B = Error Code Z = 1 if no error
+ tstb check for error code
+ beq WBOOT3 no error - check for link present
+ 
+WBOOT2 ldx #MSGWN2 error - report it
+ bra WBTERR
+
+WBOOT3 ldd #$0002 second boot sector is sector 2
+ ldx #WLDADR+256 load address for second boot sector
+ 
+ bsr READ returns B = Error Code Z = 1 if no error
+ tstb check for error code
+ bne WBOOT2 no error - check for link present
+
+* CHECK TO SEE IF DISK IS LINKED
+
+WBOOT4 LDD LTRKNO GET LINK ADDRES
+ CMPD #0 0 = NOT LINKED
+ BEQ WBOOT5 Error
+
+* This will execute the boot sector code and laod FLEX into memory
+
+* for debugging only
+ ldaa #'> transfer to boot sector code
+ bsr outchs
+
+ JMP WLDADR transfer to locator/loader
+
+outchs lbra outch long branch hub
+ 
+WBOOT5 LDX #MSGWN3 NOT LINKED MESSAGE
+WBTERR JSR pstrng
+ JMP [$F802] JUMP TO nextcmd
+
+* DRIVE DESCRIPTOR (FOR BOOT ONLY)
+
+DESCRIP FCB 1 WINCHESTER
+ FCB 0 HARDWARE DRIVE NUMBER
+ FCB 0
+ FCB 0
+ FCB 0
+ FCB 0
+ FDB 0 TRACK OFFSET
+
+* get two bytes from the data register/ There will be one DRQ
+* for each 16 bits available at the data port. Since we only 
+* need the low order byte we will have to read the data port 
+* twice for each word returned. We need to wait for DRQ for
+* each byte we read from the 16 bit port.
+
+* Status register:
+*
+* Both the primary and secondary status register use the same bit coding. 
+* The register is a read register.
+*
+*   bit 0    : error bit. If this bit is set then an error has
+*              occurred while executing the latest command. The error
+*              status itself is to be found in the error register.
+*   bit 1    : index pulse. Each revolution of the disk this bit is
+*              pulsed to '1' once. I have never looked at this bit, I
+*              do not even know if that really happens.
+*   bit 2    : ECC bit. if this bit is set then an ECC correction on
+*              the data was executed. I ignore this bit.
+*   bit 3    : DRQ bit. If this bit is set then the disk either wants
+*              data (disk write) or has data for you (disk read).
+*   bit 4    : SKC bit. Indicates that a seek has been executed with
+*              success. I ignore this bit.
+*   bit 5    : WFT bit. indicates a write error has happened. I do
+*              not know what to do with this bit here and now. I've
+*              never seen it go active.
+*   bit 6    : RDY bit. indicates that the disk has finished its
+*              power-up. Wait for this bit to be active before doing
+*              anything (execpt reset) with the disk. I once ignored
+*              this bit and was rewarded with a completely unusable
+*              disk.
+*   bit 7    : BSY bit. This bit is set when the disk is doing
+*              something for you. You have to wait for this bit to
+*              clear before you can start giving orders to the disk.
+
+rdword ldd STATUS READ STATUS (actual status will be in B)
+ bitb #$08 check for DRQ
+ beq rdword wait for it
+ ldd DATA get whole word
+ pshs b save low byte on the stack
+
+* now get the second byte
+
+rdwrd1 ldd STATUS READ STATUS
+ bitb #$08 check for DRQ
+ beq rdwrd1 wait for it
+ ldd DATA get whole word
+ puls a and the first byte in A
+ rts
+ 
+***********************
+* READ SECTOR COMMAND *
+***********************
+* Entry
+*   X - Address to place sector - 256 bytes
+*   D - LOGICAL SECTOR NUMBER
+* Exit
+*   X,A May be destroyed
+*   B - Error Code
+*   Z - 1 if no error
+*   Z - 0 if an error
+
+READ EQU *
+
+* for debugging only
+ PSHS A
+ ldaa #'. reading from IDE
+ bsr outchs
+ PULS A
+ 
+ PSHS Y
+ BSR TSKSET SET UP TASK REGISTERS
+ CLRA
+ LDB #READCM GET READ COMMAND
+ STD COMREG ISSUE COMMAND TO WD1002-HD0
+READ2 LDD STATUS READ STATUS
+ ASLB WAIT FOR BUSY TO CLEAR
+ BCS READ2
+ LDY #16*8 set up to do loop 16 * 8 times
+
+* this will get 16 bytes from the DATA register
+
+READ3 bsr rdword
+ STD 0,X++
+ LEAY -1,Y
+ BNE READ3
+
+* we have read the 256 bytes (only the odd ones from the sector
+
+ LDD STATUS
+ BITB #1 check for any errors
+ BEQ READ4 none - return good status
+
+ LDB #$10 set error code
+ SEC and error condition
+ PULS Y,PC and return
+
+READ4 CLRB set no error condition
+ PULS Y,PC and return
+
+***********************
+* TASK SET-UP ROUTINE *
+* Entry
+* X - Address to place sector - 256 bytes
+* A - Sector Number
+* B - Track Number
+***********************
+*
+* INPUT D = 16 BIT LOGICAL SECTOR NUMBER WITHIN THE PARTITION
+* 
+* Driver currently supports only 256 partitions
+*
+* OUTPUT IDE registers set
+*
+TSKSET PSHS D B gets pushed first
+
+* for debugging only
+ ldaa #'. task register set
+ bsr outchs
+ 
+ CLRA
+ STD LBA00 Set LSB of LSN
+
+ PULS B this will put A from D into B
+ PULS A this will put B from D into A
+ CLRA
+ STD LBA08 Set MSB of LSN
+
+* the logical sector number is set - nwo add in the partition offset
+
+ LDY DRVPTR point to descriptor
+ LDAD OFFSET,Y get parttion number
+ STD LBA16
+
+* and the drive select bits
+
+ CLRA
+ LDAB DRVNO,Y Get drive Number
+ LSLB Put in corrent bit position
+ LSLB
+ LSLB
+ LSLB
+ ORB #$E0 Drive number + LBA Mode
+ STD LBA24 Select Drive and LBA and upper 4 bits of LBA
+
+ LDD #1 SET FOR ONE SECTOR READ/WRITE
+ STD SECNT SET IDE REGISTER
+ RTS
+
+MSGWN2 FCC 'BOOT ERROR'
+ FCB $D,$A
+ FCB 4
+
+MSGWN3 FCC 'NOT LINKED'
+ FCB $D,$A
+ FCB 4
+ 
+ org vectors-6 * jump to IDE READ
+
+JMPINIT JMP IDEINIT
+JMPREAD JMP READ
 
  org vectors
+
 * 6809 vectors
+
  fdb v1 user-v
  fdb swi3e swi3-v
  fdb v2 swi2-v
