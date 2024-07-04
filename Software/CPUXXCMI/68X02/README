@@ -17,15 +17,16 @@ work, but in the area of breakpoints bugs may lurk.
   bugs may lurk !
 
 2024-05-17  Version 1.18:1
-  Modified U to load a BOOT loader
+  Modified U to load a BOOT loader.
   Use TSC $A100 to build a FLEX2 system.
 
 2024-07-01 Version 1.18.3
   Resolved E,P,Q command xxxx=yyyy exit.
   Resolved PUNCH exit.
 
-2024-07-03 Version 1.18.3
-  Resolved BREAKPOINT's
+2024-07-04 Version 1.18.3
+  Resolved BREAKPOINT's.
+  Change MINBOOT bootcodes.
 
 
   Status:

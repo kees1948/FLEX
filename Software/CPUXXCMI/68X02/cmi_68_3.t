@@ -42,9 +42,10 @@
 *       resolved PUNCH exit on CPX instruction
 *       resolved set Breakpoint
 
-* AGAIN MODIFIED (2024-07-03) CAJ
+* AGAIN MODIFIED (2024-07-04) CAJ
 *       resolved SEARCH BREAKPOINT TABLE
 *       resolved RPLSWI and FFSTBL
+*       change MINBOOT messages
 
 *       *** COMMANDS ***
 
@@ -520,11 +521,9 @@ FNDB inx
  stx YTEMP NEXT ENTRY
  DECB IF NOT, DECREMENT BREAKPOINT COUNTER
  BNE FNDBP AND LOOK FOR NEXT POSSIBLE MATCH
- ldx XTEMP
- RTS
+ RTS RETURN TABLE FULL
 
-BPADJ stx YTEMP
- ldx XTEMP
+BPADJ stx YTEMP POINTER FOR TABLE ENTRY
  RTS
 
 ***** "U" MINIDISK BOOT *****
@@ -545,11 +544,11 @@ set1 staa cable Set cable type
  jsr OUTCH Show cable type
  tst fdcsel
 minbo1 ldab flpspd
- ldx #MODTAB
- bitb #D5INCH
+ ldaa #$38 show 8" drive type
+ bitb #D5INCH test drive type
  beq minbo2
- ldx #MODTAB+4
-minbo2 jsr PDATA
+ ldaa #$35 show 5" drive type
+minbo2 jsr OUTCH
 * drive select on cable, 1 = FLEX 5 = PC compatible
  ldaa flpspd
  oraa cable drive 0 or PC cable drive 1
@@ -1064,11 +1063,6 @@ MSG19 FCC '11HINZVC'
 MSG20 FCC 'S1'
  FCB 4
 
-MODTAB equ *
- fcc ':8"'
- fcb 4
- fcc ':5"'
- fcb 4
 
 * POWER UP/ RESET/ NMI ENTRY POINT
 START equ *
