@@ -1,0 +1,21 @@
+
+                 FLEX with IDE driver
+
+
+This FLEX version consists of 4 parts.
+
+1: FLEXxCOR.BIN is the FLEX.COR for use with IDE driver
+2: FLPBOOT.TXT is the drive descriptor for booting from a floppy disk
+3: IDEBOOT.TXT is the drive description for booting from an IDE device
+4: CMI_IDE.BIN is the ide/flp driver
+
+If you want to change the disk format
+you can edit and assemble the IDEBOOT.TXT and/or FLPBOOT.TXT
+
+Building FLEX.SYS
+
+       +++APPEND FLEXxCOR.BIN FLPBOOT.BIN CMI_IDE.BIN FLEXFLP.SYS
+or
+       +++APPEND FLEXxCOR.BIN IDEBOOT.BIN CMI_IDE.BIN FLEXIDE.SYS
+
+Don't forget to link the file.

@@ -68,3 +68,7 @@ G         this should bring you back into flex
 All formats are supported in in SS and DS. And where DD is active
 track 0 has the proper # of sectors in SD.
 
+16-07-2024 
+    Added FLEX with IDE driver read "FLEX IDE".
+
+

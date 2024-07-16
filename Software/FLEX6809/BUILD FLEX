@@ -86,7 +86,7 @@ G         this should bring you back into flex
 
 +++SAVE,S1FLEX.CMD,0000,1547,0000
 
-+++SAVE,CMISTEP.CMD,0100,03D0,0100
++++SAVE,CMISTEP.CMD,0100,03FF,0100
 
 
 
@@ -98,5 +98,10 @@ G         this should bring you back into flex
 
 All formats are supported in in SS and DS. And where DD is active
 track 0 has the proper # of sectors in SD.
+
+16-07-2924
+    CMISTEP new version support al the drivers.
+
+
 
 CdeJ
