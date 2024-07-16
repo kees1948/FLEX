@@ -32,7 +32,7 @@
 
 Files in 'PC cable BOOT' can boot on that cable when using cmi_sbug version 1.0
 Files in 'FLEX cable BOOT' can boot on a straight cable using cmi_sbug version 1.1
-All images will boot on  cmi_sbug version 1.3
+All images will boot on  cmi_sbug version 1.3 and up.
 
 If you have a GotTek with 'FlashFloppy' your lucky 
    you can boot and run FLEX with one of the following.
@@ -45,8 +45,8 @@ If you have a GotTek with 'FlashFloppy' your lucky
    ready to boot and run FLEX4DRV.SYS
    Jumper the drives as 0, 1, 2 and MOT on.
 
-If you are on cmi_sbug version 1.3 you can use from 'FLEX cable BOOT' the
-FLEXCMI.DSDD80-5.IMA or FLEXCMI.DSDD77-8.IMA to boot and run FLEXCMI.SYS
+If you are on cmi_sbug version 1.3 or up you can use from 'FLEX cable BOOT' 
+the FLEXCMI.DSDD80-5.IMA or FLEXCMI.DSDD77-8.IMA to boot and run FLEXCMI.SYS
 
 
 To use any IMA copy it to the USB stick together with the files 
@@ -54,19 +54,25 @@ in 'GoTek config files'.
 You can rename the IMA part 'BootName' in a FLEX disk name. 
 
 09-04-2023
-Update IMG.CFG added 8" UniFlex DSK images.
+   Update IMG.CFG added 8" UniFlex DSK images.
 
 29-07-2023
-Update format software BOOT images
+   Update format software BOOT images
 
 12-12-2023
-You can now also use all IMAs with the SWTPCemuApp.
-Of course the FLEX versions will not boot.
+   You can now also use all IMAs with the SWTPCemuApp.
+   Of course the FLEX versions will not boot.
+
+16-07-2024
+   Update the FLEX...SYS with rhe latest drivers and utils.
+   Also put IDE software and RAM disk software.
+
 
 Note:
-    If you are on cmi_sbug version 1.1 you can boot and use the FLEXCMI images, 
-    but only on a straight cable.
+    If you are on cmi_sbug version 1.1 you can boot 
+    and use the FLEXCMI images, but only on a straight cable.
     Because FLEX can't use the 'auto cable select' flag in de MONITOR.
+
 
 
 CdeJ
