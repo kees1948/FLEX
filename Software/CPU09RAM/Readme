@@ -60,6 +60,11 @@ At present the dip-switches have the following assigments:
 21-05-2024 Rearrange SW2, start option for 2 virtual drives.
 25-05-2024 VIRTUAL & VDISK can make two 8" DSDD or two 5" DSDD virtual drives.
            There maybe bugs.
+15-07-2024 VIRTUAL Version 9.4 works also with the IDE driver.
+           On the IDE driver the switch SW2-2 will be ignored, only a V0 drive.
+
+Remarks:
+        Always use VIRTUAL & VDISK with the same version number.
 
 
 CdeJ
