@@ -27,6 +27,9 @@
 * added Michael Evenson's IDE boot (2024-06-25)
 *
 * rearranged the v1.5 to make more room (2024-06-27) CAJ
+* use DP speedup the IDE READ (2024-07-06) CAJ
+* rewrite the IDE READ (2024-07-08) CAJ
+* redo the PWRon delay (2024-07-08) CAJ
 
 *
 *       *** commands ***
@@ -552,21 +555,25 @@ bpadj leay -3,y move pointer to begin of bp entry
 *
 * first figure out what type of cable is being used
 *
-minboot ldb #fdbasp
+PWRon clr fdcsel
+ tst cable GoTek PowerOn/Reset
+ bne NoDel
+ ldb #6
+ bsr PDelay
+NoDel rts
+
+minboot bsr PWRon
+ ldb #fdbasp
  setdp fdbasp
  tfr b,dp
- clr <fdcsel
- tst cable GoTek PowerOn/Reset    
- bne NoDel ReBoot
- ldb #6 Wait GoTek 16MHz bus
- bsr PDelay
-NoDel lda #%00000001 select drive 0
+ lda #%00000001 select drive 0
  sta <fdcsel
  bsr Delay
  ldb <fdccmd ready?
  bmi set5 no - try PC cable type
  bra set1 yes - set straight thru type
  
+
 set5 lda #%00000101 drive 0 not found on straight cable
 set1 sta cable PC cable type
  ora #$30
@@ -987,7 +994,7 @@ jmptab equ *
  fcc 'P'
  fdb punch
  fcc 'W'
- fdb WBOOT 
+ fdb WBOOT
  fcc 'Q'
  fdb memtst *$f9ef
  fcc 'R'
@@ -1136,6 +1143,8 @@ LBA16   EQU BASADR+10   LBA block address 16...23                  -- was CYLHI
 LBA24   EQU BASADR+12   LBA block address 24...27, drvsel, LBA_ENB -- was SDH
 STATUS  EQU BASADR+14   status register
 COMREG  EQU BASADR+14   command register
+idestat equ BASADR+24   alternative status
+
 
 * COMMAND DEFINITIONS
 
@@ -1148,10 +1157,11 @@ IDEINIT LDX #DESCRIP
 * Since this part will reside in ROM, it needs to be short and sweet.
 * It also needs to be locateable by the FLEX locator and loader, so
 * we need some sort of known location to access the READ. To simplify
-* things we will make this a JMP to the READ sector routine. So lets 
+* things we will make this a JMP to the READ sector routine. So lets
 * put that at $FFED (just before the hardware vectors).
 *
 WBOOT LDS #STACK1
+ jsr PWRon for GoTek init
 
 * for debugging only
 
@@ -1261,21 +1271,8 @@ DESCRIP FCB 1 WINCHESTER
 *              something for you. You have to wait for this bit to
 *              clear before you can start giving orders to the disk.
 
-rdword ldd STATUS READ STATUS (actual status will be in B)
- bitb #$08 check for DRQ
- beq rdword wait for it
- ldd DATA get whole word
- pshs b save low byte on the stack
+ setdp BASADR/256
 
-* now get the second byte
-
-rdwrd1 ldd STATUS READ STATUS
- bitb #$08 check for DRQ
- beq rdwrd1 wait for it
- ldd DATA get whole word
- puls a and the first byte in A
- rts
- 
 ***********************
 * READ SECTOR COMMAND *
 ***********************
@@ -1289,42 +1286,43 @@ rdwrd1 ldd STATUS READ STATUS
 *   Z - 0 if an error
 
 READ EQU *
-
-* for debugging only
+* NOT for debugging only
+ pshs dp
  PSHS A
+ lda #BASADR/256
+ tfr a,dp Speed up the READ's
  ldaa #'. reading from IDE
  bsr outchs
  PULS A
- 
- PSHS Y
- BSR TSKSET SET UP TASK REGISTERS
- CLRA
- LDB #READCM GET READ COMMAND
- STD COMREG ISSUE COMMAND TO WD1002-HD0
-READ2 LDD STATUS READ STATUS
- ASLB WAIT FOR BUSY TO CLEAR
- BCS READ2
- LDY #16*8 set up to do loop 16 * 8 times
+*
+* read a sector from the IDE interface
+*
+rdsect  bsr     TSKSET
+        clra    
+        ldb     #READCM
+        std     <COMREG
+        clr     0,-s            init bytecount
+*
+rslop   ldd     <STATUS        read status
+        aslb                    shift bit 6 to 7
+        bcs     rslop           if not set keep going
+        ldd     <DATA           get word
+        stb     0,x+            use lower part
+        dec     0,s             update counter
+        bne     rslop
+*
+        puls    a               empty stack
+        ldd     <STATUS
+        bitb    #1
+        beq     rddone
+        ldb     #$10            set error
+        sec
+        puls dp,pc
+rddone  clrb                    clear carry
+        puls dp,pc
 
-* this will get 16 bytes from the DATA register
 
-READ3 bsr rdword
- STD 0,X++
- LEAY -1,Y
- BNE READ3
-
-* we have read the 256 bytes (only the odd ones from the sector
-
- LDD STATUS
- BITB #1 check for any errors
- BEQ READ4 none - return good status
-
- LDB #$10 set error code
- SEC and error condition
- PULS Y,PC and return
-
-READ4 CLRB set no error condition
- PULS Y,PC and return
+ setdp 0
 
 ***********************
 * TASK SET-UP ROUTINE *
