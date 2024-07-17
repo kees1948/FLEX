@@ -17,7 +17,7 @@
 
 Files in 'PC cable BOOT' can boot on that cable when using cmi_sbug version 1.0
 Files in 'FLEX cable BOOT' can boot on a straight cable using cmi_sbug version 1.1
-All images will boot on  cmi_sbug version 1.3
+All images will boot on  cmi_sbug version 1.3 and up.
 
 If you have a GotTek with 'FlashFloppy' your lucky 
    you can boot and run FLEX + HIER with one of the following.
@@ -30,7 +30,7 @@ If you have a GotTek with 'FlashFloppy' your lucky
    ready to boot and run HIER4DRV.SYS
    Jumper the drives as 0, 1, 2 and MOT on.
 
-If you are on cmi_sbug version 1.3 you can use from 'FLEX cable BOOT' the
+If you are on cmi_sbug version 1.3 and up you can use from 'FLEX cable BOOT' the
 HIERCMI.DSDD80-5.IMA, HIERCMI.DSDD77-8.IMA or HIER_CMI.DSDD77-8.IMA to boot.
 
 All the BOOT images contains the HIER 'MANUAL.TXT' and 'UTIL.TXT, read them.
@@ -51,9 +51,10 @@ Added  HIER_CMI.DSDD77-8.IMA image,
 
 
 Note:
-    The FLEX3.COR and FLX301.COR are different.
+    The FLEX3.COR, FLX301.COR and FLEXCOR.COR are different.
     	  FLEX3COR.S1 = FLEX3.COR is extracted from the FLEX for UniFlex.
         FLX301.S1   = FLX301.COR is a general version extracted from the MicroboxII FLEX.
+        FLEXxCOR.S1 = Modified FLEX3.COR to use the IDE driver.
 
     If you are on cmi_sbug version 1.1 you can boot and use the HIERCMI images, 
     but only on a straight cable.
