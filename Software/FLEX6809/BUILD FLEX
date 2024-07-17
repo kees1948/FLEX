@@ -16,7 +16,7 @@ When using a straigth cable drives should be '0' and '1'.
 
 Via the serial communication line and the 'L' function of the SBUG version for
 the CPUXXCMI card, one can download the flex3cor.s1 file first.
-Depending on the CMI_SBUG version 1.0, 1.1 or 1.3 
+Depending on the CMI_SBUG version 1.0, 1.1 or 1.3 and up
 download one of cmi_io2.s1, cmi_io4.s1, cmi_io4x.s1, cmi_io4A.s1 or cmi_io4B.s1
 ignore >C what? at the end.
 
@@ -61,7 +61,7 @@ Now we can build a new FLEX:
      use FLEX2DRV.SYS - CMI_IO2
          FLEX4DRV.SYS - CMI_IO4
          FLEXCMI.SYS  - CMI_IO4X
-         FLEX_CMI.SYS - CMI_IO4A or CMI_IO4B
+         FLEXCMI.SYS  - CMI_IO4A or CMI_IO4B
 
   +++APPEND FLEX3.COR,CMI_IOx.BIN,FLEXxxx.SYS
   +++LINK FLEXxxx.SYS
