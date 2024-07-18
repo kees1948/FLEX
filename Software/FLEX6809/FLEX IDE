@@ -1,8 +1,17 @@
 
                  FLEX with IDE driver
 
+      This is the SD card software from PERIPHERAL TECHNOLOGY.
+      Michael Evenson rewrote it for the CPU09IDE card 
+      using the FLEXCMI.SYS version.
+      With tips from CS, I rewrote the READ and WRITE routines.
+      This gives roughly a 12-20% better performance.
+      I also split the file FLEXCMIx into 3 main parts:
+           FLEXCOR , {device}BOOT and CMI_IDE.
 
-This FLEX version consists of 4 parts.
+
+
+         This FLEX version consists of 3 main parts.
 
 1: FLEXxCOR.BIN is the FLEX.COR for use with IDE driver
 2: FLPBOOT.TXT is the drive descriptor for booting from a floppy disk
@@ -13,9 +22,23 @@ If you want to change the disk format
 you can edit and assemble the IDEBOOT.TXT and/or FLPBOOT.TXT
 
 Building FLEX.SYS
+  
+   BOOT on FLP
 
        +++APPEND FLEXxCOR.BIN FLPBOOT.BIN CMI_IDE.BIN FLEXFLP.SYS
-or
+
+or BOOT on SD
+
        +++APPEND FLEXxCOR.BIN IDEBOOT.BIN CMI_IDE.BIN FLEXIDE.SYS
 
+
+
 Don't forget to link the file.
+
+
+Remarks:
+     I have already included the GoTek FLEX......IMA files with this software 
+     and the rewritten utilities for it.
+
+
+CdeJ
