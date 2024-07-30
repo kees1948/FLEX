@@ -68,7 +68,16 @@ G         this should bring you back into flex
 All formats are supported in in SS and DS. And where DD is active
 track 0 has the proper # of sectors in SD.
 
-16-07-2024 
+2024-07-16 
     Added FLEX with IDE driver read "FLEX IDE".
     All software is now on all the GoTek FLEX....IMA files.
+
+2024-07-30
+    Updates:
+            "cmisbug5" to search for IDE boot sector.
+            "idefmt"   use sector-0 on IDE to boot.
+            "cmilink"  replace FLEX LINK on FLEX IDE, 
+                       link IDE on sector-0,
+                       link FLP on sector-1.
+            All the GoTek FLEX....IMA files.
 

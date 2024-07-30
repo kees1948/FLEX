@@ -32,8 +32,10 @@ or BOOT on SD
        +++APPEND FLEXxCOR.BIN IDEBOOT.BIN CMI_IDE.BIN FLEXIDE.SYS
 
 
+2024-07-30
+     Use 'idefmt.cmd' to format the IDE partions.
+     Don't forget to link the file with 'cmilink.cmd'.
 
-Don't forget to link the file.
 
 
 Remarks:
