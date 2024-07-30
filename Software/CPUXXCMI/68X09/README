@@ -19,6 +19,11 @@ CMIMON09 is a port of the famous MikBug ROM to an CPUXXCMI version for 6809.
        cmisbug4.bin  - version 1.4 with extra boot delay for GoTek on 16MHz card.
        cmisbug5.bin  - version 1.5 rearranged version 1.4 with IDE boot.
 
+2024-07-30
+
+       cmisbug5.bin  - version 1.5 
+                       Search for boot IDE on sector-0 or sector-1 or sector 1 and 2.
+                       Update to this last monitor when using the CMI_IDE software.
 
 
 CdeJ

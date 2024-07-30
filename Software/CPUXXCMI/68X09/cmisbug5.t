@@ -1,4 +1,4 @@
- name CMI_BUG (18) cpuxxcmi monitor 1.5
+nam CMI_BUG (18) cpuxxcmi monitor 1.5
  opt pag
  pag
 * monitor program for the cpu09xxx system
@@ -30,6 +30,10 @@
 * use DP speedup the IDE READ (2024-07-06) CAJ
 * rewrite the IDE READ (2024-07-08) CAJ
 * redo the PWRon delay (2024-07-08) CAJ
+*
+* modified the v1.5 to search boot sector (2024-07-29) CAJ
+* and fixed location DRIVE DESCRIPTOR
+
 
 *
 *       *** commands ***
@@ -74,14 +78,11 @@ HMASK RMB 1 Not used was HEAD MASK
 OFFSET RMB 2 Partition OFFSET - number of 16MB offsets
 DRVSIZ EQU *
 
-* ADDRESS DEFINITIONS FOR FLEX LOADER The first 5 bytes of the boot sector
-* contain a jump to threal start, a couple of $FF bytes and then the 
-* logical sector number of the start the FLEX image to load into memory.
-* This is an STX style file.
+* ADDRESS DEFINITIONS FOR FLEX LOADER
 
  ORG loader Address where SECTOR 1 LOADED
  
-WLDADR RMB 5 7E C0 16 FF FF
+WLDADR RMB 5 
 LTRKNO RMB 2 Logical sector to load FLEX from the IDE
 
 STACK1 EQU $C6FF START ADDRESS OF STACK
@@ -103,8 +104,7 @@ echo rmb 1 echo flag
 flpspd rmb 1 floppy data speed
 bptbl rmb 24 breakpoint table base addr
 cable rmb 1 cable type
-
-
+*
 acias equ $f004 control port
 *
 fdccmd equ $f100 command register
@@ -573,7 +573,6 @@ minboot bsr PWRon
  bmi set5 no - try PC cable type
  bra set1 yes - set straight thru type
  
-
 set5 lda #%00000101 drive 0 not found on straight cable
 set1 sta cable PC cable type
  ora #$30
@@ -587,15 +586,10 @@ minbo1 ldb flpspd 8/5"
 minbo2 jsr outch
  
 * drive select on cable, 1 = FLEX 5 = PC compatible
-
  lda flpspd
  ora #DSINGLE FLEX has SD boot only
  ora cable drive 0 or PC cable drive 1
  sta <fdcsel select drive 0
-
-* we have determined the cable type - now load the boot sector
-* delay before issuing restore command
-
  bsr Delay
  ldb <fdccmd
  bmi loop9
@@ -634,7 +628,7 @@ loop9 clra
 Delay ldb #3
 PDelay ldx #0
 loop leax 1,x
- tst fdcsel keep active
+ tst fdcsta keep active
  cmpx #0
  bne loop
  decb
@@ -1164,44 +1158,47 @@ WBOOT LDS #STACK1
  jsr PWRon for GoTek init
 
 * for debugging only
-
  ldaa #'C clear DMA
  bsr outchs
  
 * disable the DMA by clearing all of it's registers
- 
  ldx #DMAREGS point at the DMA registers
  ldab #16 set number of registers to clear
- ldaa #$0
+ clra
 clrdma staa 0,x+
  decb
  bne clrdma 
-
 * for debugging only
  ldaa #'I IDE Init call
  bsr outchs
- 
  ldd #$10 reset command
  std COMREG issue command
- 
  bsr IDEINIT
-
 * for debugging only
  ldaa #'L load boot sector
  bsr outchs
 
+ ldd #$0000 first boot sector 0 ?
+ bra sectr0
+sectr1
  ldd #$0001 first boot sector is sector 1
+sectr0
  ldx #WLDADR load address for boot sector
  bsr READ returns B = Error Code Z = 1 if no error
  tstb check for error code
  beq WBOOT3 no error - check for link present
- 
 WBOOT2 ldx #MSGWN2 error - report it
  bra WBTERR
-
-WBOOT3 ldd #$0002 second boot sector is sector 2
- ldx #WLDADR+256 load address for second boot sector
  
+WBOOT3
+ ldd WLDADR+1
+ cmpd #$F120 boot start code DP/BRA
+ bne sectr1 if not load sector 1
+ tst WLDADR+4 sector count
+ beq WBOOT4 no sector 2
+sectr2
+ ldd #$0002 second boot sector is sector 2
+ ldx #WLDADR+256 load address for second boot sector
  bsr READ returns B = Error Code Z = 1 if no error
  tstb check for error code
  bne WBOOT2 no error - check for link present
@@ -1213,11 +1210,9 @@ WBOOT4 LDD LTRKNO GET LINK ADDRES
  BEQ WBOOT5 Error
 
 * This will execute the boot sector code and laod FLEX into memory
-
 * for debugging only
  ldaa #'> transfer to boot sector code
  bsr outchs
-
  JMP WLDADR transfer to locator/loader
 
 outchs lbra outch long branch hub
@@ -1225,16 +1220,6 @@ outchs lbra outch long branch hub
 WBOOT5 LDX #MSGWN3 NOT LINKED MESSAGE
 WBTERR JSR pstrng
  JMP [$F802] JUMP TO nextcmd
-
-* DRIVE DESCRIPTOR (FOR BOOT ONLY)
-
-DESCRIP FCB 1 WINCHESTER
- FCB 0 HARDWARE DRIVE NUMBER
- FCB 0
- FCB 0
- FCB 0
- FCB 0
- FDB 0 TRACK OFFSET
 
 * get two bytes from the data register/ There will be one DRQ
 * for each 16 bits available at the data port. Since we only 
@@ -1297,30 +1282,29 @@ READ EQU *
 *
 * read a sector from the IDE interface
 *
-rdsect  bsr     TSKSET
-        clra    
-        ldb     #READCM
-        std     <COMREG
-        clr     0,-s            init bytecount
+rdsect bsr TSKSET
+ clra
+ ldb #READCM
+ std <COMREG
+ clr 0,-s init bytecount
 *
-rslop   ldd     <STATUS        read status
-        aslb                    shift bit 6 to 7
-        bcs     rslop           if not set keep going
-        ldd     <DATA           get word
-        stb     0,x+            use lower part
-        dec     0,s             update counter
-        bne     rslop
+rslop ldd <STATUS read status
+ aslb shift bit 6 to 7
+ bcs rslop if not set keep going
+ ldd <DATA get word
+ stb 0,x+ use lower part
+ dec 0,s update counter
+ bne rslop
 *
-        puls    a               empty stack
-        ldd     <STATUS
-        bitb    #1
-        beq     rddone
-        ldb     #$10            set error
-        sec
-        puls dp,pc
-rddone  clrb                    clear carry
-        puls dp,pc
-
+ puls a empty stack
+ ldd <STATUS
+ bitb #1
+ beq rddone
+ ldb #$10 set error
+ sec
+ puls dp,pc
+rddone clrb clear carry
+ puls dp,pc
 
  setdp 0
 
@@ -1343,23 +1327,19 @@ TSKSET PSHS D B gets pushed first
 * for debugging only
  ldaa #'. task register set
  bsr outchs
- 
  CLRA
  STD LBA00 Set LSB of LSN
-
  PULS B this will put A from D into B
  PULS A this will put B from D into A
  CLRA
  STD LBA08 Set MSB of LSN
 
 * the logical sector number is set - nwo add in the partition offset
-
  LDY DRVPTR point to descriptor
  LDAD OFFSET,Y get parttion number
  STD LBA16
 
 * and the drive select bits
-
  CLRA
  LDAB DRVNO,Y Get drive Number
  LSLB Put in corrent bit position
@@ -1368,7 +1348,6 @@ TSKSET PSHS D B gets pushed first
  LSLB
  ORB #$E0 Drive number + LBA Mode
  STD LBA24 Select Drive and LBA and upper 4 bits of LBA
-
  LDD #1 SET FOR ONE SECTOR READ/WRITE
  STD SECNT SET IDE REGISTER
  RTS
@@ -1381,8 +1360,18 @@ MSGWN3 FCC 'NOT LINKED'
  FCB $D,$A
  FCB 4
  
- org vectors-6 * jump to IDE READ
+ org vectors-14 Fixed locations
+* table DESCRIP
+* jump to IDE READ
 
+* DRIVE DESCRIPTOR (FOR BOOT ONLY)
+DESCRIP FCB 1 WINCHESTER
+ FCB 0 HARDWARE DRIVE NUMBER
+ FCB 0
+ FCB 0
+ FCB 0
+ FCB 0
+ FDB 0 TRACK OFFSET
 JMPINIT JMP IDEINIT
 JMPREAD JMP READ
 
@@ -1399,3 +1388,4 @@ JMPREAD JMP READ
  fdb v1 nmi-v
  fdb start restart-v
  end
+
