@@ -28,7 +28,10 @@ work, but in the area of breakpoints bugs may lurk.
   Resolved BREAKPOINT's.
   Change MINBOOT bootcodes.
 
+2024-07-21 Version 1.18.3
+   typos in dens
 
+ 
   Status:
       Version 1.18   Don't use it, to many bugs.
       Version 1.18.1 Don't use it, still to many bugs.

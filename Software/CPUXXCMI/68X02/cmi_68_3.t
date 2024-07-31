@@ -47,6 +47,9 @@
 *       resolved RPLSWI and FFSTBL
 *       change MINBOOT messages
 
+* AGAIN MODIFIED (2024-07-21) CAJ
+*       typos in dens
+
 *       *** COMMANDS ***
 
 * CONTROL A   = ALTER THE "A" ACCUMULATOR
@@ -74,7 +77,7 @@
 
 romstk equ $f7af
 loader equ $A100 Boot loader
-dens equ loader+7
+dens equ loader+4
 
  ORG $F7C0
 
