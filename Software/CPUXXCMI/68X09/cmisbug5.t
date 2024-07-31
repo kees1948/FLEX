@@ -1067,7 +1067,7 @@ start equ *
  tfr a,dp
  fcb $11,$3d,$03 set 63x09
 *
-* 0 1 2 3 4 5 6 7 8 9 a b c d e f
+*  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
 * 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k i/o,rom
 *
  lbra monitor initialization is complete
@@ -1098,6 +1098,7 @@ swi3e tfr s,u
 swi3z pulu a,b,x,cc,dp
  ldu 2,u
  jmp [swi3]
+
 *
 * this is the ROM part of the IDE boot loader to handle the 
 * W command. All it does is load the first sector of disk to
