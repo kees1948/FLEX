@@ -1,11 +1,13 @@
                  Latest software versions
+                       2024-08-05
 
 Updates:
        CMILINK  - 1.0
        CMISTEP  - 2.0
        DPACH    - 1
-       FDRIVES  - 1.1
-       IDEFMT   - 5.2
+       FDRIVES  - 1.2
+       IDEFMT   - 5.3
+       PLIST    - 1.1
        RBRDSK   - 1.0
        RBRDSKM  - 1.0
        VDISK    - 9.4
