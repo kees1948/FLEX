@@ -36,9 +36,18 @@ or BOOT on SD
      Use 'idefmt.cmd' to format the IDE partions.
      Don't forget to link the file with 'cmilink.cmd'.
 
+2014-08-05
+     Added 'plist.cmd' to add info about the partitions,
+     plist will use sector-1.
+     So 'idefmt.cmd' and 'cmilink.cmd' will now use sector-0 for the BOOT.
+     This BOOT loader will also check for the correct MONITOR.
+
 
 
 Remarks:
+     The latest CMISBUG5 monitor will boot an IDE first from sector-0 
+     if not found then from sector-1 or sector-1 and sector-2.
+     If you don't use 'plist', the old versions will still work.
      I have already included the GoTek FLEX......IMA files with this software 
      and the rewritten utilities for it.
 
