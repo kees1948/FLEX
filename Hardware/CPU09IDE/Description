@@ -1,0 +1,41 @@
+CPU09IDE for CPU09CMI
+
+Provides:
+* PIO mode
+* can serve SD/CF adaptor
+
+Description:
+The CPU09IDE card serves as a PIO driven interface for the CPU09CMI system with a SD disk. 4 22V10 GAL's serve as glue logic.
+It has a 40 pin connector that directly interfaces to the disk drive. The memory map of the card is 32 bytes of which the first 16
+correspond to the 8 registers that an IDE/PATA disk exposes. The access is 16 bits, but in PIO mode the upper 8 bits are discarded.
+The upper 16 bytes hold the 16 bit address register, the extended address and control register and a status register. 
+The card format is Eurocard (160x100mm) and has a DIN41612 a-c connector.
+
+All design data is released under GPL V3. Copyright (c) C. Schoenmakers 2019
+
+2019-10-14: populated and tested the board (rev 1.0), found 2 incorrect things. 
+1) the text irq and firq at the jumper location are swapped. For correct operation the jumper should sit on 'firq' (= irq).
+2) due to a labeling error on a pin a connection is missing, a wire between pin 6 of G4 to pin 15 of G3. This is easy to
+apply.
+
+I will place rev 1.0.1 soon where these things are corrected.
+
+So with the correction's the board works as expected.
+
+A short word about the jumpers. The interrupt jumper should be in the position as on the photo.
+The jumpers A/B/C determine the board base address. With all jumpers placed the address is $XX00. As the address size of
+the board is $20 we can place an IDE board at addresses XX00/XX20/XX40/XX60/XX80/XXA0/XXC0/XXE0. 
+FLEX, use DIV6 - F180.
+
+
+2020-11-29:
+
+I have ordered a reviewed design of the IDE board. When it arrives I will test it well and when found OK
+I will place the designfiles here with the modified GAL patterns too. I'll keep you posted!
+
+2020-12-05:
+
+The board works very nice. It provides better address decoding and also access to the CS3FX- registers.
+I added two LED's, one for DMA and one for IOP access. This version has all the known patches before this date 
+included.
+
