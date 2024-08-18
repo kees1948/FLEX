@@ -1,5 +1,5 @@
                  Latest software versions
-                       2024-08-05
+                       2024-08-18
 
 Updates:
        CMILINK  - 1.0
@@ -10,8 +10,8 @@ Updates:
        PLIST    - 1.1
        RBRDSK   - 1.0
        RBRDSKM  - 1.0
-       VDISK    - 9.4
-       VIRTUAL  - 9.4
+       VDISK    - 9.5
+       VIRTUAL  - 9.5
 
 
 Latest drivers:
@@ -19,7 +19,7 @@ Latest drivers:
        CMI_IDE  - IDE & FLP
 
 Latest monitor:
-       CMISBUG5 - 1.5
+       CMISBUG5 - 1.5 use the one after 2024-07-29
 
 
 
