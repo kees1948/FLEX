@@ -67,6 +67,9 @@ You can rename the IMA part 'BootName' in a FLEX disk name.
    Update the FLEX...SYS with rhe latest drivers and utils.
    Also put IDE software and RAM disk software.
 
+18-08-2024
+   Update the FLEX...SYS with VIRTUAL software for RAM backup voltage.
+
 
 Note:
     If you are on cmi_sbug version 1.1 you can boot 
