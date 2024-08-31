@@ -1,7 +1,8 @@
                  Latest software versions
-                       2024-08-18
+                       2024-08-31
 
 Updates:
+       BOOTON   - 2  
        CMILINK  - 1.0
        CMISTEP  - 2.0
        DPACH    - 1
@@ -10,8 +11,8 @@ Updates:
        PLIST    - 1.1
        RBRDSK   - 1.0
        RBRDSKM  - 1.0
-       VDISK    - 9.5
-       VIRTUAL  - 9.5
+       VDISK    - 9.6
+       VIRTUAL  - 9.6
 
 
 Latest drivers:
