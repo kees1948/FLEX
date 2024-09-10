@@ -39,7 +39,7 @@ At present the dip-switches have the following assigments:
     SW1-4,  ON  = FLEX 4MB disk
     SW1-3,  ON  = FLEX 8" DSDD
     SW1-2,  ON  = FLEX 5" DSDD
-    SW1-1,  ON  = Battery Low signal, Keep always ON
+    SW1-1,  OFF = Battery Low signal test, Keep always OFF
 
 [2024-04-23] The first board version (0.9.1) had still an error, the clocks to the address
 latches were in reverse order (lowbyte-highbyte).
