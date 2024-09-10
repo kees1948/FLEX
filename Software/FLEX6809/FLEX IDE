@@ -7,7 +7,7 @@
       With tips from CS, I rewrote the READ and WRITE routines.
       This gives roughly a 12-20% better performance.
       I also split the file FLEXCMIx into 3 main parts:
-           FLEXCOR , {device}BOOT and CMI_IDE.
+           FLEXCOR , {device}BOOT and CMI_IDE2.
 
 
 
@@ -16,7 +16,7 @@
 1: FLEXxCOR.BIN is the FLEX.COR for use with IDE driver
 2: FLPBOOT.TXT is the drive descriptor for booting from a floppy disk
 3: IDEBOOT.TXT is the drive description for booting from an IDE device
-4: CMI_IDE.BIN is the ide/flp driver
+4: CMI_IDE2.BIN is the ide/flp driver
 
 If you want to change the disk format
 you can edit and assemble the IDEBOOT.TXT and/or FLPBOOT.TXT
@@ -25,22 +25,25 @@ Building FLEX.SYS
   
    BOOT on FLP
 
-       +++APPEND FLEXxCOR.BIN FLPBOOT.BIN CMI_IDE.BIN FLEXFLP.SYS
+       +++APPEND FLEXxCOR.BIN FLPBOOT.BIN CMI_IDE2.BIN FLEXFLP.SYS
 
 or BOOT on SD
 
-       +++APPEND FLEXxCOR.BIN IDEBOOT.BIN CMI_IDE.BIN FLEXIDE.SYS
+       +++APPEND FLEXxCOR.BIN IDEBOOT.BIN CMI_IDE2.BIN FLEXIDE.SYS
 
 
 2024-07-30
      Use 'idefmt.cmd' to format the IDE partions.
      Don't forget to link the file with 'cmilink.cmd'.
 
-2014-08-05
+2024-08-05
      Added 'plist.cmd' to add info about the partitions,
      plist will use sector-1.
      So 'idefmt.cmd' and 'cmilink.cmd' will now use sector-0 for the BOOT.
      This BOOT loader will also check for the correct MONITOR.
+
+2024-09-10
+     CMI_IDE2.BIN Rewrite TSKSET in IDE driver.
 
 
 
