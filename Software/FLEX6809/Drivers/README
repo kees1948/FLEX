@@ -15,6 +15,8 @@
 
 6. cmi_ide.t  - cmi_io4B.t + ide driver
 
+7. cmi_ide2.t - cmi_io4B.t + ide driver
+
 
 The CMISTEP program changes in memory some driver settings.
 It checks the driver version and boot cable used and determines what you can change.
@@ -23,5 +25,7 @@ For driver 1, 2 and 3 it can change the step rate for all the drives.
 For driver 4 it can change the step rate for each drive.
 For driver 5 it can change the step rate and set double step for each drive.
 For driver 6 it can change the step rate and set double step for each floppy drive.
+For driver 7 it can change the step rate and set double step for each floppy drive.
+
 
 
