@@ -1,5 +1,5 @@
                  Latest software versions
-                       2024-08-31
+                       2024-09-13
 
 Updates:
        BOOTON   - 2  
@@ -11,8 +11,8 @@ Updates:
        PLIST    - 1.1
        RBRDSK   - 1.0
        RBRDSKM  - 1.0
-       VDISK    - 9.6
-       VIRTUAL  - 9.6  2024-09-09 change bit test
+       VDISK    - 9.7  skip protection?
+       VIRTUAL  - 9.7  autorun VDISK
 
 
 Latest drivers:
