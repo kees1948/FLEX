@@ -31,15 +31,15 @@ when done. This will prevent the SD-card to wear-out fast.
 
 At present the dip-switches have the following assigments:
 
-    SW2-4,  ON  = Format protection. Vdisk will not format.
-    SW2-3,  ON  = Reserve room for disk cache (SW1-4 must be OFF). 
-    SW2-2,  ON  = Try for 2 virtual drives if SW1-3 or SW1-2 is ON. 
-    SW2-1,  ON  = FLEX 512 byte pages, card present flag.
+    SW2-4,  ON = Format protection. Vdisk will not format.
+    SW2-3,  ON = Reserve room for disk cache (SW1-4 must be OFF). 
+    SW2-2,  ON = Try for 2 virtual drives if SW1-3 or SW1-2 is ON. 
+    SW2-1,  ON = FLEX 512 byte pages, card present flag.
 
-    SW1-4,  ON  = FLEX 4MB disk
-    SW1-3,  ON  = FLEX 8" DSDD
-    SW1-2,  ON  = FLEX 5" DSDD
-    SW1-1,  OFF = Battery Low signal test, Keep always OFF
+    SW1-4,  ON = FLEX 4MB disk
+    SW1-3,  ON = FLEX 8" DSDD
+    SW1-2,  ON = FLEX 5" DSDD
+    SW1-1,  ON = Battery low set, Off = Sense Battery low 
 
 [2024-04-23] The first board version (0.9.1) had still an error, the clocks to the address
 latches were in reverse order (lowbyte-highbyte).
