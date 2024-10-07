@@ -47,3 +47,7 @@ I corrected that in 0.9.5. The 0.9.1. boards can be fixed easily by 2 trace cuts
 
 Board version 0.9.5 has this fixed.
 
+[2024-09-25] 9 options for RAM standby voltage,
+             included UPS Battery standby.
+
+[2024-10-03] some UPS PCB design options.
