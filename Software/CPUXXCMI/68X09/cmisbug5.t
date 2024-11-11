@@ -1,4 +1,4 @@
-nam CMI_BUG (18) cpuxxcmi monitor 1.5
+ nam CMI_BUG  cpuxxcmi monitor 1.5
  opt pag
  pag
 * monitor program for the cpu09xxx system
@@ -34,6 +34,7 @@ nam CMI_BUG (18) cpuxxcmi monitor 1.5
 * modified the v1.5 to search boot sector (2024-07-29) CAJ
 * and fixed location DRIVE DESCRIPTOR
 
+* added io_space for 2K/4K rom (2024-11-11) CAJ
 
 *
 *       *** commands ***
@@ -62,7 +63,10 @@ nam CMI_BUG (18) cpuxxcmi monitor 1.5
 * s           = display stack from ssss to $7fc0
 * x           = remove all breakpoints
 
-romstk equ $f780
+*io_space equ $E000 4K rom
+io_space equ $F000 2K rom
+
+romstk equ io_space+$0780
 vectors equ $fff0
 loader equ $C100
 dens equ loader+4
@@ -88,7 +92,7 @@ LTRKNO RMB 2 Logical sector to load FLEX from the IDE
 STACK1 EQU $C6FF START ADDRESS OF STACK
 DRVPTR EQU $DE20 DESCRIPTOR POINTER
 
- org $F7C0
+ org io_space+$07C0
 
 stack rmb 2 top of internal stack / user vector
 trap rmb 2
@@ -105,14 +109,14 @@ flpspd rmb 1 floppy data speed
 bptbl rmb 24 breakpoint table base addr
 cable rmb 1 cable type
 *
-acias equ $f004 control port
+acias equ io_space+$0004 control port
 *
-fdccmd equ $f100 command register
-fdctrk equ $f101 drive register
-fdcsec equ $f102 sector register
-fdcdat equ $f103 data register
-fdcsel equ $f104 drive select
-fdcsta equ $f108 drive status
+fdccmd equ io_space+$0100 command register
+fdctrk equ fdccmd+1 drive register
+fdcsec equ fdccmd+2 sector register
+fdcdat equ fdccmd+3 data register
+fdcsel equ fdccmd+4 drive select
+fdcsta equ fdccmd+8 drive status
 fdbasp equ fdccmd/256
 *
 D5INCH equ %01000000
@@ -628,7 +632,7 @@ loop9 clra
 Delay ldb #3
 PDelay ldx #0
 loop leax 1,x
- tst fdcsta keep active
+ tst <fdcsta keep active
  cmpx #0
  bne loop
  decb
@@ -1067,7 +1071,7 @@ start equ *
  tfr a,dp
  fcb $11,$3d,$03 set 63x09
 *
-*  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+* 0 1 2 3 4 5 6 7 8 9 a b c d e f
 * 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k 4k i/o,rom
 *
  lbra monitor initialization is complete
@@ -1098,7 +1102,6 @@ swi3e tfr s,u
 swi3z pulu a,b,x,cc,dp
  ldu 2,u
  jmp [swi3]
-
 *
 * this is the ROM part of the IDE boot loader to handle the 
 * W command. All it does is load the first sector of disk to
@@ -1123,8 +1126,8 @@ swi3z pulu a,b,x,cc,dp
 
 * PORT DEFINITION
 
-BASADR EQU $F180 DIV6 in CPUXXCMI BOARD
-DMAREGS EQU $F190 the address of the IDE DMA registers
+BASADR EQU io_space+$0180 DIV6 in CPUXXCMI BOARD
+DMAREGS EQU io_space+$0190 the address of the IDE DMA registers
 
 * we will be using the drive in LBA mode - not track and sector mode
 * so the registers are LBA00, LBA08, LBA16 and LBA24
@@ -1361,10 +1364,11 @@ MSGWN3 FCC 'NOT LINKED'
  FCB $D,$A
  FCB 4
  
- org vectors-14 Fixed locations
-* table DESCRIP
-* jump to IDE READ
+ org vectors-16 Fixed locations
+* IO area
+ fdb io_space vector
 
+* table DESCRIP
 * DRIVE DESCRIPTOR (FOR BOOT ONLY)
 DESCRIP FCB 1 WINCHESTER
  FCB 0 HARDWARE DRIVE NUMBER
@@ -1373,6 +1377,8 @@ DESCRIP FCB 1 WINCHESTER
  FCB 0
  FCB 0
  FDB 0 TRACK OFFSET
+
+* jump to IDE READ
 JMPINIT JMP IDEINIT
 JMPREAD JMP READ
 
@@ -1389,4 +1395,3 @@ JMPREAD JMP READ
  fdb v1 nmi-v
  fdb start restart-v
  end
-
