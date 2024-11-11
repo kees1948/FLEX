@@ -28,8 +28,10 @@ This FLEX is a modified cmi_io4B.t version and is located on the disk:
 
 All software set for:
                      FDC = $E100
+                     IDE = $E180
                     ACIA = $E004
                    cable = $E7EE
+		    RAM card = $EC00
         Read/Write Track = $F000
                  Monitor = $F800
 
@@ -52,6 +54,7 @@ perhaps OS9 level 1.
 Works at all speeds, but tested with 16MHz GAL modification.
 
 13-06-2024 update GAL's for extra RAM to use CPU9RAM card for virtual disk.
+11-11-2024 update monitor ROM with latest version + IDE boot.
 
 
 CdeJ
