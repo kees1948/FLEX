@@ -40,9 +40,11 @@ Time & date:  09:00  Sept. 30, 2024
   2 HDR_3               HDR 1x3             HDR1X3              J1 
                                                                 J2
   1 DC JACK             2.1mm               JL-0804             J3
-  1 HDR-2               XH-2P               2.54mm male         JP1
-  1 HDR-2               XH-2P               2.54mm female       JP2
-  1 HDR_4               XH2.5               2.54mm male         JP3
+  1 HDR-2               PH-2.0  2 pin       2mm male            JP1
+                        XH-2.5P 2 pin       2.54mm male
+  1 HDR-2               PH-2.0P 2 pin       2mm female          JP2
+                        XH-2.5P 2 pin       2.45mm female
+  1 HDR_4               XH2.5   4 pin       2.54mm male         JP3
 
   1 BUTTON              SX 22               6x6x5mm 4pin        S1
 

@@ -51,3 +51,7 @@ Board version 0.9.5 has this fixed.
              included UPS Battery standby.
 
 [2024-10-03] some UPS PCB design options.
+
+(2024-11-11) 10 options for RAM standby.
+             SMD RAM UPS print use more copper for SMD chip.
+
