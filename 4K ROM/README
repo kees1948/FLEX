@@ -25,6 +25,7 @@ Read "The 4K ROM modification.pdf"
 
 This FLEX is a modified cmi_io4B.t version and is located on the disk:
                  cmi4Krom.DSDD77-8.IMA
+It also contains a working IDE tool set, FLEXIDE.sys and FLEXFLP.SYS 
 
 All software set for:
                      FDC = $E100
@@ -36,16 +37,19 @@ All software set for:
                  Monitor = $F800
 
 FLEX disk driver:
-     a part is on $E400,
-     Read and Write track are set in the ROM at $F000.
-
+     a part is on $E400 after the IO's.
+    
 Modified FLEX software:
          BOOTLOADER
-         IO/Disk driver
+         IO/Disk drivers
          FORMAT5.CMD
          FORMAT8.CMD
          BOOTON.CMD
          CMISTEP.CMD
+         IDEFMT.CMD
+         FDRIVES.CMD
+         PLIST.CMD
+         CMILINK.CMD
 
 This FLEX version was created to test the CPU09CMI 4K ROM card.
 The 4K ROM makes other operating systems possible, 
@@ -53,8 +57,9 @@ perhaps OS9 level 1.
          
 Works at all speeds, but tested with 16MHz GAL modification.
 
-13-06-2024 update GAL's for extra RAM to use CPU9RAM card for virtual disk.
-11-11-2024 update monitor ROM with latest version + IDE boot.
+13-06-2024 Update GAL's for extra RAM to use CPU9RAM card for virtual disk.
+14-11-2024 Update monitor ROM with latest software version + IDE boot.
+           Added modified IDE support tools.
 
 
 CdeJ
