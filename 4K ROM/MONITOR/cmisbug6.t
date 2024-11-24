@@ -1,4 +1,4 @@
- nam CMI_BUG  cpuxxcmi monitor 4.5
+ nam CMI_BUG  cpuxxcmi monitor x.6
  opt pag
  pag
 * monitor program for the cpu09xxx system
@@ -33,6 +33,11 @@
 *
 * modified the v1.5 to search boot sector (2024-07-29) CAJ
 * and fixed location DRIVE DESCRIPTOR
+*
+* added io_space for 2K/4K rom (2024-11-11) CAJ
+*
+* version 1.6 (2014-11-18) CAJ
+* force DP in bootloaders to monitor iospace 
 
 *
 *       *** commands ***
@@ -642,6 +647,8 @@ loop leax 1,x
  rts
 
 loop4 ldx #loader start boot code
+ lda #fdbasp
+ sta 1,x change DP in loader
  lda dens
  anda #$F0 remove drive
  ora cable corect drive nr.
@@ -1028,7 +1035,7 @@ msg1 fcb $0,$0,$0,$d,$a,$0,$0,$0 * 0, cr/lf, 0
  ELSE
  fcc '4'
  ENDIF
- fcc '.5 - '
+ fcc '.6 - '
  fcb 4
 msg2 fcc 'k' k + <cr/lf> + 3 nuls
  fcb $d,$a,$0,$0,$0,4 
@@ -1203,6 +1210,8 @@ WBOOT2 ldx #MSGWN2 error - report it
  bra WBTERR
  
 WBOOT3
+ lda #BASADR/256
+ sta WLDADR+1 set DP in loader
  ldd WLDADR+1
  cmpd #io_space+$120 boot start code DP/BRA
  bne sectr1 if not load sector 1
@@ -1372,7 +1381,9 @@ MSGWN3 FCC 'NOT LINKED'
  FCB $D,$A
  FCB 4
  
- org vectors-14 Fixed locations
+ org vectors-16 Fixed locations
+* IO area
+ fdb io_space vector
 
 * table DESCRIP
 * DRIVE DESCRIPTOR (FOR BOOT ONLY)

@@ -32,7 +32,7 @@ All software set for:
                      IDE = $E180
                     ACIA = $E004
                    cable = $E7EE
-		    RAM card = $EC00
+		     RAM card = $EC00
         Read/Write Track = $F000
                  Monitor = $F800
 
@@ -60,6 +60,23 @@ Works at all speeds, but tested with 16MHz GAL modification.
 13-06-2024 Update GAL's for extra RAM to use CPU9RAM card for virtual disk.
 14-11-2024 Update monitor ROM with latest software version + IDE boot.
            Added modified IDE support tools.
+20-11-2024 cleanup & speedup IDE calls in cmi_ide3
+           The image 'cmi4Krom.DSDD77-8.IMA' contains:
+               for CMISBUG5
+                   FLEX3.SYS     
+                   FLEXIDE.SYS needs 2 different SD cards
+                   FLEXFLP.SYS
+
+22-11-2024 cmisbug6+cmi_io6B or cmisbug6+cmi_ide6 will boot and run
+           floppy images and IDE on 2K monitor version 1.6 
+           and 4K monitor version 4.6 without reassembly.
+           The image 'cmi4Krom.DSDD77-8.IMA' contains:
+               for CMISBUG6
+                   FLEX6.SYS
+                   FLX6IDE.SYS needs only 1 SD card
+                   FLX6FLP.sys
+           It is now linked with FLX6FLP.SYS !
+
 
 
 CdeJ

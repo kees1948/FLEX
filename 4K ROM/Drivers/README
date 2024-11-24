@@ -1,0 +1,14 @@
+The drivers are split in parts.
+  $DE00 - $DFFF < diskdriver part-1
+  $E400 - $E4FF < diskdriver part-2
+  $E500 - $E5FF < Floppy read/write part
+  $E600 - $E6FF < IDE driver part
+
+The SD card needs a new bootloader.
+You can use DPACH to put BOOTSECT.HEX on sector 0
+or format the SD card with IDEFMT version 6.0 
+
+
+
+Note:
+     The drivers will work on  CMISBUG5 and CMISBUG6
