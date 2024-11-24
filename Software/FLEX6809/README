@@ -81,3 +81,6 @@ track 0 has the proper # of sectors in SD.
                        link FLP on sector-1.
             All the GoTek FLEX....IMA files.
 
+2024-11-23
+    New: "cmisbug6" runs all version 6 drivers and utils IO independent.
+
