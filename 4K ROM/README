@@ -32,7 +32,7 @@ All software set for:
                      IDE = $E180
                     ACIA = $E004
                    cable = $E7EE
-		     RAM card = $EC00
+                RAM card = $EC00
         Read/Write Track = $F000
                  Monitor = $F800
 
