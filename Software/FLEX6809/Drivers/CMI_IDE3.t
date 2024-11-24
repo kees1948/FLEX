@@ -99,8 +99,7 @@ drvstp fcb 0,0,0,0 step rate each drive
 WINSET pshs x 
  ldx DRVPTR 
  TST DISK,x 
- puls x 
- RTS 
+ puls X,PC
 *
 * SUBROUTINE: wait 
 *
@@ -177,16 +176,14 @@ l03f PULS A,B,PC
 *        (B) = Error Condition 
 * 
 *************************************************
-FREAD PSHS A,B,X,U 
- bsr WINSET
+FREAD bsr WINSET
  BEQ l13f floppy
 
 * do IDE stuff here
-
- PULS A,B,X,U
  JMP HREAD
  
-l13f LDAA #$03 
+l13f PSHS A,B,X,U 
+ LDAA #$03 
  STAA >retry 
  JSR >CHKRDY 
  BNE l04f 
@@ -215,16 +212,14 @@ l11f STAB 1,S
 not_ok ANDCC #$FB 
  RTS 
 
-FWRITE PSHS A,B,X,U 
- JSR WINSET 
+FWRITE JSR WINSET 
  BEQ l13a floppy
 
 * do IDE stuff here
-
- PULS A,B,X,U
  JMP HWRITE
  
-l13a LDAA #$03 
+l13a PSHS A,B,X,U 
+ LDAA #$03 
  STAA >retry 
 
 l13b LDD ,S 
@@ -304,7 +299,6 @@ DRV PSHS X save FCB
  BEQ drv01
 
 * do the IDE stuff here - nothing to do - it was done in REST1
-
  PULS X,PC 
  
 drv01 LDAA >cable check boot cable
@@ -372,16 +366,14 @@ drv02 bsr fndtrk get current data in >X
 * 
 *************************************************
 
-CHKRDY PSHS A,B,Y 
- JSR WINSET
+CHKRDY JSR WINSET
  BEQ chk01
 
 * do IDE stuff here
-
- PULS A,B,Y
  JMP HRDY
  
-chk01 CLR ,-S clear outer loop count
+chk01 PSHS A,B,Y 
+ CLR ,-S clear outer loop count
  LDY #$0000 
  ANDCC #$FE clc
 chk02 LDAA >fo2cmd get fdc status
@@ -705,8 +697,7 @@ DWARMS JMP RTS $E218
 *
 *******************************************************
 
-READ1 equ *
- pshs dp,b 
+READ1 pshs dp,b 
  ldb #basdp
  tfr b,dp Speedup -490 cpu cycles
  puls b
@@ -752,8 +743,7 @@ rddone clrb clear carry
 *
 *******************************************************
 
-WRITE1 equ *
- pshs dp,b
+WRITE1 pshs dp,b
  ldb #basdp
  tfr b,dp Speedup -490 cpu cycles
  puls b
@@ -823,11 +813,10 @@ RTS RTS
 *
 * OUTPUT IDE registers set
 *
-TSKSET pshs Y  Speedup -17 cpu cycles
- pshs A save
+TSKSET pshs A,Y  Speedup -17 cpu cycles
  CLRA
  STD SECNO Set LSB of LSN
- puls B get A in B
+ puls B get A in B, fix stack
  STD CYLLO Set MSB of LSN
 
 * the logical sector number is set - now add in the partition offset
@@ -866,8 +855,7 @@ GETPHYS PSHS A,X
  LDX #$DE22 DRVBEG
  ABX
  LDAB DRVNO,X get physical drive number
- PULS A,X
- RTS 
+ PULS A,X,PC
  
 *******************************************************
 * RESTORE COMMAND 
@@ -893,9 +881,8 @@ REST1 PSHS X
  LDX #$DE22 DRVBEG
  ABX
  STX DRVPTR
- PULS X
  CLRB No error
- RTS 
+ puls X,PC
 
 *******************************************************
 *
@@ -941,7 +928,6 @@ DCOLD LDD STATUS Get status
 
 * This would be a good place to insert time out code
 * and print a message if no drive plugged in
-
  RTS
 
 *******************************************************
@@ -960,7 +946,7 @@ DCOLD LDD STATUS Get status
 *******************************************************
 
 * For this driver, it means the DRVPTR must be set so
-* READ/WRITE works on the correct drive.
+* READWRITE works on the correct drive.
 * DRVPTR IS TO BE SET BY "DISK.TXT" DRIVER THAT
 * IS LOCATED IN SPACE RESERVER FOR FLOPPY DRIVERS
 * IN FLEX.
@@ -975,11 +961,11 @@ DCOLD LDD STATUS Get status
 DRVSL1 bsr REST1
  RTS
 
-FAILMSG FCC 'LOAD FAILED'
- FCB 4
+*FAILMSG FCC 'LOAD FAILED'
+* FCB 4
 
-FAIL LDX #FAILMSG
- JSR [PDATA]
- JMP [$F800] RESTART PTMON
+*FAIL LDX #FAILMSG
+* JSR [PDATA]
+* JMP [$F800] RESTART PTMON
 
  END FLEX cold start

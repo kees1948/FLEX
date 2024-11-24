@@ -16,7 +16,7 @@
 1: FLEXxCOR.BIN is the FLEX.COR for use with IDE driver
 2: FLPBOOT.TXT is the drive descriptor for booting from a floppy disk
 3: IDEBOOT.TXT is the drive description for booting from an IDE device
-4: CMI_IDE2.BIN is the ide/flp driver
+4: CMI_IDE3.BIN is the ide/flp driver
 
 If you want to change the disk format
 you can edit and assemble the IDEBOOT.TXT and/or FLPBOOT.TXT
@@ -25,11 +25,11 @@ Building FLEX.SYS
   
    BOOT on FLP
 
-       +++APPEND FLEXxCOR.BIN FLPBOOT.BIN CMI_IDE2.BIN FLEXFLP.SYS
+       +++APPEND FLEXxCOR.BIN FLPBOOT.BIN CMI_IDE3.BIN FLEXFLP.SYS
 
 or BOOT on SD
 
-       +++APPEND FLEXxCOR.BIN IDEBOOT.BIN CMI_IDE2.BIN FLEXIDE.SYS
+       +++APPEND FLEXxCOR.BIN IDEBOOT.BIN CMI_IDE3.BIN FLEXIDE.SYS
 
 
 2024-07-30
@@ -43,7 +43,7 @@ or BOOT on SD
      This BOOT loader will also check for the correct MONITOR.
 
 2024-09-10
-     CMI_IDE2.BIN Rewrite TSKSET in IDE driver.
+     CMI_IDE3.BIN cleanup/speedup IDE calls.
 
 
 
@@ -54,5 +54,6 @@ Remarks:
      I have already included the GoTek FLEX......IMA files with this software 
      and the rewritten utilities for it.
 
+     The CMISBUG6 monitor and the CMI_IO6B / CMI_IDE6 will use IO indepen
 
 CdeJ

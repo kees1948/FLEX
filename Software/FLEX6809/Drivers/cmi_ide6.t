@@ -2,18 +2,28 @@
  NAM IDE & FLP DISK DRIVER
  PAG
 
-* Last modified 11-11-2024 CAJ
+* Last modified 18-11-2024 CAJ
+* all IO use DP register
+* runs on cmisbug6 in 2K and 4K rom
+*
+* $DE00-$DFFF floppy driver 1e part
+* $E400-$E4FF floppy driver 2e part
+* $E500-$E5FF floppy read/write
+* $E600-$E6FF IDE driver
+
  lib iospace.h
+dr_shift set $E400 always split CMI_IDE6
 
 * extern pointers
 FLEX  equ $CD00 FLEX cold start
 prcnt equ $CC34 spooler
-cable equ io_space+$07EE cable type
 PDATA equ $FC08 cmisbug print string
 STACK1 equ $C6FF start address of stack
+m_vector equ $FFE0
+cable equ io_space+$07EE cable type
+
 
 * The CPUXXCMI system has the IDE driver located at $E200
-
 HREAD equ dr_shift+$0200 -- READ JMP READ1
 HWRITE equ dr_shift+$0203 -- WRITE JMP WRITE1
 HVERIF equ dr_shift+$0206 -- VERIFY JMP VER1
@@ -41,22 +51,22 @@ fo4sta equ fdcbas+8 fdc status buffer
 fo2trg equ fdcbas+12 scope trigger @ this address
 
 *************************************************
-* 
+*
 * I/O Vector Table 
-* 
+*
 *************************************************
 
  ORG $DE00
 
-LDE00 JMP >FREAD 
-LDE03 JMP >FWRITE 
+DREAD JMP >FREAD 
+DWRITE JMP >FWRITE 
 FVERIFY JMP >Verify 
 FRESTOR JMP >RST 
 SELECT JMP >DRV 
 CHECK JMP >CHKRDY 
 QCHECK JMP >CHKRDY 
 DRINIT JMP >DRVINIT 
-WINITD JMP >ret 
+WINITD JMP >SetDP get DP from monitor
 SEEKIT JMP >SEEK 
  FDB $0000 
 DRVPTR FDB DRVBEG INIT TO FIRST DRIVE 
@@ -78,7 +88,6 @@ lside fcb $00
 ldens fcb $00
 
 * just for drive in operation
-
 curdrv fcb $00
 cursid fcb $00
 curdns fcb $00
@@ -88,21 +97,24 @@ hltdel fcb $0 HLT delay
 double fcb $0 double step
 
 * next 3 items have fixed place
-
 drvtrk fcb 0,0,0,0
 drvsec fcb 0,0,0,0
 drvstp fcb 0,0,0,0 step rate each drive
 
+C_cable fdb cable indirect cable location
+drvDP fcb fdbasp indirect DP
+
+ setdp fdbasp setdp for floppy driver
+
 * WINCHESTER CHECK SET-UP
 * see if the drive number has been assigned to an IDE partition
-
 WINSET pshs x 
  ldx DRVPTR 
  TST DISK,x 
- puls x 
- RTS 
+ puls X,PC
+
 *
-* SUBROUTINE: wait 
+* SUBROUTINE: wait DP set in calling subs
 *
 * ENTRY: 
 * EXIT: 
@@ -111,10 +123,10 @@ wait TST >prcnt
  BEQ wait1 
  SWI3 
  NOP 
-wait1 LDAB >fo4sta 
+wait1 LDAB <fo4sta 
  BITB #$40 
  BEQ wait1 
- LDAB >fo2cmd 
+ LDAB <fo2cmd 
  ANDB #$99 
  RTS 
 
@@ -131,62 +143,64 @@ wait1 LDAB >fo4sta
 *              0 if an error 
 * 
 *************************************************
-SEEK PSHS A,B save calling regs
- JSR >setdsk 
- LDD ,S 
- STAB >fo2sec 
- CMPA >fo2trk offset to track register 
+SEEK PSHS A,B,DP save calling regs
+ ldaa drvDP
+ tfr A,DP
+ lda ,S recover track
+ JSR >setdsk read track/sector from his stack
+ LDD ,S track/sector
+ STAB <fo2sec 
+ CMPA <fo2trk offset to track register 
  BEQ l03f 
  ldb double
  bitb #%00010000 double step
  beq skip1 no - 
- 
- ldb fo2trk yes - logical track#
+ ldb <fo2trk yes - logical track#
  aslb *2
- stb fo2trk physical track#
+ stb <fo2trk physical track#
  asla 
  
-skip1 STAA >fo2dat 
+skip1 STAA <fo2dat 
  LDAA #$18 
  ora dskstp add step rate
- STAA >fo2cmd 
+ STAA <fo2cmd 
  BSR wait 
  
  ldb double
  bitb #%00010000 double step
  beq skip2
- ldb fo2trk physical track#
+ ldb <fo2trk physical track#
  asrb /2
- stb fo2trk logical track#
+ stb <fo2trk logical track#
  
-skip2 ldb fo2cmd
+skip2 ldb <fo2cmd
  andb #%10011001
  
-l03f PULS A,B,PC 
+l03f PULS A,B,DP,PC 
 
 *************************************************
-* 
+*
 * READ - Read a Sector 
-* 
+*
 * Entry - (A) = Track Number 
 *         (B) = Sector Number 
 *         (X) = Where to Place Data 
-* 
+*
 * Exit - (Z) = 1 if no error 
 *              0 if an error 
 *        (B) = Error Condition 
-* 
+*
 *************************************************
-FREAD PSHS A,B,X,U 
- bsr WINSET
+FREAD bsr WINSET
  BEQ l13f floppy
 
 * do IDE stuff here
-
- PULS A,B,X,U
- JMP HREAD
+ JMP READ1 HREAD
  
-l13f LDAA #$03 
+l13f PSHS A,B,DP,X,U
+ ldaa drvDP
+ tfr A,DP
+ LDAA #$03 
  STAA >retry 
  JSR >CHKRDY 
  BNE l04f 
@@ -195,13 +209,13 @@ l3b LDD ,S restore track/sector/data loc
  BNE l04f 
  JSR >setlatch 
  LDAB >ltcopy 
- STAB >fo4lat 
- LDU 2,S buffer address 
+ STAB <fo4lat 
+ LDU 3,S buffer address (X)
  LDAA #$88 
  JSR >frdblk do the read 
  BNE l04f 
  
- PULS A,B,X,U 
+ PULS A,B,DP,X,U
 ok ORCC #$04 
 ret RTS 
 
@@ -209,85 +223,97 @@ l04f BITB #$10
  BEQ l11f 
  JSR >trymode 
  BNE l3b 
-l11f STAB 1,S 
- PULS A,B,X,U 
+l11f STAB 1,S status in (B)
+ PULS A,B,DP,X,U
  
 not_ok ANDCC #$FB 
  RTS 
 
-FWRITE PSHS A,B,X,U 
- JSR WINSET 
+************************************************
+*
+*  WRITE - Read a Sector
+*
+*  Entry - (A) = Track Number
+*          (B) = Sector Number
+*          (X) = Where to Get Data
+*
+*   Exit - (Z) = 1 if no error
+*                0 if an error
+*          (B) = Error Condition
+*
+************************************************
+FWRITE JSR WINSET 
  BEQ l13a floppy
 
 * do IDE stuff here
-
- PULS A,B,X,U
- JMP HWRITE
+ JMP WRITE1 HWRITE
  
-l13a LDAA #$03 
+l13a PSHS A,B,DP,X,U
+ ldaa drvDP
+ tfr A,DP
+ LDAA #$03 
  STAA >retry 
 
-l13b LDD ,S 
+l13b LDD ,S track/sector
  JSR >CHKRDY 
  BNE w04f 
  JSR >SEEK seek to right track 
- BNE w11f if seek error 
- 
+ BNE w11f if seek error  
  JSR >setlatch 
  LDAB >ltcopy 
- STAB >fo4lat 
- LDU 2,S buffer address 
+ STAB <fo4lat 
+ LDU 3,S buffer address (X)
  LDAA #$A8 
  JSR >fwrblk do the write 
  BNE w04f 
  
- PULS A,B,X,U 
+ PULS A,B,DP,X,U 
  BRA ok 
 
 w04f JSR >trymode 
  BNE l13b 
  
-w11f STAB 1,S 
- PULS A,B,X,U 
+w11f STAB 1,S status (B)
+ PULS A,B,DP,X,U 
  BRA not_ok 
 
 *************************************************
-* 
+*
 * Verify - Check For CRC Errors 
-* 
+*
 * Exit - (Z) = 1 if no error 
 *              0 if an error 
 *        (B) = Error Condition 
-* 
+*
 *************************************************
-
-Verify JMP >ok 
+Verify JMP >ok
 
 *************************************************
-* 
+*
 * RST - Seek to Track 00 
-* 
+*
 * Entry - (X) = FCB Address 
-* 
+*
 * Exit - (Z) = 1 if no error 
 *              0 if an error 
 *        (B) = Error Condition 
-* 
+*
 *************************************************
-
-RST PSHS X save the FCB
- BSR DRV select the drive 
+RST PSHS DP,X save the FCB
+ ldaa drvDP
+ tfr A,DP
+ BSR DRV select the drive
  LDAA #$08 floppy reset command
- STAA >fo2cmd reset the floppy
+ STAA <fo2cmd reset the floppy
  JSR >wait wait before checking for finished
- LDAB >fo2cmd get status
+ LDAB <fo2cmd get status
  BITB #$D8 check for errors
- PULS X,PC return
+ PULS DP,X,PC return
  
 *************************************************
-* 
-* DRV - Select a Drive 
-* 
+*
+* DRV - Select a Drive
+*
 * Entry - (X) = FCB Address 
 * 
 * Exit - (B) = $0F if non-existant drive 
@@ -296,24 +322,22 @@ RST PSHS X save the FCB
 *              0 is an error 
 *        (C) = 0 if no error 
 *              1 is an error 
-* 
+*
 *************************************************
-DRV PSHS X save FCB
+DRV PSHS DP,X save FCB
  JSR REST1 this will set DRVPTR properly
  JSR WINSET
  BEQ drv01
 
 * do the IDE stuff here - nothing to do - it was done in REST1
-
- PULS X,PC 
+ PULS DP,X,PC
  
-drv01 LDAA >cable check boot cable
+drv01 LDAA [C_cable] check boot cable
  CMPA #$05 PC cable?
  BNE drv04 
  LDAA 3,X get drive number
  
 * now we need to get the physical drive number
-
  CMPA #$01 max 2 drives PC cable
  BLS drv02 valid drive number
  BRA drv0F 
@@ -323,21 +347,20 @@ drv04 LDAA 3,X get drive number
  CMPB #$03 max 4 drives
  BLS drv02 
 
-* illegal drive
- 
+* illegal drive 
 drv0F ldab #$0F set error
  orcc #$01 
- puls X,PC 
+ puls DP,X,PC
 
 * save drive information for previously selected floppy drive.
-
-drv02 bsr fndtrk get current data in >X
+drv02 ldab drvDP
+ tfr B,DP
+ bsr fndtrk get current data in >X
  staa >curdrv save new drive (logical)
- ldab >fo2trk current track
+ ldab <fo2trk current track
  stab ,X save it
  ldab >dskidx 
  stab 4,X 
-
  bsr fndtrk get data for new drive X=>drvtrk
 
  lda 8,x get more data new drive
@@ -349,42 +372,40 @@ drv02 bsr fndtrk get current data in >X
  lda 8,x 
  anda #%00001000 HLT delay bit
  sta hltdel set HLT status
- 
  ldab ,X get more data new drive
- stab >fo2trk double step bit set
+ stab <fo2trk double step bit set
  ldab 4,X set double step status
  stab >dskidx 
  
  jsr >setlatch lower 2 bits step rate
  clra 
- puls X,PC 
+ puls DP,X,PC 
 
 *************************************************
-* 
+*
 * CHKRDY - Check for Drive Ready 
-* 
+*
 * Entry - (X) = FCB Address 
 * 
 *         (Z) = 1 if drive ready 
 *               0 if not ready 
 *         (C) = 0 if drive ready 
 *               1 if not ready 
-* 
+*
 *************************************************
-
-CHKRDY PSHS A,B,Y 
- JSR WINSET
+CHKRDY JSR WINSET
  BEQ chk01
 
 * do IDE stuff here
-
- PULS A,B,Y
  JMP HRDY
  
-chk01 CLR ,-S clear outer loop count
+chk01 PSHS A,B,DP,Y
+ ldaa drvDP
+ tfr A,DP
+ CLR ,-S set & clear outer loop count
  LDY #$0000 
  ANDCC #$FE clc
-chk02 LDAA >fo2cmd get fdc status
+chk02 LDAA <fo2cmd get fdc status
  BITA #$80 is the NOT READY bit set? 
  BPL chk03 no - controller is ready
 *
@@ -400,28 +421,24 @@ chk02 LDAA >fo2cmd get fdc status
  ORCC #$01 set the carry bit in the CCR
  BRA chkr01 return
 
-chk03 PULS B 
-chkr01 PULS A,B,Y,PC 
+chk03 PULS B fix the stack
+chkr01 PULS A,B,DP,Y,PC 
 
 fndtrk LDX #drvtrk 
  LDAB >curdrv 
  ABX 
  RTS 
 
- IF dr_shift>$E000
    ORG dr_shift
- ENDIF
-
 
 dsktyp FCB $0A,$0A,$00,$40,$0A,$12,$01,$40
  FCB $0F,$0F,$00,$00,$0F,$1A,$01,$00
 
-*******************************************************
+*************************************************
 *
 * trymode, change disk settings
 *
-*******************************************************
-
+*************************************************
 trymode PSHS B 
  LDAB >retry 
  BEQ trym00 set zero 
@@ -437,12 +454,11 @@ trym01 STAB >dskidx
  LDAB #$FF 
 trym00 PULS B,PC 
 
-*******************************************************
+*************************************************
 *
 * record not found, figure out side/dens for disk
 *
-*******************************************************
-
+*************************************************
 setdsk PSHS A,B,X track/sector info 
  LDAB >dskidx size is checked elsewhere 
  LDX #dsktyp 
@@ -455,58 +471,52 @@ setdsk PSHS A,B,X track/sector info
  STAB >cursid 5/8 inch 
  
 * track zero test
- 
- TST ,S track zero? 
+ TST ,S track zero? (A)
  BEQ tst5s1 
  
 * 5"/8"
- 
  LDAA >curdns 
  ANDA #%00000001 #$01
  STAA >ldens 
- LDAB 1,S get sector 
+ LDAB 1,S get sector (B)
  CMPB 1,X non track zero max sec/track 
 tst5s5 BLS tst5s3 toggle dens 
 
 * 5"/8" SD side 1
-
  LDAA #%00000001 Side 1 
  BRA tst5s2 
 
 * 5"/8" side 0
-
 tst5s3 CLRA 
 tst5s2 STAA >lside 
  BRA tstd01 
 
 * track == zero
-
 tst5s1 CLR >ldens 
- LDAB 1,S 
+ LDAB 1,S get sector (B)
  CMPB ,X 
 * select proper side
  BRA tst5s5 
 
 tstd01 PULS A,B,X,PC 
 
-*******************************************************
+*************************************************
 * setlatch
-*******************************************************
-setlatch PSHS A,B 
+*************************************************
+setlatch PSHS A,B DP set by calling subs
  LDAA >cursid 
  ANDA #%01000000 retain 5/8 info $40
  TST >ldens 
- BNE stl02 
- 
+ BNE stl02  
  ORAA #%00100000 set single dens $20
+
 stl02 TST >lside 
- BEQ sts02 
- 
+ BEQ sts02  
  ORAA #%00010000 set side 1 $10
-sts02 LDAB >cable check boot cable
+
+sts02 LDAB [C_cable] check boot cable
  CMPB #$05 PC cable?
  BNE stl00 no - do straight thru cable
- 
  LDAB >curdrv set lower 4 bits drive PC cable
  BEQ st203 
  
@@ -517,28 +527,41 @@ st203 ORAA #%00000101 set drive 0 on PC cable $05
  BRA stl05 
 
 stl00 LDAB >curdrv set lower 4 bits for drive select!
-
  PSHS A save A - has bits for latch
  TBA put logical drive number in A
  JSR GETPHYS B will now have physical number
  PULS A restor A - bits for latch
- 
  LDX #drvtab Straight cable drive table
  ABX entry
  ORAA ,X get drive bits
  
-stl05 STAA >fo4lat select the drive
+stl05 STAA <fo4lat select the drive
  STAA >ltcopy 
  PULS A,B,PC 
  
-DRVINIT LDX #curdrv clear variables
+DRVINIT bsr SetDP 
+ LDX #curdrv clear variables
  RTS 
 
 drvtab FCB $01,$02,$04,$08
 
+SetDP clrb
+ lda #$E0 set IO 4K rom
+ cmpd m_vector
+ beq fndDP
+ lda #$F0 set IO 2K rom
+ cmpd m_vector
+ bne asmDP Wrong monitor! Use asmb data!
+fndDP inca
+ sta drvDP set DP from monitor vector
+ ldx m_vector
+ leax cable&$FFF,x correct IO cable entry
+ stx C_cable set cable type location
+asmDP rts all pointers set
+
  ORG dr_shift+$0100
 
-*******************************************************
+*************************************************
 * read
 *
 * code routine, to read one dataset from FDC
@@ -550,12 +573,10 @@ drvtab FCB $01,$02,$04,$08
 * drive select, density and such alreay set up
 * time out from INT fdc
 *
-*******************************************************
-
+*************************************************
 frdblk PSHS DP,X,U save the direct page register
- ldb #fdbasp set it to point to the floppy controller
+ ldb drvDP set it to point to the floppy controller
  TFR B,DP direct page register now points to the floppy controller
- setdp fdbasp
  LDAB #31 set delay outside counter
  LDX #0 set delay inside counter
  STAA <fo2cmd set the command in the floppy command register
@@ -581,8 +602,7 @@ frb97 LDAB <fo2cmd
  BITB #$9F 
  PULS DP,X,U,PC 
 
-
-*******************************************************
+**************************************************
 * write
 *
 * code routine, to write one dataset to the FDC
@@ -593,10 +613,9 @@ frb97 LDAB <fo2cmd
 * drive select, density and such alreay set up
 * time out from INT fdc
 *
-*******************************************************
-
+**************************************************
 fwrblk PSHS DP,X,U 
- ldb #fdbasp
+ ldb drvDP
  TFR B,DP 
  STAA <fo2cmd 
  ORCC #$50 
@@ -610,7 +629,7 @@ fwb03 LDAA <fo4sta get floppy status
  LDAB <fo2cmd 
  BITB #$DF 
  PULS DP,X,U,PC 
- setdp 0 reset dp 
+ setdp 0
 
 * FOR SWTPC/6809 ROM ADDRESS $E800
 * WINCHESTER DISK DRIVER FOR WD1002-HD0 CONTROLLER
@@ -618,11 +637,13 @@ fwb03 LDAA <fo4sta get floppy status
 * COPYRIGHT 1984 PERIPHERAL TECHNOLOGY
 * ALL RIGHTS RESERVED
 *
-* LAST CHANGE 5/25/85 for the WD1002 Origional Code
+* LAST CHANGE 05/25/85 for the WD1002 Origional Code
 * LAST CHANGE 10/22/21 14:32
-* LAST CHANGE 5/29/2024 modified for use with CPUXXCMI
-* LAST CHANGE 7/11/2024 rewrite the READ & WRITE (CAJ)
-* LAST CHANGE 9/10/2024 rewrite the TSKSET (CAJ)
+* LAST CHANGE 05/29/2024 modified for use with CPUXXCMI
+* LAST CHANGE 07/11/2024 rewrite the READ & WRITE (CAJ)
+* LAST CHANGE 09/10/2024 rewrite the TSKSET (CAJ)
+* LAST CHANGE 18/11/2024 All DP IO use(CAJ)
+
 
 * This version will only work with the CPU09IDE baord
 * since it uses 16 bit access to the controller
@@ -647,11 +668,9 @@ OFFSET equ HMASK+1 Partition OFFSET - number of 16MB offsets
 DRVSIZ equ OFFSET+2 EQU * DESCRIPTOR SIZE 
 
 * FLOPPY DRIVER EQUATES
-
 version EQU $DE20 DESCRIPTOR POINTER
 
 * PORT DEFINITION FOR IDE
-
 BASADR EQU io_space+$0180 CPU09IDE board in CPUXXCMI system
 basdp EQU BASADR/256
 
@@ -668,12 +687,12 @@ COMREG EQU BASADR+14 COMMAND REGISTER
 idestat equ BASADR+24 alternative status
 
 * COMMAND DEFINITIONS FOR IDE
-
 READCM EQU $20 READ COMMAND
 WRTCMD EQU $30 WRITE COMMAND
 
  PAG
  ORG dr_shift+$0200 FOR CPUXXCMI
+ setdp basdp setdp for ide driver
 
 * DISK JUMP TABLE
 *
@@ -690,7 +709,7 @@ QDRRDY JMP CDRR1 $E212
 DCOLDS JMP DCOLD $E215
 DWARMS JMP RTS $E218
 
-*******************************************************
+*************************************************
 * READ SECTOR COMMAND IDE
 *
 * Entry
@@ -703,18 +722,15 @@ DWARMS JMP RTS $E218
 *     Z - 1 if no error
 *     Z - 0 if an error
 *
-*******************************************************
-
-READ1 equ *
- pshs dp,b 
- ldb #basdp
+*************************************************
+READ1 pshs dp,b 
+ ldb drvDP
  tfr b,dp Speedup -490 cpu cycles
  puls b
- setdp basdp
 rdsect bsr TSKSET
  ldd #READCM
  std <COMREG
- clr 0,-s init bytecount
+ clr 0,-s init bytecount on stack
 
 rslop ldd <STATUS READ STATUS (actual status will be in B)
  aslb check for DRQ
@@ -722,10 +738,10 @@ rslop ldd <STATUS READ STATUS (actual status will be in B)
 
  ldd <DATA get word
  stb 0,x+ use lower part
- dec 0,s update counter
+ dec 0,s update bytecounter
  bne rslop
 
- puls a empty stack
+ puls a fix stack
  ldd <STATUS
  bitb #1 
  beq rddone
@@ -734,9 +750,8 @@ rslop ldd <STATUS READ STATUS (actual status will be in B)
  puls dp,pc
 rddone clrb clear carry
  puls dp,pc
- setdp 0
 
-*******************************************************
+*************************************************
 * WRITE COMMAND IDE
 *
 *
@@ -750,18 +765,15 @@ rddone clrb clear carry
 *
 * all controller access MUST be 16 bit
 *
-*******************************************************
-
-WRITE1 equ *
- pshs dp,b
- ldb #basdp
+*************************************************
+WRITE1 pshs B,DP
+ ldb drvDP
  tfr b,dp Speedup -490 cpu cycles
- puls b
- setdp basdp
+ puls B
 wrsect bsr TSKSET
  ldd #WRTCMD GET WRITE COMMAND
  std <COMREG
- clr 0,-s init bytecount
+ clr 0,-s init bytecount on stack
 *
 wrlop ldd <STATUS READ STATUS (actual status will be in B)
  aslb check for DRQ
@@ -769,10 +781,10 @@ wrlop ldd <STATUS READ STATUS (actual status will be in B)
  ldb 0,x+ get lower part
  std <DATA save word
 
- dec 0,s update counter
+ dec 0,s update bytecounter
  bne wrlop
 *
- puls a empty stack
+ puls a fix stack
 wrstat ldd <STATUS
  bitb #$80
  bne wrstat
@@ -784,21 +796,20 @@ wrstat ldd <STATUS
 wrdone ldb <ERROR set error
  sec
  puls dp,pc
- setdp 0
 
-*******************************************************
+*****************************************************
 * VERIFY DISK DRIVER 
 *
 *
 * The sector just written is to be verified.
 * This routine only called immediately after a write
-* 
+*
 * Entry
 *      No parameters are given
 * Exit
 *     X,A may be destroyed
 *     B - Error code - 0=none
-*******************************************************
+*****************************************************
 
 * warning warning Will Robinson 
 * ---- IT PROBABLY DOESN'T WORK ----
@@ -809,13 +820,14 @@ wrdone ldb <ERROR set error
 VER1 CLRB --- EXIT - ROUTINE NOT VIABLE
 RTS RTS
 
-*******************************************************
+*************************************************
 * TASK SET-UP ROUTINE 
 * Entry
 *     X - Address to place sector - 256 bytes
 *     A - Sector Number
 *     B - Track Number
-*******************************************************
+*    DP - set by calling subs
+*************************************************
 *
 * INPUT D = 16 BIT LOGICAL SECTOR NUMBER WITHIN THE PARTITION
 * 
@@ -823,21 +835,18 @@ RTS RTS
 *
 * OUTPUT IDE registers set
 *
-TSKSET pshs Y  Speedup -17 cpu cycles
- pshs A save
+TSKSET pshs A,Y  Speedup -17 cpu cycles
  CLRA
- STD SECNO Set LSB of LSN
- puls B get A in B
- STD CYLLO Set MSB of LSN
+ STD <SECNO Set LSB of LSN
+ puls B get A in B, fix stack
+ STD <CYLLO Set MSB of LSN
 
 * the logical sector number is set - now add in the partition offset
-
  LDY DRVPTR point to descriptor
  LDAD OFFSET,Y get parttion number
- STD CYLHI
+ STD <CYLHI
 
 * and the drive select bits
-
  CLRA
  LDAB DRVNO,Y Get drive Number
  LSLB Put in corrent bit position
@@ -845,42 +854,40 @@ TSKSET pshs Y  Speedup -17 cpu cycles
  LSLB
  LSLB
  ORB #$E0 Drive number + LBA Mode
- STD SDH Select Drive and LBA and upper 4 bits of LBA
+ STD <SDH Select Drive and LBA and upper 4 bits of LBA
 
  LDD #1 SET FOR ONE SECTOR READ/WRITE
- STD SECNT SET IDE REGISTER
+ STD <SECNT SET IDE REGISTER
  puls Y,PC
  
-*******************************************************
+**************************************************
 * GETPHYS ROUTINE
 *
 * Entry
 *     A - contains logical drive number
 * Exit
 *     B - physical drive number for the controller
-*******************************************************
-
+**************************************************
 GETPHYS PSHS A,X
  LDB #DRVSIZ GET DESCRIPTOR SIZE
  MUL CALCULATE OFFSET A times B
  LDX #$DE22 DRVBEG
  ABX
  LDAB DRVNO,X get physical drive number
- PULS A,X
- RTS 
- 
-*******************************************************
+ PULS A,X,PC
+  
+******************************************************
 * RESTORE COMMAND 
 *
-* Drive in the FCB address (3,X contains drive number) should be selected
-* before the RESTORE is performed.
+* Drive in the FCB address (3,X contains drive number)
+* should be selected before the RESTORE is performed.
 *
 * Entry
 *     X - FCB address - 3,X contains drive number
 * Exit
 *     X,A - may be destroyed
 *     B - Error code - 0=no error
-*******************************************************
+******************************************************
 
 * While there is nothing to do for a modern drive, FLEX
 * expects DRIVE SELECT to be called by this routine. It is therefore
@@ -893,9 +900,8 @@ REST1 PSHS X
  LDX #$DE22 DRVBEG
  ABX
  STX DRVPTR
- PULS X
  CLRB No error
- RTS 
+ puls X,PC
 
 *******************************************************
 *
@@ -908,19 +914,21 @@ REST1 PSHS X
 * Exit
 *     X,A - may be destroyed
 *       B - Error code - 0=no error
-
+*
 *******************************************************
-
-CDRR1 LDD STATUS
+CDRR1 pshs DP
+ ldaa drvDP
+ tfr A,DP
+ LDD <STATUS
  BITB #$40 Drive ready bit
  BEQ CDRR2 branch for no ready
 
  CLRB clear error flag
- RTS
+ puls DP,PC
 
 CDRR2 LDB #$80 set not ready error
  SEC
- RTS
+ puls DP,PC
 
 *******************************************************
 * COLD START - INIT
@@ -934,15 +942,16 @@ CDRR2 LDB #$80 set not ready error
 * No exit code for this routine. Simply issue RTS
 *
 *******************************************************
-
-DCOLD LDD STATUS Get status
+DCOLD pshs DP
+ ldaa drvDP
+ tfr A,DP
+dcold1 LDD <STATUS Get status
  BITB #$80 Test Busy bit
- BNE DCOLD loop until ready
+ BNE dcold1 loop until ready
 
 * This would be a good place to insert time out code
 * and print a message if no drive plugged in
-
- RTS
+ puls DP,PC
 
 *******************************************************
 * DRIVE SELECT ROUTINE 
@@ -967,7 +976,6 @@ DCOLD LDD STATUS Get status
 *
 * The drive is selected during the Task setup routine
 * There is nothing to do to the drive here
-
 * THIS ENTRY POINT IS MAINTAINED SO THAT
 * IF AT SOME POINT IN THE FUTURE SOMETHING NEEDS
 * TO BE DONE, THE ENTRY POINT ALREADY EXISTS.
@@ -975,11 +983,12 @@ DCOLD LDD STATUS Get status
 DRVSL1 bsr REST1
  RTS
 
-FAILMSG FCC 'LOAD FAILED'
- FCB 4
-
-FAIL LDX #FAILMSG
- JSR [PDATA]
- JMP [$F800] RESTART PTMON
+*FAILMSG FCC 'LOAD FAILED'
+* FCB 4
+*
+*FAIL LDX #FAILMSG
+* JSR [PDATA]
+* JMP [$F800] RESTART PTMON
+ setdp 0
 
  END FLEX cold start

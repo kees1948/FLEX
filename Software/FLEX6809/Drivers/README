@@ -3,19 +3,26 @@
 
    Driver     - Use
 
-1. cmi_io2.t  - PC-cable use ‘cmi_sbug’ 
+ 1. cmi_io2.t  - PC-cable use ‘cmi_sbug’ 
 
-2. cmi_io4.t  - Straight-cable use  ‘cmisbug1’ 
+ 2. cmi_io4.t  - Straight-cable use  ‘cmisbug1’ 
 
-3. cmi_io4x.t - Cable independent use ‘cmisbug3’ 
+ 3. cmi_io4x.t - Cable independent use ‘cmisbug3’ 
 
-4. cmi_io4A.t - Cable independent use ‘cmisbug3’ for a slow drive
+ 4. cmi_io4A.t - Cable independent use ‘cmisbug3’ for a slow drive
 
-5. cmi_io4B.t - Cable independent use ‘cmisbug3’ read 40 track disk in 80 track drive
+ 5. cmi_io4B.t - Cable independent use ‘cmisbug3’ read 40 track disk in 80 track drive
 
-6. cmi_ide.t  - cmi_io4B.t + ide driver
+ 6. cmi_ide.t  - cmi_io4B.t + ide driver
 
-7. cmi_ide2.t - cmi_io4B.t + ide driver
+ 7. cmi_ide2.t - cmi_io4B.t + ide driver
+
+ 8. cmi_ide3.t - cmi_io4B.t + ide driver, spead/clean up IDE calls
+
+ 9. cmi_io6B.t - cmi_io4B.t but IO independent on cmisbug6
+
+10. cmi_ide6.t - cmi_ide3.t but IO independent on cmisbug6
+
 
 
 The CMISTEP program changes in memory some driver settings.
@@ -26,6 +33,27 @@ For driver 4 it can change the step rate for each drive.
 For driver 5 it can change the step rate and set double step for each drive.
 For driver 6 it can change the step rate and set double step for each floppy drive.
 For driver 7 it can change the step rate and set double step for each floppy drive.
+For driver 8 it can change the step rate and set double step for each floppy drive.
+For driver 9,10 it can change the step rate and set double step for each floppy drive.
+
+
+       Drivers 1-8 memory layout
+
+  $DE00 - $E0FF < diskdriver part
+  $E100 - $E1FF < Floppy read/write part
+  $E200 - $E2FF < IDE driver part
+
+
+       Drivers 9,10 memory layout
+
+  $DE00 - $DFFF < diskdriver part-1
+  $E400 - $E4FF < diskdriver part-2
+  $E500 - $E5FF < Floppy read/write part
+  $E600 - $E6FF < IDE driver part, cmi_ide6 only
+
+  The SD card needs a new bootloader.
+  You can use DPACH to put BOOTSECT.HEX on sector 0
+  or format the SD card with IDEFMT version 6.0 
 
 
 

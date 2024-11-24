@@ -1,4 +1,4 @@
- nam CMI_BUG  cpuxxcmi monitor 1.5
+ nam CMI_BUG  cpuxxcmi monitor x.6
  opt pag
  pag
 * monitor program for the cpu09xxx system
@@ -33,6 +33,11 @@
 *
 * modified the v1.5 to search boot sector (2024-07-29) CAJ
 * and fixed location DRIVE DESCRIPTOR
+*
+* added io_space for 2K/4K rom (2024-11-11) CAJ
+*
+* version 1.6 (2014-11-18) CAJ
+* force DP in bootloaders to monitor iospace 
 
 *
 *       *** commands ***
@@ -63,7 +68,7 @@
 
 *io_space equ $E000 4K rom
 io_space equ $F000 2K rom
-
+*
 romstk equ io_space+$0780
 vectors equ $fff0
 loader equ $C100
@@ -182,8 +187,12 @@ clrstk clr ,-s
  lbsr aciniz initialize control port
  ldx #msg1 point to 'sbug 1.8' message
  lbsr pdata print msg
-* report 60K of RAM, (I did not check it though)
- lda #$60 fixed size for cpuxxcmi
+* report 60K or 56K of RAM, (I did not check it though)
+ IF io_space=$F000
+ lda #$60 fixed size for cpuxxcmi 2K rom
+ ELSE
+ lda #$56 fixed size for cpuxxcmi 4K rom
+ ENDIF
  lbsr out2h output hex byte as ascii
  ldx #msg2 point to msg 'k' cr/lf + 3 nulls
  lbsr pdata print msg
@@ -638,6 +647,8 @@ loop leax 1,x
  rts
 
 loop4 ldx #loader start boot code
+ lda #fdbasp
+ sta 1,x change DP in loader
  lda dens
  anda #$F0 remove drive
  ora cable corect drive nr.
@@ -1018,7 +1029,13 @@ ramvec fdb swie user-v
  fdb $ffff svc-vl
 * printable message strings
 msg1 fcb $0,$0,$0,$d,$a,$0,$0,$0 * 0, cr/lf, 0
- fcc 'cmi-bug 1.5 - '
+ fcc 'cmi_bug '
+ IF io_space=$F000
+ fcc '1'
+ ELSE
+ fcc '4'
+ ENDIF
+ fcc '.6 - '
  fcb 4
 msg2 fcc 'k' k + <cr/lf> + 3 nuls
  fcb $d,$a,$0,$0,$0,4 
@@ -1193,8 +1210,10 @@ WBOOT2 ldx #MSGWN2 error - report it
  bra WBTERR
  
 WBOOT3
+ lda #BASADR/256
+ sta WLDADR+1 set DP in loader
  ldd WLDADR+1
- cmpd #$F120 boot start code DP/BRA
+ cmpd #io_space+$120 boot start code DP/BRA
  bne sectr1 if not load sector 1
  tst WLDADR+4 sector count
  beq WBOOT4 no sector 2
@@ -1362,7 +1381,9 @@ MSGWN3 FCC 'NOT LINKED'
  FCB $D,$A
  FCB 4
  
- org vectors-14 Fixed locations
+ org vectors-16 Fixed locations
+* IO area
+ fdb io_space vector
 
 * table DESCRIP
 * DRIVE DESCRIPTOR (FOR BOOT ONLY)
