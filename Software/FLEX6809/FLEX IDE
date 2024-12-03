@@ -45,6 +45,17 @@ or BOOT on SD
 2024-09-10
      CMI_IDE3.BIN cleanup/speedup IDE calls.
 
+2024-11-23
+     Release version 6 monitor and drivers.
+             +++APPEND FLEXxCOR.BIN FLPBOOT.BIN CMI_IDE6.BIN FLX6FLP.SYS
+             +++APPEND FLEXxCOR.BIN IDEBOOT.BIN CMI_IDE6.BIN FLX6IDE.SYS
+
+2024-12-02
+     Added FLEX3.01 commands MKDIR and CHD, put on BOOT drive.
+     Use with RAM card with UPS backup as 4MB work drive,
+     copy some Gotek source images in directories on it.
+     Saves a lot of time, not having to scan the USB stick for the sources.
+
 
 
 Remarks:
@@ -54,6 +65,6 @@ Remarks:
      I have already included the GoTek FLEX......IMA files with this software 
      and the rewritten utilities for it.
 
-     The CMISBUG6 monitor and the CMI_IO6B / CMI_IDE6 will use IO indepen
+     The CMISBUG6 monitor with CMI_IO6B / CMI_IDE6 will be IO independent.
 
 CdeJ
