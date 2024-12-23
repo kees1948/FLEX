@@ -52,7 +52,11 @@ Board version 0.9.5 has this fixed.
 
 [2024-10-03] some UPS PCB design options.
 
-(2024-12-14) 10 options for RAM standby.
+(2024-12-20) 10 options for RAM standby.
              SMD RAM UPS print use more copper for SMD chip.
-             Change some footprints for more space.
+             Change/move some footprints for more space.
+             C5 can be SMD on solder side or C5 can be on top side. 
+             Change footprint for 2 types trimpot.
+             Corrected footprint for standart TL431.
+             Simpler adjustment procedures. 
 
