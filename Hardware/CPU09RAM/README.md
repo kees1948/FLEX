@@ -60,3 +60,5 @@ Board version 0.9.5 has this fixed.
              Corrected footprint for standart TL431.
              Simpler adjustment procedures. 
 
+(2024-12-24) Change the R7 and P2 value for better adjustment.
+
