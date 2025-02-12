@@ -19,6 +19,7 @@ CMIMON09 is a port of the famous MikBug ROM to an CPUXXCMI version for 6809.
        cmisbug4.bin  - version 1.4 with extra boot delay for GoTek on 16MHz card.
        cmisbug5.bin  - version 1.5 rearranged version 1.4 with IDE boot.
        cmisbug6.bin  - version 1.6 will boot also the latest 4K ROM software.
+       cmi6sbug.bin  - version 1.6b as version 1.6, fixed small boot problem.
 
 2024-07-30
 	cmisbug5.bin  - version 1.5 
@@ -29,6 +30,10 @@ CMIMON09 is a port of the famous MikBug ROM to an CPUXXCMI version for 6809.
                       Can load/boot floppy & IDE if using the version 6 drivers
                       and run version 6.0 software tools.
                       Independed from the IO space used in the asmb.
+2025-02-12
+	cmi6sbug.bin  - version 1.6b
+                      Reset boot function after a FLEX boot with 'DRIVES NOT READY'.
+
 
 
 CdeJ
