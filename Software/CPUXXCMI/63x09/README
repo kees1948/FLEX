@@ -9,7 +9,7 @@ CMIMON09 is a port of the famous MikBug ROM to an CPUXXCMI version for 6809.
  
 
 
-2024-07-08
+2025-02-16
 
     Monitor ROM's info for HD63x09:
 
@@ -20,6 +20,7 @@ CMIMON09 is a port of the famous MikBug ROM to an CPUXXCMI version for 6809.
        cmisbug5.bin  - version 1.5 rearranged version 1.4 with IDE boot.
        cmisbug6.bin  - version 1.6 will boot also the latest 4K ROM software.
        cmi6sbug.bin  - version 1.6b as version 1.6, fixed small boot problem.
+       cmiHbug6.bin  - version H1.6 as version 1.6, new prompt
 
 2024-07-30
 	cmisbug5.bin  - version 1.5 
@@ -35,7 +36,7 @@ CMIMON09 is a port of the famous MikBug ROM to an CPUXXCMI version for 6809.
                       Reset boot function after a FLEX boot with 'DRIVES NOT READY'.
 2025-02-16
 	cmiHbug6.bin  - new source version 1.6
-                      New monitor prompt: cmi_bug H1.6
+                     New monitor prompt: cmi_bug H1.6
 
 
 CdeJ
