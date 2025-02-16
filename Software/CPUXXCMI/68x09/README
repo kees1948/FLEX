@@ -1,0 +1,25 @@
+2025-02-16
+
+Here you find the ROM monitor for the 68X09 use of the CPUXXCMI board.
+
+cmi_sbug is an adapted version of the SBUG 1.8 source.
+
+
+
+
+2025-02-16
+
+    Monitor ROM's info for M68x09:
+
+       cmiMbug6.bin  - version 1.6 
+                       Auto cable/boot select, extra boot delay for GoTek on 16MHz card.
+                       With IDE boot.
+                       Search for boot IDE on sector-0 or sector-1 or sector 1 and 2.
+                       Will boot also the latest 4K ROM software.
+                       Can load/boot floppy & IDE if using the version 6 drivers
+                       and run version 6.0 software tools.
+                       Independed from the IO space used in the asmb.
+                       New monitor prompt: cmi_bug M1.6
+
+
+CdeJ
