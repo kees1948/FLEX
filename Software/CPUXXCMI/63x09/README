@@ -1,6 +1,6 @@
 2022-06-21
 
-Here you find the ROM monitor for the 68X09 use of the CPUXXCMI board.
+Here you find the ROM monitor for the 63X09 use of the CPUXXCMI board.
 
 cmi_sbug is an adapted version of the SBUG 1.8 source.
 
@@ -11,7 +11,7 @@ CMIMON09 is a port of the famous MikBug ROM to an CPUXXCMI version for 6809.
 
 2024-07-08
 
-    Monitor ROM's info:
+    Monitor ROM's info for HD63x09:
 
        cmi_sbug.bin  - version 1.0 for PC type floppy cable.
        cmisbug1.bin  - version 1.1 for FLEX type floppy cable.
@@ -33,7 +33,9 @@ CMIMON09 is a port of the famous MikBug ROM to an CPUXXCMI version for 6809.
 2025-02-12
 	cmi6sbug.bin  - version 1.6b
                       Reset boot function after a FLEX boot with 'DRIVES NOT READY'.
-
+2025-02-16
+	cmiHbug6.bin  - new source version 1.6
+                      New monitor prompt: cmi_bug H1.6
 
 
 CdeJ
