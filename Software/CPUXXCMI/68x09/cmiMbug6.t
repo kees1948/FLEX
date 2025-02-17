@@ -47,7 +47,7 @@ Sbugmsg MACRO
  else
  fcb 'H
  endif
- fcb romsize+$30,':,version+$30
+ fcb romsize=$30,$2e,version=$30
  ENDM
 
  opt exp,lis,pag
