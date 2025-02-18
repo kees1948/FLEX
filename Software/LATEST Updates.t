@@ -1,5 +1,5 @@
                  Latest software versions
-                       2024-11-23
+                       2025-02-18
 
 Updates:
      * BOOTON   - 6.0 
@@ -21,14 +21,15 @@ Latest drivers:
        CMI_IO4B - FLP only
        CMI_IDE3 - IDE & FLP
 
-       CMI_IO6B - On CMISBUG6 independent IO, FLP only
-       CMI_IDE6 - On CMISBUG6 independent IO, IDE & FLP 
+       CMI_IO6B - On CMISBUG6 and up independent IO, FLP only
+       CMI_IDE6 - On CMISBUG6 and up independent IO, IDE & FLP 
 
 
 Latest monitors:
-       CMISBUG5 - 1.5 use the one after 2024-07-29
+       CMISBUG5 - 63x09, 1.5 use the one after 2024-07-29
 
-       CMISBUG6 - 1.6 will boot & run software IO independent
+       cmiHbug6 - 63x09, H1.6 will boot & run software IO independent
+       cmiMbug6 - 68x09, M1.6 will boot & run software IO independent
 
 
 Notes:

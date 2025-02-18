@@ -84,3 +84,7 @@ track 0 has the proper # of sectors in SD.
 2024-11-23
     New: "cmisbug6" runs all version 6 drivers and utils IO independent.
 
+2025-02-18
+    New: "cmiHbug6" 63x09, runs all version 6 drivers and utils IO independent.
+         "cmiMbug6" 68x09, runs all version 6 drivers and utils IO independent.
+         "rwtst09"  Read/Write track/sector floppy & gotek routine.
