@@ -1,8 +1,8 @@
                  Latest software versions
-                       2025-02-18
+                       2025-02-19
 
 Updates:
-     * BOOTON   - 6.0 
+     * BOOTON   - 7.0 
        CMILINK  - 1.0
      * CMISTEP  - 6.0 
        DPACH    - 1
@@ -27,6 +27,7 @@ Latest drivers:
 
 Latest monitors:
        CMISBUG5 - 63x09, 1.5 use the one after 2024-07-29
+       CMISBUG6 - 63x09, 1.6 will boot & run software IO independent
 
        cmiHbug6 - 63x09, H1.6 will boot & run software IO independent
        cmiMbug6 - 68x09, M1.6 will boot & run software IO independent
@@ -40,7 +41,7 @@ Notes:
 
     All utils version 6.0 and version 6 drivers are assembled for IO $F000,
     so they still works on the older drivers/monitors.
-    When cmisbug6 is present they are IO independent.
+    When cmisbug6 and up is present they are IO independent.
 
 
 
