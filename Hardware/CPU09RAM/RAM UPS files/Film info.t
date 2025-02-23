@@ -15,14 +15,15 @@ _
 
 Tested: SMD RAM UPS 0.6 films.zip
 
-      CNC Router         -{New} bottom_drill 0.6mm.nc
+      CNC Router        - {New} bottom_drill 0.6mm.nc
 
-	Toner transfer     -{New} SMD RAM UPS 0.6 holes+.pdf
+	Toner transfer    - {New} SMD RAM UPS 0.6 holes+.pdf
 
-	Dry film Negative  -{New} SMD RAM UPS 0.6 holes--.pdf
+	Dry film Negative - {New} SMD RAM UPS 0.6 holes--.pdf
 
 All holes 0.6mm
 _
+
 
 Remark:
 	Negative mirror > printed side up
