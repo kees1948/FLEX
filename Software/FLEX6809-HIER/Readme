@@ -42,17 +42,21 @@ You can rename the IMA part 'BootName' in a disk name.
 
 
 29-07-2023
-Update format/newdisk software BOOT images.
+       Update format/newdisk software BOOT images.
 
 10-09-2023
-Update HIER.DSDD80-5.IMA with HIER4CMI.TXT for the FLEX3.COR
-Added  HIER_CMI.DSDD77-8.IMA image, 
+       Update HIER.DSDD80-5.IMA with HIER4CMI.TXT for the FLEX3.COR
+       Added  HIER_CMI.DSDD77-8.IMA image, 
        boot on the FLEX for UniFlex and use the CMI_IO4B.bin driver.
+
+23-02-2025
+       Update HIER2DRV image with new CMI_IO2 driver.
+       Update FORMAT routines and some utils.
 
 
 Note:
     The FLEX3.COR, FLX301.COR and FLEXCOR.COR are different.
-    	  FLEX3COR.S1 = FLEX3.COR is extracted from the FLEX for UniFlex.
+        FLEX3COR.S1 = FLEX3.COR is extracted from the FLEX for UniFlex.
         FLX301.S1   = FLX301.COR is a general version extracted from the MicroboxII FLEX.
         FLEXxCOR.S1 = Modified FLEX3.COR to use the IDE driver.
 
