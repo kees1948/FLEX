@@ -64,11 +64,15 @@ You can rename the IMA part 'BootName' in a FLEX disk name.
    Of course the FLEX versions will not boot.
 
 30-07-2024
-   Update the FLEX...SYS with rhe latest drivers and utils.
+   Update the FLEX...SYS with the latest drivers and utils.
    Also put IDE software and RAM disk software.
 
 18-08-2024
    Update the FLEX...SYS with VIRTUAL software for RAM backup voltage.
+
+23-02-2025
+   Update FLEX2DRV images with latest CMI_IO2 driver for FORMAT program.
+   Update all images with the latest software, deleted the old NEWDISK's.
 
 
 Note:
