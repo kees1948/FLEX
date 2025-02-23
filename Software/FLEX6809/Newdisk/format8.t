@@ -100,7 +100,7 @@ VOLNUM RMB 2
 
  org $0100
 INFO bra INFEND
- FCC   $88,'.$31',$A,$D
+ FCC   $88,'.1',$A,$D
  fcc   '8" Floppy disk formater '
  fcc   'for CPU09CMI.',$A,$D
  fcc   'Test disk driver version.',$A,$D

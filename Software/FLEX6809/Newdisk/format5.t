@@ -104,7 +104,7 @@ trkmax rmb 1
 
  org $0100
 INFO bra INFEND
- FCC   $85,'.$31',$A,$D
+ FCC   $85,'.1',$A,$D
  fcc   '5.25" Floppy disk formater '
  fcc   'for CPU09CMI.',$A,$D
  fcc   'Test disk driver version.',$A,$D
