@@ -56,4 +56,5 @@ For driver 9,10 it can change the step rate and set double step for each floppy 
   or format the SD card with IDEFMT version 6.0 
 
 
-
+2025-02-22
+          Update cmi_io2.t  set version number.

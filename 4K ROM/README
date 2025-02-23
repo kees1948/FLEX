@@ -1,85 +1,85 @@
-                         Use of the CMIxxCPU with 2 x 4Kbyte ROM.
-                               Selection with RA1 jumper J5.
+                       FLEX_images.zip information.
+
+   SIZE:   NAME:                   INFO:
+   318,464 BootName.DSDD35-5.IMA   Empty with BOOT loader
+   179,200 BootName.DSSD35-5.IMA   Empty with BOOT loader
+   159,232 BootName.SSDD35-5.IMA   Empty with BOOT loader
+    89,600 BootName.SSSD35-5.IMA   Empty with BOOT loader
+
+   364,544 BootName.DSDD40-5.IMA   Empty with BOOT loader
+   204,800 BootName.DSSD40-5.IMA   Empty with BOOT loader
+   182,272 BootName.SSDD40-5.IMA   Empty with BOOT loader
+   102,400 BootName.SSSD40-5.IMA
+
+   733,184 BootName.DSDD80-5.IMA   Empty with BOOT loader
+   409,600 BootName.DSSD80-5.IMA   Empty with BOOT loader
+   366,592 BootName.SSDD80-5.IMA   Empty with BOOT loader
+   204,800 BootName.SSSD80-5.IMA   Empty with BOOT loader
+
+ 1,019,392 BootName.DSDD77-8.IMA   Empty with BOOT loader
+   591,360 BootName.DSSD77-8.IMA   Empty with BOOT loader
+   509,696 BootName.SSDD77-8.IMA   Empty with BOOT loader
+   295,680 BootName.SSSD77-8.IMA   Empty with BOOT loader
+
+   733,184 FLEX2DRV.DSDD80-5.IMA   BOOT on FLEX2DRV.SYS
+   733,184 FLEX4DRV.DSDD80-5.IMA   BOOT on FLEX4DRV.SYS
+   733,184  FLEXCMI.DSDD80-5.IMA   BOOT on FLEXCMI.SYS
+
+ 1,019,392 FLEX2DRV.DSDD77-8.IMA   BOOT on FLEX2DRV.SYS
+ 1,019,392 FLEX4DRV.DSDD77-8.IMA   BOOT on FLEX4DRV.SYS
+ 1,019,392  FLEXCMI.DSDD77-8.IMA   BOOT on FLEXCMI.SYS
 
 
-See cpuxxcmi_memmap_4K_rom.pdf for the memory map.
+Files in 'PC cable BOOT' can boot on that cable when using cmi_sbug version 1.0
+Files in 'FLEX cable BOOT' can boot on a straight cable using cmi_sbug version 1.1
+All images will boot on  cmi_sbug version 1.3 and up.
 
-Provides:
-Choice for processor: MC68B02 or MC68B09 (HD63C09)@ 2..4MHz busclocks
-56 KByte of contineous RAM 0000...DFFF
-Decoded IO space           E000...E3FF
-Extra 3KByte RAM           E400...EFFF
-4K ROM                     F000...FFFF
-ACIA local console port    E004...E005
-Baudrate generator  0K3...38K4 with 1.2288 MHz bus signal
-IO decoding very simular (but not identical) to CPU09MON
-On board user/system state hardware with LED
-BUS input that disables on-board addressing, allows for external boards
+If you have a GotTek with 'FlashFloppy' your lucky 
+   you can boot and run FLEX with one of the following.
 
-                    *** The modification. ***
+'PC cable BOOT' also have a FLEX2DRV.DSDD80-5.IMA and FLEX2DRV.DSDD77-8.IMA, 
+   ready to boot and run FLEX2DRV.SYS
+   Jumper both drives as 1 and MOT on.
 
-Read "The 4K ROM modification.pdf"
+'FLEX cable BOOT' also have a FLEX4DRV.DSDD80-5.IMA and FLEX4DRV.DSDD77-8.IMA, 
+   ready to boot and run FLEX4DRV.SYS
+   Jumper the drives as 0, 1, 2 and MOT on.
+
+If you are on cmi_sbug version 1.3 or up you can use from 'FLEX cable BOOT' 
+the FLEXCMI.DSDD80-5.IMA or FLEXCMI.DSDD77-8.IMA to boot and run FLEXCMI.SYS
 
 
-                         *** FLEX ***
+To use any IMA copy it to the USB stick together with the files 
+in 'GoTek config files'.
+You can rename the IMA part 'BootName' in a FLEX disk name. 
 
-This FLEX is a modified cmi_io4B.t version and is located on the disk:
-                 cmi4Krom.DSDD77-8.IMA
-It also contains a working IDE tool set, FLEXIDE.sys and FLEXFLP.SYS 
+09-04-2023
+   Update IMG.CFG added 8" UniFlex DSK images.
 
-All software set for:
-                     FDC = $E100
-                     IDE = $E180
-                    ACIA = $E004
-                   cable = $E7EE
-                RAM card = $EC00
-        Read/Write Track = $F000
-                 Monitor = $F800
+29-07-2023
+   Update format software BOOT images
 
-FLEX disk driver:
-     a part is on $E400 after the IO's.
-    
-Modified FLEX software:
-         BOOTLOADER
-         IO/Disk drivers
-         FORMAT5.CMD
-         FORMAT8.CMD
-         BOOTON.CMD
-         CMISTEP.CMD
-         IDEFMT.CMD
-         FDRIVES.CMD
-         PLIST.CMD
-         CMILINK.CMD
+12-12-2023
+   You can now also use all IMAs with the SWTPCemuApp.
+   Of course the FLEX versions will not boot.
 
-This FLEX version was created to test the CPU09CMI 4K ROM card.
-The 4K ROM makes other operating systems possible, 
-perhaps OS9 level 1.
-         
-Works at all speeds, but tested with 16MHz GAL modification.
+30-07-2024
+   Update the FLEX...SYS with the latest drivers and utils.
+   Also put IDE software and RAM disk software.
 
-13-06-2024 Update GAL's for extra RAM to use CPU9RAM card for virtual disk.
-14-11-2024 Update monitor ROM with latest software version + IDE boot.
-           Added modified IDE support tools.
-20-11-2024 cleanup & speedup IDE calls in cmi_ide3
-           The image 'cmi4Krom.DSDD77-8.IMA' contains:
-               for CMISBUG5
-                   FLEX3.SYS     
-                   FLEXIDE.SYS needs 2 different SD cards
-                   FLEXFLP.SYS
+18-08-2024
+   Update the FLEX...SYS with VIRTUAL software for RAM backup voltage.
 
-22-11-2024 cmisbug6+cmi_io6B or cmisbug6+cmi_ide6 will boot and run
-           floppy images and IDE on 2K monitor version 1.6 
-           and 4K monitor version 4.6 without reassembly.
-           The image 'cmi4Krom.DSDD77-8.IMA' contains:
-               for CMISBUG6
-                   FLEX6.SYS
-                   FLX6IDE.SYS needs only 1 SD card
-                   FLX6FLP.sys
-           It is now linked with FLX6FLP.SYS !
+23-02-2025
+   Update FLEX2DRV images with latest CMI_IO2 driver for FORMAT program.
+   Update all images with the latest software, deleted the old NEWDISK's.
+
+
+Note:
+    If you are on cmi_sbug version 1.1 you can boot 
+    and use the FLEXCMI images, but only on a straight cable.
+    Because FLEX can't use the 'auto cable select' flag in de MONITOR.
 
 
 
 CdeJ
-
-
-

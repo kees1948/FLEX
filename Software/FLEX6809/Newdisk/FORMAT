@@ -12,3 +12,50 @@ Update format/newdisk software.
 Update format5 corrected cable test
 Update format8 corrected cable test and corrected dens in bootloader
 
+
+23-02-2025
+
+Update format5, format8 to work with all the disk drivers and on the 16MHz card.
+The old FORMATx programs are not working with the IDE disk driver.
+There are now a Logical and a Physical drive number.
+
+Rewrite the source from UniFLEX relasmb to FLEX ASMB.
+You also need the files 'flpdata.h', 'sysconf.t', 'sectab.t' to ASMB.
+
+Note:
+    When 'VIRTUAL' is loaded the format only works when de Floppy disk number
+    match the entry number.
+
+    +++SET
+    0=H0 S
+    1=H1
+    2=D2    < D2 match the entry 2
+    3=V0 w
+            format will work on drive number 2.
+    
+    Not if you use the SET command to change the drives locations.
+
+    +++SET 3=D2 2=V0
+    0=H0 S
+    1=H1
+    2=V0 
+    3=D2 w  < D2 not match the entry 3
+            format will NOT work on drive number 3
+
+    If you boot from Floppy and virtual give this setting:
+    +++virtual
+    0=D0 SW
+    1=V0
+    2=H0
+    3=H1
+
+    You can swap in floppy drive 1.
+    +++set 1=D1
+    0=D0 SW
+    1=D1    < D1 match entry
+    2=H0
+    3=H1
+            format will work on drive number 1.
+    And swap V0 back, +++SET 1=V0
+
+

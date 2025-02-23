@@ -1,10 +1,8 @@
-
         pag
 
 *
 * This is the header file for  cmi_io.t
 *
- lib iospace.h
 
 * controller type
 WD2791  set     0
@@ -61,7 +59,8 @@ FS_RWOK equ     $D8             read/write OK mask [2]
 *
 * fdc hardware
 *
-fdcbas  equ     io_space+$0100  FDC controller
+* fdcbas Set by mondrivr.h
+*fdcbas  equ     $f100           FDC controller
 fdbasp  equ     fdcbas/256      for direct addressing
 
 * subject to EOR4FDC
