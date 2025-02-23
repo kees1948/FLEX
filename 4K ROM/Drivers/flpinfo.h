@@ -11,9 +11,9 @@ WD2791  set     0
 *
 * control latch out (fo4lat)
 *
-LA_SEL0 equ     %00000001       drive 0 select
-LA_SEL1 equ     %00000010       drive 1 select
-LA_SEL2 equ     %00000100       drive 2 select
+LA_0SEL equ     %00000001       drive 0 select
+LA_1SEL equ     %00000010       drive 1 select
+LA_2SEL equ     %00000100       drive 2 select
 LA_MOT  equ     %00001000       motor on
 LA_SID  equ     %00010000       side select
 LA_SDN  equ     %00100000       dens select 0=DD/1=SD
