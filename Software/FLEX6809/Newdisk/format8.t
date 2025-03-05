@@ -100,7 +100,7 @@ VOLNUM RMB 2
 
  org $0100
 INFO bra INFEND
- FCC   $88,'.1',$A,$D
+ FCC   $88,'.2',$A,$D
  fcc   '8" Floppy disk formater '
  fcc   'for CPU09CMI.',$A,$D
  fcc   'Test disk driver version.',$A,$D
@@ -115,6 +115,9 @@ NEWDISK
  BRA FORM1
 lcable fcb 0 local Cable type
 ldp fcb 0 local DP
+DIOVEC fcb 0 DIOVEC Table
+typephy fdb 0 diovec entry
+PhySet fcb 0
 
 OUTIN JSR PSTRNG OUTPUT STRING
 OUTIN2 JSR GETCHR GET RESPONSE
@@ -621,6 +624,8 @@ SCRDS FCC '8" SCRATCH DISK IN DRIVE '
 FATERS FCC 'FATAL ERROR --- '
 ABORTS FCC 'FORMATTING ABORTED'
  FCB 4
+msgflp fcc 'Not a Floppy disk'
+ fcb 4
 BADSS FCC 'BAD SECTOR AT '
  FCB 4
 CMPLTE FCC 'FORMATTING COMPLETE'
