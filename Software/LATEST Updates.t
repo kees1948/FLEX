@@ -8,7 +8,7 @@ Updates:
        DPACH    - 1
      * FORMAT5  - 5.2
      * FORMAT8  - 8.2
-     * FDRIVES  - 6.0 
+     * FDRIVES  - 6.1 
      * IDEFMT   - 6.1 
      * PLIST    - 6.0 
        RBRDSK   - 1.0
