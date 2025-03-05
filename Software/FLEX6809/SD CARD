@@ -1,0 +1,24 @@
+The SD card image contains partition 0 and 1.
+
+Partition 0
+   is the boot partition.
+   This partition also contains files with the extension DIR,
+   these belong to the HELP program.
+
+Partition 1
+   is a copy of 0.
+
+
+Note:
+   I use MKDIR and CHD commands on my virtual disk
+   and that works perfectly, system power off/on, boot other FLEX, change CPU card.
+   The virtual drive is intact and all software can be used.
+
+   So I thought to create on partition 1 of the SD DIRs for all the data of all the images.
+   And that also works perfectly on this SD card.
+
+   But if I now make an image of this SD card with dd on Linux 
+   and restore it to a new SD card with dd, 
+   all these DIRs are empty and all programs after the last created DIR hang the system.
+
+   So be careful with these 2 commands on a SD partition.

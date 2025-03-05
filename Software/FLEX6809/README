@@ -58,3 +58,8 @@ SAVE.LOW,0.FLEX.SYS,C700,E15F,CD00
     New: "cmiHbug6" 63x09, runs all version 6 drivers and utils IO independent.
          "cmiMbug6" 68x09, runs all version 6 drivers and utils IO independent.
          "rwtst09"  Read/Write track/sector floppy & gotek routine.
+
+2025-03-05
+    Added SD card image.
+
+
