@@ -53,6 +53,8 @@ You can rename the IMA part 'BootName' in a disk name.
        Update HIER2DRV image with new CMI_IO2 driver.
        Update FORMAT routines and some utils.
 
+06-03-2025
+       Update images with latest sofware versions.
 
 Note:
     The FLEX3.COR, FLX301.COR and FLEXCOR.COR are different.

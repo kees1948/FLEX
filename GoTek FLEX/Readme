@@ -71,9 +71,11 @@ You can rename the IMA part 'BootName' in a FLEX disk name.
    Update the FLEX...SYS with VIRTUAL software for RAM backup voltage.
 
 23-02-2025
-   Update FLEX2DRV images with latest CMI_IO2 driver for FORMAT program.
+   Update FLEX2DRV images with latest CMI_IO2 driver for FORMAT programs.
    Update all images with the latest software, deleted the old NEWDISK's.
 
+06-03-2025
+   Update images with latest software versions.
 
 Note:
     If you are on cmi_sbug version 1.1 you can boot 

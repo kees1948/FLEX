@@ -1,14 +1,14 @@
                  Latest software versions
-                       2025-02-22
+                       2025-03-06
 
 Updates:
     * BOOTON   - 7.0 
     * CMILINK  - 1.0
     * CMISTEP  - 6.0 
       DPACH    - 1
-    * FORMAT5  - 5.1
-    * FORMAT8  - 8.1
-    * FDRIVES  - 6.0 
+    * FORMAT5  - 5.2
+    * FORMAT8  - 8.2
+    * FDRIVES  - 6.1 
     * IDEFMT   - 6.0 
     * PLIST    - 6.0 
       RBRDSK   - 1.0
