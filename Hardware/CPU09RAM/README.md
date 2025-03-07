@@ -62,3 +62,5 @@ Board version 0.9.5 has this fixed.
 
 (2024-12-24) Change the R7 and P2 value for better adjustment.
 
+(2025-03-07) Place C3 (10nF) across R2 for better reset.
+             New PCB layout with 0805 SMD pad for C3.
