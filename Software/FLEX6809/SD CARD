@@ -7,6 +7,7 @@ Partition 0
 
 Partition 1
    is a copy of 0.
+   Plus the date of all the IMA's in sub DIR's (CHD 1.subdirname, CHD 1./).
 
 
 Note:
@@ -14,11 +15,10 @@ Note:
    and that works perfectly, system power off/on, boot other FLEX, change CPU card.
    The virtual drive is intact and all software can be used.
 
-   So I thought to create on partition 1 of the SD DIRs for all the data of all the images.
-   And that also works perfectly on this SD card.
+   So from all the IMA's the data was put in subdirectories on partition 1.
 
-   But if I now make an image of this SD card with dd on Linux 
-   and restore it to a new SD card with dd, 
-   all these DIRs are empty and all programs after the last created DIR hang the system.
+.  The BASIC.DIR and HELPFILE.DIR are not subdirectories, 
+   they belong to the HELP program.
 
-   So be careful with these 2 commands on a SD partition.
+   The 16MB FLEX partition is in bytes, the real SD size is 32MB per partition.
+   So use DD count=131076 for P0 + P1.
