@@ -10,6 +10,14 @@ Partition 1
    Plus the date of all the IMA's in sub DIR's (CHD 1.subdirname, CHD 1./).
 
 
+2025-03-14
+   SDimage now boots on IO independent version.
+   Cleaned up old CMI drivers and FLEX.SYS versions, 
+   also in subdirectories on P1.
+
+
+
+
 Note:
    I use MKDIR and CHD commands on my virtual disk
    and that works perfectly, system power off/on, boot other FLEX, change CPU card.
