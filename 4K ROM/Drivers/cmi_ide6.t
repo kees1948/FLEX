@@ -11,8 +11,19 @@
 * $E500-$E5FF floppy read/write
 * $E600-$E6FF IDE driver
 
- lib iospace.h
-dr_shift set $E400 always split CMI_IDE6
+  lib flpinfo.h
+dr_shift set $E400 always split CMI_IDE6 !!!!
+
+sngsid  equ     %00000000
+dblsid  equ     %00000001
+sngdns  equ     %00000000
+dbldns  equ     %00000001
+higdns  equ     %10000000
+size5   equ     %01000000
+MXSTPM  equ     %00000011
+DBDSTP  equ     %00010000
+HLTDEL  equ     %00001000
+
 
 * extern pointers
 FLEX  equ $CD00 FLEX cold start
@@ -32,23 +43,6 @@ HSEL equ dr_shift+$020C -- DRVSEL JMP DRVSL1
 HRDY equ dr_shift+$020F -- CDRRDY JMP CDRR1
 QHRDY equ dr_shift+$0212 -- QDRRDY JMP CDRR1
 HCOLD equ dr_shift+$0215 -- DCOLDS JMP DCOLD
-
-*
-* fdc hardware
-*
-fdcbas equ io_space+$0100 FDC controller
-fdbasp equ fdcbas/256 for direct addressing
-* subject to EOR4FDC
-fo2cmd equ fdcbas offset to command register
-fo2trk equ fdcbas+1 offset to track register
-fo2sec equ fdcbas+2 offset to sector register
-fo2dat equ fdcbas+3 offset to data register
-* not subject to EOR4FDC
-fo4lat equ fdcbas+4 drive,side,density latch
-fo4sta equ fdcbas+8 fdc status buffer
-
-* HW debug select
-fo2trg equ fdcbas+12 scope trigger @ this address
 
 *************************************************
 *
@@ -119,15 +113,15 @@ WINSET pshs x
 * ENTRY: 
 * EXIT: 
 *
-wait TST >prcnt
+wait TST >prcnt  are we spooling
  BEQ wait1 
  SWI3 
  NOP 
 wait1 LDAB <fo4sta 
- BITB #$40 
+ BITB #ST_INT
  BEQ wait1 
  LDAB <fo2cmd 
- ANDB #$99 
+ ANDB #%10011001
  RTS 
 
 *************************************************
@@ -153,7 +147,7 @@ SEEK PSHS A,B,DP save calling regs
  CMPA <fo2trk offset to track register 
  BEQ l03f 
  ldb double
- bitb #%00010000 double step
+ bitb #DBDSTP double step
  beq skip1 no - 
  ldb <fo2trk yes - logical track#
  aslb *2
@@ -161,13 +155,13 @@ SEEK PSHS A,B,DP save calling regs
  asla 
  
 skip1 STAA <fo2dat 
- LDAA #$18 
+ LDAA #FD_SEK
  ora dskstp add step rate
  STAA <fo2cmd 
  BSR wait 
  
  ldb double
- bitb #%00010000 double step
+ bitb #DBDSTP double step
  beq skip2
  ldb <fo2trk physical track#
  asrb /2
@@ -211,12 +205,12 @@ l3b LDD ,S restore track/sector/data loc
  LDAB >ltcopy 
  STAB <fo4lat 
  LDU 3,S buffer address (X)
- LDAA #$88 
+ LDAA #FD_SRD 
  JSR >frdblk do the read 
  BNE l04f 
  
  PULS A,B,DP,X,U
-ok ORCC #$04 
+ok ORCC #$04  indicate no error
 ret RTS 
 
 l04f BITB #$10 
@@ -263,7 +257,7 @@ l13b LDD ,S track/sector
  LDAB >ltcopy 
  STAB <fo4lat 
  LDU 3,S buffer address (X)
- LDAA #$A8 
+ LDAA #FD_SWR
  JSR >fwrblk do the write 
  BNE w04f 
  
@@ -303,11 +297,11 @@ RST PSHS DP,X save the FCB
  ldaa drvDP
  tfr A,DP
  BSR DRV select the drive
- LDAA #$08 floppy reset command
+ LDAA #FD_RST floppy reset command
  STAA <fo2cmd reset the floppy
  JSR >wait wait before checking for finished
  LDAB <fo2cmd get status
- BITB #$D8 check for errors
+ BITB #FS_RWOK check for errors
  PULS DP,X,PC return
  
 *************************************************
@@ -333,18 +327,18 @@ DRV PSHS DP,X save FCB
  PULS DP,X,PC
  
 drv01 LDAA [C_cable] check boot cable
- CMPA #$05 PC cable?
+ CMPA #5 PC cable?
  BNE drv04 
  LDAA 3,X get drive number
  
 * now we need to get the physical drive number
- CMPA #$01 max 2 drives PC cable
+ CMPA #1 max 2 drives PC cable
  BLS drv02 valid drive number
  BRA drv0F 
 
 drv04 LDAA 3,X get drive number
  JSR GETPHYS get the physical drive number in B
- CMPB #$03 max 4 drives
+ CMPB #3 max 4 drives
  BLS drv02 
 
 * illegal drive 
@@ -364,13 +358,13 @@ drv02 ldab drvDP
  bsr fndtrk get data for new drive X=>drvtrk
 
  lda 8,x get more data new drive
- anda #%00010000 double step bit set
+ anda #DBDSTP  double step bit set
  sta double set double step status
  lda 8,x 
- anda #%00000011 lower 2 bits step rate
+ anda #MXSTPM lower 2 bits step rate
  sta dskstp set step rate
  lda 8,x 
- anda #%00001000 HLT delay bit
+ anda #HLTDEL HLT delay bit
  sta hltdel set HLT status
  ldab ,X get more data new drive
  stab <fo2trk double step bit set
@@ -406,7 +400,7 @@ chk01 PSHS A,B,DP,Y
  LDY #$0000 
  ANDCC #$FE clc
 chk02 LDAA <fo2cmd get fdc status
- BITA #$80 is the NOT READY bit set? 
+ BITA #%10000000 is the NOT READY bit set? 
  BPL chk03 no - controller is ready
 *
  LEAY -1,Y decrement inside counter 
@@ -429,10 +423,23 @@ fndtrk LDX #drvtrk
  ABX 
  RTS 
 
-   ORG dr_shift
+ ORG dr_shift always !!!!
 
-dsktyp FCB $0A,$0A,$00,$40,$0A,$12,$01,$40
- FCB $0F,$0F,$00,$00,$0F,$1A,$01,$00
+MX5TRK0 equ     10
+MX8TRK0 equ     15
+MX5SDS0 equ     10
+MX5DDS0 equ     18
+MX8SDS0 equ     15
+MX8DDS0 equ     26
+
+dsktyp  equ     *
+        fcb     10,10,0,$40
+DTYPSZ  equ     *-dsktyp
+        fcb     10,18,1,$40
+        fcb     15,15,0,$00
+        fcb     15,26,1,$00
+
+MXDTYP  equ     (*-dsktyp)/DTYPSZ
 
 *************************************************
 *
@@ -447,7 +454,7 @@ trymode PSHS B
  STAB >retry 
  LDAB >dskidx 
  INCB 
- CMPB #$04 
+ CMPB #MXDTYP
  BCS trym01 
  CLRB 
 trym01 STAB >dskidx 
@@ -471,7 +478,7 @@ setdsk PSHS A,B,X track/sector info
  STAB >cursid 5/8 inch 
  
 * track zero test
- TST ,S track zero? (A)
+ TST 0,S track zero? (A)
  BEQ tst5s1 
  
 * 5"/8"
@@ -515,7 +522,7 @@ stl02 TST >lside
  ORAA #%00010000 set side 1 $10
 
 sts02 LDAB [C_cable] check boot cable
- CMPB #$05 PC cable?
+ CMPB #5 PC cable?
  BNE stl00 no - do straight thru cable
  LDAB >curdrv set lower 4 bits drive PC cable
  BEQ st203 
@@ -543,7 +550,8 @@ DRVINIT bsr SetDP
  LDX #curdrv clear variables
  RTS 
 
-drvtab FCB $01,$02,$04,$08
+drvtab  fcb     %00000001,%00000010
+        fcb     %00000100,%00001000
 
 SetDP clrb
  lda #$E0 set IO 4K rom
@@ -559,7 +567,7 @@ fndDP inca
  stx C_cable set cable type location
 asmDP rts all pointers set
 
- ORG dr_shift+$0100
+ ORG dr_shift+$0100 always !!!!
 
 *************************************************
 * read
@@ -577,8 +585,8 @@ asmDP rts all pointers set
 frdblk PSHS DP,X,U save the direct page register
  ldb drvDP set it to point to the floppy controller
  TFR B,DP direct page register now points to the floppy controller
- LDAB #31 set delay outside counter
- LDX #0 set delay inside counter
+ LDAB #31  very long   create timeout
+ LDX #0            65536*2*25/4 cycles
  STAA <fo2cmd set the command in the floppy command register
  ORCC #$50 set the interrupt flag = no interrupts
  BRA frb03 
@@ -592,14 +600,14 @@ frb03 LDAA <fo4sta get floppy status
  BNE frb03 
  DECB 
  BNE frb03 
-frb98 LDAA #$D8 
+frb98 LDAA #FD_FI0+8      force immediate interrupt
  STAA <fo2cmd 
 frb90 LDAA <fo4sta get floppy status
  BEQ frb90 
- LDAA #$D0 
+ LDAA #FD_FI0      force immediate interrupt 
  STAA <fo2cmd 
 frb97 LDAB <fo2cmd 
- BITB #$9F 
+ BITB #%10011111 
  PULS DP,X,U,PC 
 
 **************************************************
@@ -618,16 +626,16 @@ fwrblk PSHS DP,X,U
  ldb drvDP
  TFR B,DP 
  STAA <fo2cmd 
- ORCC #$50 
+ ORCC #$50 disable ints 
  BRA fwb03 
 
 fwb02 LDAA ,U+ 
- STAA <fo2dat 
-fwb03 LDAA <fo4sta get floppy status
+ STAA <fo2dat put data
+fwb03 LDAA <fo4sta 
  BMI fwb02 
  BEQ fwb03 
- LDAB <fo2cmd 
- BITB #$DF 
+ LDAB <fo2cmd read status
+ BITB #%11011111 
  PULS DP,X,U,PC 
  setdp 0
 
@@ -691,7 +699,7 @@ READCM EQU $20 READ COMMAND
 WRTCMD EQU $30 WRITE COMMAND
 
  PAG
- ORG dr_shift+$0200 FOR CPUXXCMI
+ ORG dr_shift+$0200 FOR CPUXXCMI always !!!!
  setdp basdp setdp for ide driver
 
 * DISK JUMP TABLE
