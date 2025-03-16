@@ -77,6 +77,10 @@ You can rename the IMA part 'BootName' in a FLEX disk name.
 06-03-2025
    Update images with latest software versions.
 
+15-03-2025
+   Update IMG.CFG added 8" CP/M DSK image.
+
+
 Note:
     If you are on cmi_sbug version 1.1 you can boot 
     and use the FLEXCMI images, but only on a straight cable.
