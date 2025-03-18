@@ -35,8 +35,19 @@ Created: 28-Jul-81
 OK
 
 
+     Command SYSTEM to exit MBASIC will hang the system.
+
+
+
+2025-03-18
+     Removed some ugly old driver code in DIRCPM & COPYCPM.
+     Removed USECPM, old mixed 5" diskdriver/8" DMA driver.
+
+
 Note:
      Works only on a straight FD cable.
+     Sorry not 100% tested CP/M and the FLEX utils.
+
 
 CdeJ
 
