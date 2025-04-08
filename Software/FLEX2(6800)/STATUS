@@ -1,0 +1,39 @@
+
+2025-03-27 CdeJ
+     A working FLEX2 for the CPU02CMI (FLEX2.SSSD80-5.IMA).
+     FLEX2.SYS = FLEX2.COR + cmi_io2a.bin
+     Use a straight FD cable.
+     The empty 'BootName' images SSSD have a bootloader.
+     Tested with drive 0 and 1.
+
+2025-03-31 CdeJ
+     A working FLEX3 for the CPU02CMI (FLEX3.SSSD80-5.IMA).
+     FLEX3.SYS = FLEX3.COR + cmi_io3a.bin
+     Use a straight FD cable.
+     The empty 'BootName' images SSSD have a bootloader.
+     Tested with drive 0 and 1.
+
+2025-04-01 CdeJ
+     Redo the bootloaders for DSSD.
+     The diskdrivers are for 35, 40, 80 track SSSD.
+
+2025-04-07 CdeJ
+     Add XBABIC to the images.
+     Correct some data in Drivers.
+     
+
+
+
+
+
+
+
+Note:
+    FLEX2 and FLEX3 COR are assembled for the cmi_68_4 MONITOR stack.
+    BASIC.CMD and XBASIC.CMD are patched for the cmi_68_4 MONITOR.
+
+
+
+
+
+

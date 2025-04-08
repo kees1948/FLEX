@@ -38,7 +38,7 @@ curdrv fcb $00
 xsave3 fdb $0000
 trktab fcb $00,$00,$00,$00
 iniend EQU *
-stpbyt fcb $00 steprate bits, 00,01,10,11
+stpbyt fcb $00 steprate, 00,01,10,11
 
 ************************************
 fsetup LDX #curdrv
@@ -46,7 +46,7 @@ fsu01 CLR 0,X
  INX
  CPX #iniend
  BNE fsu01
-NoTimr RTS
+ RTS
 
 ************************************
 *
@@ -248,7 +248,7 @@ setlat PSH A
  LDA A drvset
  LDA B curdrv
  BEQ setl01
- ORA A #LASEL1+LAMOT
+ ORA A #LASEL1
  BRA setl02
 setl01 ORA A #%0000101
 setl02 STA A fo4lat
@@ -285,14 +285,14 @@ setl02 STA A fo4lat
 
  org $B3E5
  fdb $F804 $FD94 inch
- fdb $NoTimr $B3E7 ihndlr
+ fdb $AE04 $B3E7 ihndlr
  fdb $F7C4 $B3E9 swivec
  fdb $F7C6 $B3EB irqvec
- fdb $NoTimr $B3ED tmoff
- fdb $NoTimr $b3ef tmon
- fdb $NoTimr tmint
- fdb $F802 NXTCMD vector
- fdb $NoTimr $B3F5 tinit
+ fdb $AE04 $B3ED tmoff
+ fdb $AE04 $b3ef tmon
+ fdb $AE04 tmint
+ fdb $F800 $F814 monitr
+ fdb $AE04 $B3F5 tinit
  fdb $F808 $FDA6 incheck
  fdb $F80A $FDBA outch
  fdb $F806 $FD8E inche

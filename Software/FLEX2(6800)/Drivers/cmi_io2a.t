@@ -1,8 +1,8 @@
  nam flex 6800 SSSD driver
 *
 * Use FLEX9 [CRASMB + I6800.BIN]
-*     Watch the Mnemonic structure:
-*     instruction-space-register ,X (upper case)
+*  Watch the Mnemonic structure:
+*  instruction-space-register ,X (upper case)
 *
  CRO I6800
 
@@ -38,7 +38,7 @@ curdrv fcb $00
 xsave3 fdb $0000
 trktab fcb $00,$00,$00,$00
 iniend EQU *
-stpbyt fcb $00 steprate bits, 00,01,10,11
+stpbyt fcb $00 steprate, 00,01,10,11
 
 ************************************
 fsetup LDX #curdrv
@@ -248,7 +248,7 @@ setlat PSH A
  LDA A drvset
  LDA B curdrv
  BEQ setl01
- ORA A #LASEL1+LAMOT
+ ORA A #LASEL1
  BRA setl02
 setl01 ORA A #%0000101
 setl02 STA A fo4lat
@@ -276,6 +276,13 @@ setl02 STA A fo4lat
 
 * FLEX3 COR
  if Versie=3
+ org $A700 Remove printer spooler
+ fcb $39,$39,$39,$39,$39,$39
+ fcb $39,$39,$39,$39,$39,$39
+ fcb $39,$39,$39,$39,$39,$39
+ org $A71B
+ fcb 0
+
  org $B3E5
  fdb $F804 $FD94 inch
  fdb $AE04 $B3E7 ihndlr
