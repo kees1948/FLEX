@@ -20,11 +20,13 @@
 2025-04-07 CdeJ
      Add XBABIC to the images.
      Correct some data in Drivers.
+
+2025-04-09 CdeJ
+     Oops forgot to put two pointers in the files 
+     back to their original address.
+     So everything through the assembler again.
+     So now the correct versions.
      
-
-
-
-
 
 
 

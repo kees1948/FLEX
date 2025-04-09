@@ -20,7 +20,7 @@ PFLG EQU $AC34
 * Disk I/O Vector Table 
 *
 ************************************
- org $be80
+ org $BE00
 fread JMP readsc
 fwrit JMP writsc
 fverf JMP verfsc
@@ -263,7 +263,7 @@ setl02 STA A fo4lat
 ************************************
 * FLEX2 COR
  if Versie=2
- org $BFF0
+ org $B3E5
  fdb $f806 [] INCHE vector
  fdb $f80a [] OUTCH vector
  fdb $f004 ACIA device address
