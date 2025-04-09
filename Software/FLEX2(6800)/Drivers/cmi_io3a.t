@@ -15,12 +15,31 @@ PFLG EQU $AC34
 
  lib flp2inf.h
 
+ org $BE00
+************************************
+fsetup LDX #curdrv
+fsu01 CLR 0,X
+ INX
+ CPX #iniend
+ BNE fsu01
+ RTS
+
+ org $BE20
+************************************
+* is cleared on init
+curdrv fcb $00
+xsave3 fdb $0000
+trktab fcb $00,$00,$00,$00
+iniend EQU *
+stpbyt fcb $00 steprate, 00,01,10,11
+drvset fcb %01100000 5", SD
+
 ************************************
 * 
 * Disk I/O Vector Table 
 *
 ************************************
- org $BE00
+ org $BE80
 fread JMP readsc
 fwrit JMP writsc
 fverf JMP verfsc
@@ -30,24 +49,6 @@ fcrdy JMP tready
 fqick JMP tready
 finit JMP fsetup
 
-drvset fcb %01100000 5", SD
-
-************************************
-* is cleared on init
-curdrv fcb $00
-xsave3 fdb $0000
-trktab fcb $00,$00,$00,$00
-iniend EQU *
-stpbyt fcb $00 steprate, 00,01,10,11
-
-************************************
-fsetup LDX #curdrv
-fsu01 CLR 0,X
- INX
- CPX #iniend
- BNE fsu01
- RTS
-
 ************************************
 *
 * read sector
@@ -55,7 +56,6 @@ fsu01 CLR 0,X
 * A=track, B=sector, X=buffer
 *
 ************************************
-*
 readsc BSR flseek
  JSR setlat
  JSR tready
@@ -68,14 +68,13 @@ sbebd NOP
  SEI
  STA A fo2cmd
  BRA read01
-*
+
 read02 LDA A fo2dat
  STA A 0,X
  INX
 read01 LDA A fo4sta
  BMI read02
  BEQ read01
-*
 sbee4 BSR gtfdst
 sbee0 BIT B #%10011100 NRDY, RNF, CRC, LOST
  NOP
@@ -86,9 +85,8 @@ gtfdst TST PFLG
  BEQ sbeeb
  SWI
 sbeeb LDA B fo2cmd
-* BIT B #1
-* BEQ gtfdst
  RTS
+
 ************************************
 *
 * seek
@@ -107,6 +105,7 @@ flsk01 LDA B fo4sta
  PUL B
 sbf0a STA B fo2sec
  RTS
+
 ************************************
 *
 * write sector
@@ -124,19 +123,19 @@ sbf1a NOP
  SEI
  STA A fo2cmd
  BRA wrsc01
-*
+
 wrsc02 LDA A 0,X
  STA A fo2dat
  INX
 wrsc01 LDA A fo4sta
  BMI wrsc02
  BEQ wrsc01
-*
 sbf38 BSR gtfdst
 sbf3d BIT B #$5c
  NOP
  CLI
  RTS
+
 ************************************
 *
 * verify sector
@@ -159,6 +158,7 @@ verf01 LDA A fo4sta
  CLI
  BIT B #$18
  RTS
+
 ************************************
 *
 * restore drive
@@ -177,9 +177,11 @@ rstr01 LDA A fo4sta
  BNE sbf71
  CLC
  RTS
+
 sbf71 LDA B #$0b
 sbf73 CLC
  RTS
+
 ************************************
 *
 * select drive, X=FCB
@@ -197,11 +199,11 @@ sbf7c BSR fndtrk
  BSR fndtrk
  LDA A 0,X
  STA A fo2trk
-*
  BSR setlat
  LDX xsave3
  CLC
  RTS
+
 fndtrk LDX #trktab
  LDA B curdrv
  BEQ sbf9f
@@ -209,6 +211,7 @@ sbf9b INX
  DEC B
  BNE sbf9b
 sbf9f RTS
+
 ************************************
 *
 * chk ready, X=fcb
@@ -218,11 +221,9 @@ tready STX xsave3
  LDA A #4
 trlp03 PSH A
  LDX #0
-*
 trlp01 LDA A fo2cmd chck controller
  BIT A #%10000000 notready
  BEQ trlp02
-*
  DEX
  BNE trlp01
  PUL A
@@ -231,10 +232,9 @@ trlp01 LDA A fo2cmd chck controller
  LDA A #$80
  SEC
  BRA trlp04
-*
+
 trlp02 PUL A
  CLR A
-*
 trlp04 LDX xsave3
  TST A refresh result
  RTS

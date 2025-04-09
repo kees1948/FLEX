@@ -27,12 +27,26 @@
      So everything through the assembler again.
      So now the correct versions.
      
+2025-04-10 CdeJ
+     Add DSSD diskdrivers, also on the images.
+
+        APPEND FLEX2.COR CMI_IO2B.BIN FLEX2B.SYS
+        LINK FLEX2B.SYS
+
+        APPEND FLEX3.COR CMI_IO3B.BIN FLEX3B.SYS
+        LINK FLEX3B.SYS
+
 
 
 
 Note:
     FLEX2 and FLEX3 COR are assembled for the cmi_68_4 MONITOR stack.
     BASIC.CMD and XBASIC.CMD are patched for the cmi_68_4 MONITOR.
+
+    You can APPEND and LINK the 6800 FLEX running on FLEX9.
+    The images of the 6800-FLEX and 6809-FLEX are compatible,
+    only the BOOTLOADERs are different.
+
 
 
 

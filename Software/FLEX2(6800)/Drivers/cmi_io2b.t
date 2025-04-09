@@ -1,4 +1,4 @@
- nam flex 6800 SSSD driver
+ nam flex 6800 DSSD driver
 *
 * Use FLEX9 [CRASMB + I6800.BIN]
 *  Watch the Mnemonic structure:
@@ -28,10 +28,11 @@ fsu01 CLR 0,X
 ************************************
 * is cleared on init
 curdrv fcb $00
+side fcb $00
 xsave3 fdb $0000
 trktab fcb $00,$00,$00,$00
 iniend EQU *
-stpbyt fcb $00 steprate, 00,01,10,11
+stpbyt fcb $00 steprate 00,01,10,11
 drvset fcb %01100000 5", SD
 
 ************************************
@@ -104,6 +105,17 @@ flsk01 LDA B fo4sta
  BSR gtfdst
  PUL B
 sbf0a STA B fo2sec
+ CMP B #10 Check Which Side
+ BHI SIDE1
+ CLR side
+ LDA B curdrv CURDRV
+ BRA SEEK2
+SIDE1 LDA B #%00010000 
+ STAB side  SIDE 1
+ LDA B curdrv CURDRV
+SEEK2 ORA B side
+ ORA B drvset
+ STA B fo4lat ... Drive select reg
  RTS
 
 ************************************
@@ -153,7 +165,7 @@ verf02 LDA A fo2dat
 verf01 LDA A fo4sta
  BMI verf02
  BEQ verf01
- BSR gtfdst
+ JSR gtfdst
  NOP
  CLI
  BIT B #$18
@@ -177,7 +189,6 @@ rstr01 LDA A fo4sta
  BNE sbf71
  CLC
  RTS
-
 sbf71 LDA B #$0b
 sbf73 CLC
  RTS
@@ -203,7 +214,6 @@ sbf7c BSR fndtrk
  LDX xsave3
  CLC
  RTS
-
 fndtrk LDX #trktab
  LDA B curdrv
  BEQ sbf9f
@@ -238,6 +248,7 @@ trlp02 PUL A
 trlp04 LDX xsave3
  TST A refresh result
  RTS
+
 ************************************
 *
 * set drive select latch
@@ -251,7 +262,9 @@ setlat PSH A
  ORA A #LASEL1
  BRA setl02
 setl01 ORA A #%0000101
-setl02 STA A fo4lat
+setl02 ORA A drvset
+ ORA A side
+ STA A fo4lat
  PUL B
  PUL A
  RTS
