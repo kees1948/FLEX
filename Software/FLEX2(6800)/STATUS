@@ -36,6 +36,16 @@
         APPEND FLEX3.COR CMI_IO3B.BIN FLEX3B.SYS
         LINK FLEX3B.SYS
 
+2025-04-11 CdeJ
+     Can BOOT now from DSSD images.
+     The FLEX ima images boot now from FLEXxB.SYS
+     Deleted the LINK.CMD from the ima's, it is not working.
+     The B version diskdrivers are for 35, 40, 80 track SSSD and DSSD.
+
+Test fase:
+     FORMAT 5", 8" for all the formats.
+     Diskdriver for 5", 8" all formats, 8" Double Dens ????
+     6800 LINK.CMD
 
 
 

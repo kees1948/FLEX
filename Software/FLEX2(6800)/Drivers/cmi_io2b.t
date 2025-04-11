@@ -15,15 +15,6 @@ PFLG EQU $AC34
 
  lib flp2inf.h
 
- org $BE00
-************************************
-fsetup LDX #curdrv
-fsu01 CLR 0,X
- INX
- CPX #iniend
- BNE fsu01
- RTS
-
  org $BE20
 ************************************
 * is cleared on init
@@ -34,6 +25,14 @@ trktab fcb $00,$00,$00,$00
 iniend EQU *
 stpbyt fcb $00 steprate 00,01,10,11
 drvset fcb %01100000 5", SD
+
+************************************
+fsetup LDX #curdrv
+fsu01 CLR 0,X
+ INX
+ CPX #iniend
+ BNE fsu01
+ RTS
 
 ************************************
 * 

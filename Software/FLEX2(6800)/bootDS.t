@@ -95,7 +95,7 @@ getbf1  ldx     #buffer
         bra     gtbfch
 
 * restore drive
-start1 lds #$F780
+start1 lds #$F77F
  ldaa #$0B
         staa    fdccmd
         bsr     bsstat
