@@ -42,10 +42,13 @@
      Deleted the LINK.CMD from the ima's, it is not working.
      The B version diskdrivers are for 35, 40, 80 track SSSD and DSSD.
 
+2025-04-13 CdeJ
+     Add working LINK.CMD
+
 Test fase:
      FORMAT 5", 8" for all the formats.
-     Diskdriver for 5", 8" all formats, 8" Double Dens ????
-     6800 LINK.CMD
+     Diskdriver for 5" en 8" all formats and cable select function,
+     the driver can already read all the formats.
 
 
 
@@ -53,7 +56,7 @@ Note:
     FLEX2 and FLEX3 COR are assembled for the cmi_68_4 MONITOR stack.
     BASIC.CMD and XBASIC.CMD are patched for the cmi_68_4 MONITOR.
 
-    You can APPEND and LINK the 6800 FLEX running on FLEX9.
+    You can also APPEND and LINK the 6800 FLEX running on FLEX9.
     The images of the 6800-FLEX and 6809-FLEX are compatible,
     only the BOOTLOADERs are different.
 
