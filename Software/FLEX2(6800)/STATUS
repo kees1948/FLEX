@@ -45,14 +45,19 @@
 2025-04-13 CdeJ
      Add working LINK.CMD
 
-Test fase:
+2025-04-19 CdeJ
+     Add beta diskdriver CMI_IO2C.BIN and CMI_IO3C.BIN
+     also on the iamges FLEXxC.SYS
+     They use all the functions as in the FLEX9 driver. 
+     Works on all drive formats.
+     For 8" double dens replace xtal by 10MHz.
+     
+
+Test fase:     
      FORMAT 5", 8" for all the formats.
-     Diskdriver for 5" en 8" all formats and cable select function,
-     the driver can already read all the formats.
+     
 
-
-
-Note:
+Notes:
     FLEX2 and FLEX3 COR are assembled for the cmi_68_4 MONITOR stack.
     BASIC.CMD and XBASIC.CMD are patched for the cmi_68_4 MONITOR.
 
@@ -60,7 +65,10 @@ Note:
     The images of the 6800-FLEX and 6809-FLEX are compatible,
     only the BOOTLOADERs are different.
 
+    The CPU02CMI with a 12MHz xtal will work fine in the monitor
+    and running FLEX2 but some programs like BASIC and XBASIC not.
 
+CdeJ
 
 
 
