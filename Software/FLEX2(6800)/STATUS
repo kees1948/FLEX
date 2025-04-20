@@ -45,12 +45,17 @@
 2025-04-13 CdeJ
      Add working LINK.CMD
 
-2025-04-19 CdeJ
+2025-04-20 CdeJ
      Add beta diskdriver CMI_IO2C.BIN and CMI_IO3C.BIN
      also on the iamges FLEXxC.SYS
      They use all the functions as in the FLEX9 driver. 
      Works on all drive formats.
      For 8" double dens replace xtal by 10MHz.
+     Add new bootloader "boot02".
+
+ BUG: You can boot and run FLEXxC from all the SSSD en DSSD formats.
+      The SDDD and DSDD formats will boot FLEXxC 
+      but after +++ prompt it hangs (beta diskdriver).
      
 
 Test fase:     
