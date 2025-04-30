@@ -34,12 +34,18 @@ work, but in the area of breakpoints bugs may lurk.
 2024-10-18 Version 1.18.4
    rewrote PUNCH 
 
+2025-04-30 Version 1.18.5
+   Put A & B correct on the stack,
+   now CC - B - A and not CC - A - B.
+   Speedup BOOT.
+   
  
   Status:
       Version 1.18   Don't use it, to many bugs.
       Version 1.18.1 Don't use it, still to many bugs.
       Version 1.18.3 Breakpoint table is now working.
       Version 1.18.4 Rewrite PUNCH.
+      Version 1.18.5 Resolve registers on the stack.
                
       Bugs may lurk.
 
