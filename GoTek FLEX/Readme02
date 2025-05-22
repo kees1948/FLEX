@@ -21,6 +21,9 @@
    509,696 Boot02name.SSDD77-8.IMA   Empty with BOOT loader
    295,680 Boot02name.SSSD77-8.IMA   Empty with BOOT loader
 
+   204,800      FLEX2.SSSD80-5.IMA   BOOT on 6800 FLEX2
+   204,800      FLEX3.SSSD80-5.IMA   BOOT on 6800 FLEX3 
+
 
 Actually you can use any image on any type of cable.
 From MONITOR "cmi_68_4" and bootloader "BOOT02" and up
