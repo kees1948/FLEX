@@ -14,3 +14,7 @@ would have: 2K Monitor ROM, 68X02/68X09/63X09 CPU, 64K RAM, Console ACIA, baud
 clock generator fully buffered bus signals.
 
 The mini-backplane CPU09BP3 would be more then plenty for such a system.
+
+
+
+
