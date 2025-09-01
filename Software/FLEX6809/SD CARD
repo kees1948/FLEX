@@ -15,7 +15,25 @@ Partition 1
    Cleaned up old CMI drivers and FLEX.SYS versions, 
    also in subdirectories on P1.
 
+2025-09-01
+   Update the software in the .DIR's on partition-1 with the latest data.
+   Added MONITOR9.DIR AND DRIVERS9.DIR with last sources.
+   Added FLEX2.DIR, FLEX3.DIR, MONITOR2.DIR and DRIVERS2.DIR for 6802.
 
+Info:
+   When you use Linux to put the SDimage on a SD card, 
+   the dd command will say 'transferred 64MB', 
+   if it is not 64MB you use the wrong adaptor/SDcard combination.
+
+   For a 32MB or 64MB 'Kingston Micro SD HC I' card use a SD35VC0 converter.
+   For a 8GB or 32GB 'microdrive SD Smart' card use a TF35VA0 converter.
+
+   With the 'microdrive SD Smart' card in a SD35VC0 converter 
+   the Linux dd command will say 'transferred 32MB'.
+   See the DISK_TYPES table in the UniFLEX section!
+
+   Oh yes you don't have a correct converter for the SD card, 
+   then use a hard disk.
 
 
 Note:
@@ -29,4 +47,7 @@ Note:
    they belong to the HELP program.
 
    The 16MB FLEX partition is in bytes, the real SD size is 32MB per partition.
-   So use DD count=131076 for P0 + P1.
+   So use for dd count=131076 for P0 + P1.
+
+
+CdeJ
