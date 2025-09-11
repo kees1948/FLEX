@@ -53,6 +53,11 @@
      For 8" double dens replace xtal by 10MHz.
      Add new bootloader "boot02".
 
+2025-09-11 CdeJ
+     The CPU02CMI with a 12MHz xtal will work fine in the monitor
+     and running FLEX2 but some programs like BASIC and XBASIC not.
+     Solved this problem!
+
  BUG: You can boot and run FLEXxC from all the SSSD en DSSD formats.
       The SDDD and DSDD formats will boot FLEXxC 
       but after +++ prompt it hangs (beta diskdriver).
@@ -70,8 +75,6 @@ Notes:
     The images of the 6800-FLEX and 6809-FLEX are compatible,
     only the BOOTLOADERs are different.
 
-    The CPU02CMI with a 12MHz xtal will work fine in the monitor
-    and running FLEX2 but some programs like BASIC and XBASIC not.
 
 CdeJ
 
