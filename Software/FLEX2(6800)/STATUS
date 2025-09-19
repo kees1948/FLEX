@@ -58,6 +58,10 @@
      and running FLEX2 but some programs like BASIC and XBASIC not.
      Solved this problem!
 
+2025-09-19 CdeJ
+     New bootloader 'boot02DD' will boot on all formats but,
+     FLEXxA and FLEXxB will only boot and work with SSSD and DSSD.
+
  BUG: You can boot and run FLEXxC from all the SSSD en DSSD formats.
       The SDDD and DSDD formats will boot FLEXxC 
       but after +++ prompt it hangs (beta diskdriver).
