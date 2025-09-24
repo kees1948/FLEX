@@ -46,8 +46,8 @@
      Add working LINK.CMD
 
 2025-04-20 CdeJ
-     Add beta diskdriver CMI_IO2C.BIN and CMI_IO3C.BIN
-     also on the iamges FLEXxC.SYS
+     Add beta diskdriver CMI_IO2T.BIN and CMI_IO3T.BIN
+     also on the iamges FLEXxT.SYS
      They use all the functions as in the FLEX9 driver. 
      Works on all drive formats.
      For 8" double dens replace xtal by 10MHz.
@@ -58,12 +58,17 @@
      and running FLEX2 but some programs like BASIC and XBASIC not.
      Solved this problem!
 
-2025-09-19 CdeJ
+2025-09-22 CdeJ
+     New CMI_IO3A, CMI_IO3B and CMI_IO3T driver.
      New bootloader 'boot02DD' will boot on all formats but,
-     FLEXxA and FLEXxB will only boot and work with SSSD and DSSD.
+     FLEXxA,FLEXxB will only boot and work with 5" SSSD and DSSD.
 
- BUG: You can boot and run FLEXxC from all the SSSD en DSSD formats.
-      The SDDD and DSDD formats will boot FLEXxC 
+2025-09-24 CdeJ
+     New bootloader 'boot02DA' boot on sb68-2k6 and sb68-4k6 monitor.
+     Only tested on 3MHz bus.
+
+ BUG: You can boot and run FLEXxT from all the SSSD en DSSD formats.
+      The SDDD and DSDD formats will boot FLEXxT 
       but after +++ prompt it hangs (beta diskdriver).
      
 
@@ -72,8 +77,8 @@ Test fase:
      
 
 Notes:
-    FLEX2 and FLEX3 COR are assembled for the cmi_68_4 MONITOR stack.
-    BASIC.CMD and XBASIC.CMD are patched for the cmi_68_4 MONITOR.
+    FLEX2 and FLEX3 COR are assembled for the cmi_68_4 and up MONITOR stack.
+    BASIC.CMD and XBASIC.CMD are patched for the cmi_68_4 and up MONITOR.
 
     You can also APPEND and LINK the 6800 FLEX running on FLEX9.
     The images of the 6800-FLEX and 6809-FLEX are compatible,

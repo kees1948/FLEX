@@ -38,7 +38,11 @@ work, but in the area of breakpoints bugs may lurk.
    Put A & B correct on the stack,
    now CC - B - A and not CC - A - B.
    Speedup BOOT.
-   
+ 
+2025-09-22 Version 1.18.6
+   SB68-2K6 for 2K ROM, SB68-4K6 for 4K ROM
+   Change prompt.
+  
  
   Status:
       Version 1.18   Removed
@@ -46,6 +50,8 @@ work, but in the area of breakpoints bugs may lurk.
       Version 1.18.3 Removed.
       Version 1.18.4 Breakpoint table is now working, Rewrite PUNCH.
       Version 1.18.5 Resolve registers on the stack.
+      Version 1.18.6 2K ROM and 4K ROM versie.
+
                
       Bugs may lurk.
 

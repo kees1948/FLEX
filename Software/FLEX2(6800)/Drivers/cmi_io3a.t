@@ -283,18 +283,18 @@ setl02 STA A fo4lat
  fcb 0
 
  org $B3E5
- fdb $F804 $FD94 inch
- fdb $AE04 $B3E7 ihndlr
- fdb $F7C4 $B3E9 swivec
- fdb $F7C6 $B3EB irqvec
- fdb $AE04 $B3ED tmoff
- fdb $AE04 $b3ef tmon
+ fdb $F804 [] inch
+ fdb $AE04 ihndlr
+ fdb $F7C4 swivec
+ fdb $F7C6 irqvec
+ fdb $AE04 tmoff
+ fdb $AE04 tmon
  fdb $AE04 tmint
- fdb $F800 $F814 monitr
- fdb $AE04 $B3F5 tinit
- fdb $F808 $FDA6 incheck
- fdb $F80A $FDBA outch
- fdb $F806 $FD8E inche
+ fdb $F802 [] NXTCMD vector
+ fdb $AE04 tinit
+ fdb $F808 [] incheck
+ fdb $F80A [] outch
+ fdb $F806 [] inche
  endif
 
  end COLDS
