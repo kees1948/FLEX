@@ -38,5 +38,10 @@ CMIMON09 is a port of the famous MikBug ROM to an CPUXXCMI version for 6809.
 	cmiHbug6.bin  - new source version 1.6
                      New monitor prompt: cmi_bug H1.6
 
+2025-09-25
+      cmiHbug6      - correct typo in macro part.
+                      Monitor prompt now show correct ROM size: cmi_bug H2.6
+
+
 
 CdeJ

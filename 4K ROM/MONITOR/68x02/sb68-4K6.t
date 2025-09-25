@@ -4,11 +4,13 @@
 Vers equ '6
 
 * for 2K ROM
-*ROM  equ '2 K-ROM
-*IO   equ $F000
+*ROM equ '2 K-ROM
+*RAM equ $60 continuous ram
+*IO  equ $F000
 
 * or for 4K ROM
 ROM equ '4 K-ROM
+RAM equ $56 continuous ram
 IO  equ $E000
 
  PAG
@@ -67,7 +69,7 @@ IO  equ $E000
 * OOPS A and B wrong on the stack
 * Speedup BOOT
 
-* Again modified (2025-09-22) CAJ
+* Again modified (2025-09-22( CAJ
 * Adapted source for 2K and 4K ROM
 
 *       *** COMMANDS ***
@@ -183,7 +185,7 @@ LOOPA ldx XTEMP
  JSR ACINIZ INITIALIZE CONTROL PORT
  LDX #MSG1 POINT TO 'SBUG 1.8' MESSAGE
  JSR PDATA PRINT MSG
- LDAA #$60 FIXED SIZE FOR CPUXXCMI
+ LDAA #RAM FIXED SIZE FOR CPUXXCMI
  JSR OUT2H OUTPUT HEX BYTE AS ASCII
  LDX #MSG2 POINT TO MSG 'K' CR/LF + 3 NULS
  JSR PDATA PRINT MSG

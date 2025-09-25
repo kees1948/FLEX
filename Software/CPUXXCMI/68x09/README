@@ -20,5 +20,9 @@ Monitor ROM's info for M68x09:
                   Independed from the IO space used in the asmb.
                   New monitor prompt: cmi_bug M1.6
 
+2025-09-25
+  cmiMbug6     - correct typo in macro part.
+                 Monitor prompt now show correct ROM size: cmi_bug M2.6
+
 
 CdeJ

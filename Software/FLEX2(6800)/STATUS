@@ -63,9 +63,10 @@
      New bootloader 'boot02DD' will boot on all formats but,
      FLEXxA,FLEXxB will only boot and work with 5" SSSD and DSSD.
 
-2025-09-24 CdeJ
-     New bootloader 'boot02DA' boot on sb68-2k6 and sb68-4k6 monitor.
-     Only tested on 3MHz bus.
+2025-09-25 CdeJ
+     New bootloader 'boot02DA' and faster sector read 'boot02AD'.
+     Both boot on sb68-2k6 and sb68-4k6 monitor.
+     For now only tested on 3MHz bus.
 
  BUG: You can boot and run FLEXxT from all the SSSD en DSSD formats.
       The SDDD and DSDD formats will boot FLEXxT 

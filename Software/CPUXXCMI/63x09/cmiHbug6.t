@@ -2,7 +2,7 @@
 * Show version on each page
 
 * SET version same as monitor prompt
-romsize set 1 for 2K rom, use 4 for the 4K rom
+romsize set 2  = 2 for 2K rom, 4 for the 4K rom
 version set 6
 * Set same value's below in the NAM statement
  NAM CMI_BUG 1.6  cpu09cmi monitor
