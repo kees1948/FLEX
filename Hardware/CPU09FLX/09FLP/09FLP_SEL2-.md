@@ -1,5 +1,5 @@
 Here is the hidden 09FLP SEL2- bug
-
+<pre>
 See this modification:
 
 ![09FLP](./FLXMIN_SEL2-.jpg)
@@ -23,4 +23,4 @@ The connection can also be made on the 09FLP card.
 
 
 
-
+</pre>
