@@ -18,6 +18,7 @@ the SEL2- signal may or may not be connected.
 
 With the solder bridge shown on J1 between pin 36 and pin 38, 
 all cards are interchangeable.
+
 The connection can also be made on the 09FLP card.
 
 
