@@ -68,6 +68,12 @@
      Both boot on sb68-2k6 and sb68-4k6 monitor.
      For now only tested on 3MHz bus.
 
+2025-10-23 CdeJ
+     Update monitor to sb68-2k7 and sb68-4k7, did make IO switch in
+     bootloader same as the 09 monitor version.
+     Update bootloader 'boot02DA' and faster sector read 'boot02AD'.
+     The older bootloaders will still be working.
+
  BUG: You can boot and run FLEXxT from all the SSSD en DSSD formats.
       The SDDD and DSDD formats will boot FLEXxT 
       but after +++ prompt it hangs (beta diskdriver).

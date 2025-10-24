@@ -44,6 +44,9 @@ work, but in the area of breakpoints bugs may lurk.
    Resolved some bugs.
    Change prompt.
   
+2025-10-23 Version 1.18.7
+   SB68-2K7 for 2K ROM, SB68-4K7 for 4K ROM
+   Booloader switch conform 09 monitor.
  
   Status:
       Version 1.18   Removed
@@ -52,6 +55,8 @@ work, but in the area of breakpoints bugs may lurk.
       Version 1.18.4 Breakpoint table is now working, Rewrite PUNCH.
       Version 1.18.5 Resolve registers on the stack.
       Version 1.18.6 2K ROM and 4K ROM versie.
+      Version 1.18.7 2K ROM and 4K ROM new versie.
+
 
                
       Bugs may lurk.

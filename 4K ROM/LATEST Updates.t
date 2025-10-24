@@ -1,5 +1,5 @@
-                 Latest software versions
-                       2025-03-06
+                 Latest software versions CPU09CMI
+                       2025-10-22
 
 Updates:
     * BOOTON   - 7.0 
@@ -10,6 +10,8 @@ Updates:
     * FORMAT8  - 8.2
     * FDRIVES  - 6.1 
     * IDEFMT   - 6.0 
+      NEWBDISK - 1
+      NEWMDISK - 1
     * PLIST    - 6.0 
       RBRDSK   - 1.0
       RBRDSKM  - 1.0
