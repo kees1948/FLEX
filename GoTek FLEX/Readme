@@ -32,9 +32,9 @@
  1,019,392 FLEX4DRV.DSDD77-8.IMA   BOOT on FLEX4DRV.SYS
  1,019,392  FLEXCMI.DSDD77-8.IMA   BOOT on FLEXCMI.SYS
 
- 3,388,928 FLEX4DRV.DSDD-B-8.IMA   BOOT on FLEX4DRV.SYS
- 3,242,496 FLEX4DRV.DSDD-M-8.IMA   BOOT on FLEX4DRV.SYS
-
+ 3,242,496 FLEX4DRV.DSDD-M-8.IMA     SD part0 BOOT on FLEX4DRV.SYS
+ 3,242,496 DIR's part1.DSDD-M-8.IMA  SD part1 Subdirectories   
+ 3,242,496 DIR's part2.DSDD-M-8.IMA  SD part2 Subdirectories      
 
 Files in 'PC cable BOOT' can boot on that cable when using cmi_sbug version 1.0
 Files in 'FLEX cable BOOT' can boot on a straight cable using cmi_sbug version 1.1
@@ -83,11 +83,19 @@ You can rename the IMA part 'BootName' in a FLEX disk name.
 06-03-2025
    Update images with latest software versions.
 
-10-22-2025
+22-10-2025
    Added 3 MB images xxxx.DSDD-B-8.IMA and xxxxDSDD-M-8.IMA 
    both contains IDE partition 0 files and FLEX4DRV files.
    Use the new IMG.cfg file, NEWMDISK is on these images.
    Read 'FLEX CPU09CMI Utilities.pdf' for the difference.
+
+09-11-2025
+   Added in 'WindowsTools.zip' the '(Uni)FLEX.EXE' and boot loaders
+   to create a formated Gotek image on a Windows computer.
+   Update FLEX4DRV.DSDD-M-8.IMA with latest software.
+   Added DIR's part1.DSDD-M-8.IMA  with SD part1 Subdirectories 
+         DIR's part2.DSDD-M-8.IMA  with SD part1 Subdirectories     
+
 
 Note:
     If you are on cmi_sbug version 1.1 you can boot 

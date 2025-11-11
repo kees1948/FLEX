@@ -31,5 +31,9 @@ the auto cable select works, and adjusts driveselect bits during BOOT.
 
 From diskdriver "cmi_io2c" and "cmi_io3c" and up it also uses the cable select.
 
+09-11-2025
+   Added in 'WindowsTools.zip' the '(Uni)FLEX.EXE' and boot loaders
+   to create a formated Gotek image on a Windows computer.
+
 
 CdeJ
