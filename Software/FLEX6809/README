@@ -59,7 +59,9 @@ SAVE.LOW,0.FLEX.SYS,C700,E15F,CD00
          "cmiMbug6" 68x09, runs all version 6 drivers and utils IO independent.
          "rwtst09"  Read/Write track/sector floppy & gotek routine.
 
-2025-03-05
-    Added SD card image.
+2025-11-09
+    Update SD card image.
+    Add software to copy/update subdirectories
+        see  'FLEX CPU09CMI Utilities.pdf'.
 
 
