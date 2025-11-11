@@ -1,10 +1,11 @@
              Latest software versions for FLEX6809
-                       2025-10-22
+                       2025-11-6
 
 Updates:
      * BOOTON   - 7.0 
        CMILINK  - 1.0
      * CMISTEP  - 6.0 
+     + DIR-COPY - 0.1
        DPACH    - 1
      * FORMAT5  - 5.2
      * FORMAT8  - 8.2
@@ -15,10 +16,12 @@ Updates:
      * PLIST    - 6.0 
        RBRDSK   - 1.0
        RBRDSKM  - 1.0
+       SHOWDIR  - 1.0
      * VDISK    - 9.7  skip protection?
      * VIRTUAL  - 9.7  autorun VDISK
 
      * works on all drivers 
+     + JCP script
 
 
 Latest drivers:
@@ -33,8 +36,8 @@ Latest monitors:
        CMISBUG5 - 63x09, 1.5 use the one after 2024-07-29
        CMISBUG6 - 63x09, 1.6 will boot & run software IO independent
 
-       cmiHbug6 - 63x09, H1.6 will boot & run software IO independent
-       cmiMbug6 - 68x09, M1.6 will boot & run software IO independent
+       cmiHbug6 - 63x09, H2.6 will boot & run software IO independent
+       cmiMbug6 - 68x09, M2.6 will boot & run software IO independent
 
 
 Notes:
