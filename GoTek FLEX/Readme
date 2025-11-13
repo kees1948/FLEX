@@ -21,7 +21,6 @@
    509,696 BootName.SSDD77-8.IMA   Empty with BOOT loader
    295,680 BootName.SSSD77-8.IMA   Empty with BOOT loader
 
- 3,388,928 BootName.DSDD-B-8.IMA   Empty with BOOT loader
  3,242,496 BootName.DSDD-M-8.IMA   Empty with BOOT loader
 
    733,184 FLEX2DRV.DSDD80-5.IMA   BOOT on FLEX2DRV.SYS
@@ -94,7 +93,12 @@ You can rename the IMA part 'BootName' in a FLEX disk name.
    to create a formated Gotek image on a Windows computer.
    Update FLEX4DRV.DSDD-M-8.IMA with latest software.
    Added DIR's part1.DSDD-M-8.IMA  with SD part1 Subdirectories 
-         DIR's part2.DSDD-M-8.IMA  with SD part1 Subdirectories     
+         DIR's part2.DSDD-M-8.IMA  with SD part1 Subdirectories 
+    
+13-11-2025
+  Removed xxxx.DSDD-B-8.IMA images, they give indeed errors at track $F5.
+  Update '(Uni)FLEX.EXE' in 'WindowsTools.zip'.
+  Removed bad image entry's in IMG.CFG
 
 
 Note:
