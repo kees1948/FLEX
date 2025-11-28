@@ -1,5 +1,5 @@
              Latest software versions for FLEX6809
-                       2025-11-6
+                       2025-11-27
 
 Updates:
      * BOOTON   - 7.0 
@@ -16,7 +16,7 @@ Updates:
      * PLIST    - 6.0 
        RBRDSK   - 1.0
        RBRDSKM  - 1.0
-       SHOWDIR  - 1.0
+       SHOWDIR  - 2.0
      * VDISK    - 9.7  skip protection?
      * VIRTUAL  - 9.7  autorun VDISK
 
