@@ -101,6 +101,9 @@ You can rename the IMA part 'Boot09name' in a FLEX disk name.
   Update '(Uni)FLEX.EXE' in 'WindowsTools.zip'.
   Update IMG.CFG Removed bad image entry's, added new ones.
 
+28-11-2025
+  Update images.
+
 
 Note:
     If you are on cmi_sbug version 1.1 you can boot 
