@@ -11,7 +11,6 @@ Updates:
      * FORMAT8  - 8.2
      * FDRIVES  - 6.1 
      * IDEFMT   - 6.1 
-       NEWBDISK - 1
        NEWMDISK - 1
      * PLIST    - 6.0 
        RBRDSK   - 1.0

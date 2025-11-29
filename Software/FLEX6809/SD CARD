@@ -20,8 +20,9 @@ Partition 1
    Added MONITOR9.DIR AND DRIVERS9.DIR with last sources.
    Added FLEX2.DIR, FLEX3.DIR, MONITOR2.DIR and DRIVERS2.DIR for 6802.
 
-2025-11-09
-   Update SDimage.
+2025-11-29
+   Cleanup SDimage, update software, rebuild subdirectories on P1.
+
 
 Info:
    When you use Linux to put the SDimage on a SD card, 
