@@ -22,8 +22,7 @@
    295,680 Boot09name.SSSD77-8.IMA   Empty with BOOT loader
 
  2,345,984 Boot09name.DSDD255-5.ima  Empty with BOOT loader
- 3,242,496 Boot09name.DSDD-M-8.IMA   Empty with BOOT loader
-
+ 
    733,184 FLEX2DRV.DSDD80-5.IMA     BOOT on FLEX2DRV.SYS
    733,184 FLEX4DRV.DSDD80-5.IMA     BOOT on FLEX4DRV.SYS
    733,184  FLEXCMI.DSDD80-5.IMA     BOOT on FLEXCMI.SYS
@@ -32,9 +31,10 @@
  1,019,392 FLEX4DRV.DSDD77-8.IMA     BOOT on FLEX4DRV.SYS
  1,019,392  FLEXCMI.DSDD77-8.IMA     BOOT on FLEXCMI.SYS
 
- 3,242,496 FLEX4DRV.DSDD-M-8.IMA     SD part0 BOOT on FLEX4DRV.SYS
- 3,242,496 DIR's part1.DSDD-M-8.IMA  SD part1 Subdirectories   
- 3,242,496 DIR's part2.DSDD-M-8.IMA  SD part2 Subdirectories      
+ 2,345,984 FLEX4DRV.DSDD255-5.IMA     SD part0 BOOT on FLEX4DRV.SYS
+ 2,345,984 DIR's part1.DSDD255-5.IMA  SD part1 Subdirectories   
+ 2,345,984 DIR's part2.DSDD255-5.IMA  SD part2 Subdirectories  
+ 2,345,984 DIR's part3.DSDD255-5.IMA  SD part3 Subdirectories          
 
 Files in 'PC cable BOOT' can boot on that cable when using cmi_sbug version 1.0
 Files in 'FLEX cable BOOT' can boot on a straight cable using cmi_sbug version 1.1
@@ -103,6 +103,10 @@ You can rename the IMA part 'Boot09name' in a FLEX disk name.
 
 28-11-2025
   Update images.
+
+01-12-2025
+  Resolved SIR problen with '(Uni)FLEX.EXE'.
+  Replaced all the xxxx.DSDD-M-8.IMA images by xxxx.DSDD255-5.IMA
 
 
 Note:

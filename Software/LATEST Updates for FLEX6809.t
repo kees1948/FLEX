@@ -1,5 +1,5 @@
              Latest software versions for FLEX6809
-                       2025-11-27
+                       2025-12-02
 
 Updates:
      * BOOTON   - 7.0 
@@ -12,6 +12,7 @@ Updates:
      * FDRIVES  - 6.1 
      * IDEFMT   - 6.1 
        NEWMDISK - 1
+       PDEL     - 1
      * PLIST    - 6.0 
        RBRDSK   - 1.0
        RBRDSKM  - 1.0
