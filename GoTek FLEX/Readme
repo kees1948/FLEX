@@ -22,6 +22,8 @@
    295,680 Boot09name.SSSD77-8.IMA   Empty with BOOT loader
 
  2,345,984 Boot09name.DSDD255-5.ima  Empty with BOOT loader
+   979,200 Boot09name.SSSD255-8.ima  Empty with BOOT loader
+ 1,694,464 Boot09name.SSDD255-8.ima  Empty with BOOT loader
  
    733,184 FLEX2DRV.DSDD80-5.IMA     BOOT on FLEX2DRV.SYS
    733,184 FLEX4DRV.DSDD80-5.IMA     BOOT on FLEX4DRV.SYS
