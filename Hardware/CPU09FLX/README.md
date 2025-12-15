@@ -15,6 +15,8 @@ clock generator fully buffered bus signals.
 
 The mini-backplane CPU09BP3 would be more then plenty for such a system.
 
+Update FLXMIN with B_MRDY signal for 4 and 5 MHz bus speed systems.
+
 
 
 
