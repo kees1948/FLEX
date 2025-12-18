@@ -23,6 +23,9 @@
 
 10. cmi_ide6.t - cmi_ide3.t but IO independent on cmisbug6
 
+11. cmi_io7B.t - cmi_io6B.t speedup FLP driver part
+
+12. cmi_ide7.t - cmi_ide6.t Speedup FLP driver part
 
 
 The CMISTEP program changes in memory some driver settings.
@@ -34,7 +37,7 @@ For driver 5 it can change the step rate and set double step for each drive.
 For driver 6 it can change the step rate and set double step for each floppy drive.
 For driver 7 it can change the step rate and set double step for each floppy drive.
 For driver 8 it can change the step rate and set double step for each floppy drive.
-For driver 9,10 it can change the step rate and set double step for each floppy drive.
+For driver 9,12 it can change the step rate and set double step for each floppy drive.
 
 
        Drivers 1-8 memory layout
@@ -44,7 +47,7 @@ For driver 9,10 it can change the step rate and set double step for each floppy 
   $E200 - $E2FF < IDE driver part
 
 
-       Drivers 9,10 memory layout
+       Drivers 9,12 memory layout
 
   $DE00 - $DFFF < diskdriver part-1
   $E400 - $E4FF < diskdriver part-2

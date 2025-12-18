@@ -110,6 +110,8 @@ You can rename the IMA part 'Boot09name' in a FLEX disk name.
   Resolved SIR problen with '(Uni)FLEX.EXE'.
   Replaced all the xxxx.DSDD-M-8.IMA images by xxxx.DSDD255-5.IMA
 
+18-12-2025
+  Update software on all xxxx.DSDD255-5.IMA's. 
 
 Note:
     If you are on cmi_sbug version 1.1 you can boot 

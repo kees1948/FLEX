@@ -1,8 +1,8 @@
              Latest software versions for FLEX6809
-                       2025-12-02
+                       2025-12-18
 
 Updates:
-     * BOOTON   - 7.0 
+     * BOOTON   - 7.1 
        CMILINK  - 1.0
      * CMISTEP  - 6.0 
      + DIR-COPY - 0.1
@@ -11,8 +11,7 @@ Updates:
      * FORMAT8  - 8.2
      * FDRIVES  - 6.1 
      * IDEFMT   - 6.1 
-       NEWMDISK - 1
-       PDEL     - 1
+       PDEL     - 2
      * PLIST    - 6.0 
        RBRDSK   - 1.0
        RBRDSKM  - 1.0
@@ -28,8 +27,8 @@ Latest drivers:
        CMI_IO4B - FLP only
        CMI_IDE3 - IDE & FLP
 
-       CMI_IO6B - On CMISBUG6 and up independent IO, FLP only
-       CMI_IDE6 - On CMISBUG6 and up independent IO, IDE & FLP 
+       CMI_IO7B - On CMISBUG6 and up independent IO, FLP only
+       CMI_IDE7 - On CMISBUG6 and up independent IO, IDE & FLP 
 
 
 Latest monitors:
