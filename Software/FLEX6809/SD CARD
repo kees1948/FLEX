@@ -23,6 +23,8 @@ Partition 1
 2025-11-29
    Cleanup SDimage, update software, rebuild subdirectories on P1.
 
+2025-12-20
+   Latest SDimage, FLX7IDE.SYS boot version.
 
 Info:
    When you use Linux to put the SDimage on a SD card, 
@@ -37,7 +39,8 @@ Info:
    See the DISK_TYPES table in the UniFLEX section!
 
    Oh yes you don't have a correct converter for the SD card, 
-   then use a hard disk.
+   then use a hard disk or a IDE-SSD.
+   And all the SDimage data is also on the DIR's and FLEX4DRV.DSDD255-5 ima's.
 
 
 Note:
