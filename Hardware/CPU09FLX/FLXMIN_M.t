@@ -1,8 +1,7 @@
                     FLXMIN + 09FLP - MRDY Signal.
 
 
-After many tests it appears that the FDC works only reliably 
-on a bus frequency of 3 MHz!
+After many tests it appears that the FDC works only reliably on a bus frequency of 3 MHz!
 
 So the FLXMIN + 09FLP + Gotek works well at 3 MHz.
 The easiest thing to do now is to generate an MRDY on the FLXMIN.
@@ -24,6 +23,10 @@ The sideselect on the Gotek does not work with 8" images with more than 77 track
 A system consisting of CPU09CMI, CPU09IDE, CPU09RAM, and FLXMIN + 09FLP + Gotek
 works now perfectly with a bus frequency of 2, 3, 4 and 5 MHz.
 
-
+2026-01-18 
+    Update.
+    MRDY signal on FLXMIN_M for 09FLP.
+    And jumper select for CPU09CMI-ACIA, DIV3, DIV4, DIV7.
+     
 CdeJ
 
