@@ -27,6 +27,10 @@ Comments:
    If there is no -Px after the GAL name, it is a full test.
 
 
+Note:
+   Use FLX_2 GAL only on FLXMIN card for CPU09CMI on 4 / 5 MHz bus.
+       B_MRDY signal for FLXMIN.
+
 
 CdeJ
 
