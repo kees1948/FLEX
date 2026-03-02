@@ -1,0 +1,18 @@
+2026-02-28
+     There is a timing error between the RAM card and the FLXMIN_M card
+
+On a 4MHz bus system with virtual disk and no E clock stretching for the FDC 
+   a DISKTEST on the GOTOEK image works flawlessly.
+
+On a 5MHz bus system with E clock stretching for the FDC 
+   a DISKTEST on the same GOTOEK image does not give any error messages.
+
+But if virtual disk is loaded 
+   a DISKTEST on the same GOTOEK image gives some CRC and link errors.
+
+
+2026-03-02
+
+   GAL code changed for RAM card and FLXMIN_M on 5 MHz bus.
+   Both cards must have a 5 MHz bus GAL version.
+
