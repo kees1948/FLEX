@@ -1,4 +1,3 @@
-<pre>
 
 Vector test on TL866II Plus. In Vector are the LGC files.
 
@@ -27,7 +26,3 @@ RAM_V-P3.lgc  - full equations tests, unused input pin's don't care state.
 
 
 CdeJ
-
-
-
-</pre>
