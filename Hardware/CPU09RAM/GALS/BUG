@@ -1,3 +1,4 @@
+
 2026-02-28
      There is a timing error between the RAM card and the FLXMIN_M card
 
@@ -12,7 +13,14 @@ But if virtual disk is loaded
 
 
 2026-03-02
-
    GAL code changed for RAM card and FLXMIN_M on 5 MHz bus.
    Both cards must have a 5 MHz bus GAL version.
+
+2026-03-05
+   Rewrite RAM_V code.
+   All the cards are now runing on 5MHz with no  E clock stretching!
+   Put Vector tests.
+
+
+CdeJ
 
