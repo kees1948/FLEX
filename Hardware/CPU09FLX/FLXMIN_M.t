@@ -1,4 +1,3 @@
-<pre>
 
                     FLXMIN + 09FLP - MRDY Signal.
 
@@ -44,6 +43,3 @@ works now perfectly with a bus frequency of 2, 3, 4 and 5 MHz.
 
 CdeJ
 
-
-
-</pre>
