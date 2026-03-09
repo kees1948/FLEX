@@ -7,7 +7,7 @@ VDISK.CMD Will format the RAM disk(s) depending the jumper setting.
           Can format V0, V1 or A for both.
 
 
-From virtual software version 9.7:
+From virtual software version 9.7 & version 9.7s:
 
     +++VIRTUAL 3=W
        Will load virtual driver and set disk 3 as work.

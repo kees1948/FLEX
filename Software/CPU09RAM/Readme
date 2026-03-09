@@ -10,15 +10,10 @@ We use the UniFLEX GAL, the software split the 512 bytes 2 times 256 byte/sector
 Put the test software on the "Virtual9.SSSD80-5.IMA" disk.
 Read "CPU09RAM card memory test".
 
-
-Added a large GoTek image "VBackup.ima" and an new "IMG.cfg".
+Added a large GoTek image "VBackup.virtual.ima" and an new "IMG.cfg" addon.
 Added "Virtual9.SSSD80-5.IMA" with "virtual.cmd" a Virtual ram disk driver 
 and "vdisk.cmd" the format program.
 Read "Virtual".
-
-On the "Virtual9.SSSD80-5.IMA" you also find "newBdisk.cmd" to (re)format the "VBackup.ima".
-The "VBackup.ima" is bootable.
-Formating the "VBackup.ima" wil take some time.
 
 If you not have a GoTek use the virtual.s1 en vdisk.s1.
 Open on FLEX:
@@ -68,7 +63,11 @@ At present the dip-switches have the following assigments:
            Resolve bug 'SET <' command to mark removed VIRTUAL.
 13-09-2024 VDISK Version 9.7 will ask to overrule the Format protection switch.
            Format V0, V1, A for both.
-    
+
+05-03-2026 The UniFLEX CPU09RAM card is tested on the CPU09CMI running 20Mhz,
+           with the RAM_V GAL.
+
+09-03-2026 VIRTUAL Version 9.7s will switch to block transfer on the H6309. 
 
 
 Remarks:

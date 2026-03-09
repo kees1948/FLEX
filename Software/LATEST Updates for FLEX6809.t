@@ -1,5 +1,5 @@
              Latest software versions for FLEX6809
-                       2025-12-18
+                       2026-03-09
 
 Updates:
      * BOOTON   - 7.1 
@@ -16,8 +16,8 @@ Updates:
        RBRDSK   - 1.0
        RBRDSKM  - 1.0
        SHOWDIR  - 2.0
-     * VDISK    - 9.7  skip protection?
-     * VIRTUAL  - 9.7  autorun VDISK
+     * VDISK    - 9.7s  skip protection?
+     * VIRTUAL  - 9.7s  autorun VDISK, switch to block transfer on H63C09
 
      * works on all drivers 
      + JCP script
