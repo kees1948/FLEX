@@ -21,6 +21,8 @@
    509,696 Boot02name.SSDD77-8.IMA   Empty with BOOT loader
    295,680 Boot02name.SSSD77-8.IMA   Empty with BOOT loader
 
+ 3,388,928 Boot09name.DSDD255-8.ima  Empty with BOOT loader
+
    204,800      FLEX2.SSSD80-5.IMA   BOOT on 6800 FLEX2
    204,800      FLEX3.SSSD80-5.IMA   BOOT on 6800 FLEX3 
 
@@ -35,5 +37,7 @@ From diskdriver "cmi_io2c" and "cmi_io3c" and up it also uses the cable select.
    Added in 'WindowsTools.zip' the '(Uni)FLEX.EXE' and boot loaders
    to create a formated Gotek image on a Windows computer.
 
+14-03-2026
+   Latest version '(Uni)FLEX.EXE'.
 
 CdeJ
