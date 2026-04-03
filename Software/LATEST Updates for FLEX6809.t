@@ -1,5 +1,5 @@
              Latest software versions for FLEX6809
-                       2026-03-09
+                       2026-04-03
 
 Updates:
      * BOOTON   - 7.1 
@@ -7,6 +7,7 @@ Updates:
      * CMISTEP  - 6.0 
      + DIR-COPY - 0.1
        DPACH    - 1
+       EXTENDIR - 3.0
      * FORMAT5  - 5.2
      * FORMAT8  - 8.2
      * FDRIVES  - 6.1 
