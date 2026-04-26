@@ -1,0 +1,13 @@
+The 74LS461 chips are PALs and due to a 5 MHz bus CPU09CMI 
+they become very hot at an ambient temperature above 35 degrees Celsius.
+
+The 74LS461 temperature rises to 60 degrees Celsius in no time, 
+and without a fan the system is in trouble.
+
+Replace the 74LS461 chips with a GAL22V10-15 programmed with GALUX-461.jed, 
+see UniFLEX section.
+
+The system now runs without any problems 
+and the chips remain at around 40 degrees Celsius.
+
+
