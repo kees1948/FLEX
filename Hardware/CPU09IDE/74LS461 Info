@@ -7,7 +7,7 @@ and without a fan the system is in trouble.
 Replace the 74LS461 chips with a GAL22V10-15 programmed with GALUX-461.jed, 
 see UniFLEX section.
 
-The system now runs without any problems 
+The system without fan now runs without any problems 
 and the chips remain at around 40 degrees Celsius.
 
 
