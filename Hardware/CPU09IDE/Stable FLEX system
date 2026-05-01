@@ -1,0 +1,27 @@
+How to build a stable FLEX system that works reliably 
+at Crystal frequency from 4MHz to 20MHz 
+and ambient temperature of 18-38 degrees Celsius.
+
+Some problems with 5 Mhz bus 
+and ambient temperature from 35 degrees Celsius and higher.
+
+The 74LS491 chips on the IDE card become too hot and cause disk problems.
+Replacing the 74LS491 with GAL22V10-15 prevents this.
+Because the GAL decreases its Icc with increasing temperature?
+
+A second critical point found, the 'NOT LINKED' startup message, is this.
+The IDE card becomes very sensitive to the supply voltage at higher temperatures.
+With the 74LS461, the voltage must be 5.0V or more to boot.
+With the GALs the voltage must be 4.9V or more to boot.
+
+For a stable system within the above ranges.:
+ 1- Replace the 2 pieces 74LS461 with 2 pieces GAL22V10-15.
+ 2- Supply voltage on the BUS card between 5.0 and 5.1 Volt.
+ 3- Do not use the female connector of the power adapter (these are unreliable).
+    Solder the 5V wires to the back-plane!
+ 4- Place a USB fan under the system for cooling.
+
+
+
+CdeJ
+
