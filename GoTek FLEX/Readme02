@@ -37,7 +37,7 @@ From diskdriver "cmi_io2c" and "cmi_io3c" and up it also uses the cable select.
    Added in 'WindowsTools.zip' the '(Uni)FLEX.EXE' and boot loaders
    to create a formated Gotek image on a Windows computer.
 
-14-03-2026
+04-09-2026
    Latest version '(Uni)FLEX.EXE'.
 
 CdeJ
