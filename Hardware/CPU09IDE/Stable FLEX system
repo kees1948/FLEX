@@ -22,6 +22,15 @@ For a stable system within the above ranges.:
  4- Place a USB fan under the system for cooling.
 
 
+Note:
+Testing of the UniFLEX system indicated disk structure issues 
+at an ambient temperature of 33–35°C.
+The bus frequency here is 4 MHz, 
+but UniFLEX performs continuous read and write operations on the hard disk.
+Replacing the 74LS461 chips with GAL22V10D-15 chips 
+using the GALUx-461.jed code resolved the problem.
+
+
 
 CdeJ
 
