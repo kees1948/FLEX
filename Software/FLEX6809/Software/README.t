@@ -33,7 +33,17 @@ A collection for the CPU09CMI ported software.
  STYLO,    R.G.Nobles, Roger Snyder
  RMS,      ...
 
+-Not tested on the CPU09CMI did work on the old CS system
 
+ TSC F77,     TSC Fortran compiler
+ TSC Pascal,  TSC Pascal compiler
+ TSC SRTMRG,  TSC Sort Merge
+ Omega PA,    Omegasoft Pacal compiler
+ WESTCHESTER, DBS
+ SLEUTH,      Disassembler
+ x02lats,     6502 translate to 6809
+
+ 
 * mc6839_FP-ROM.zip, MC6839 floating point rom.
 
 
