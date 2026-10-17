@@ -1,0 +1,510 @@
+*        COPYRIGHT (C) 1977 BY
+*   TECHNICAL SYSTEMS CONSULTANTS, INC.
+*  P.O. BOX 2574; W. LAFAYETTE, IN 47906
+*           (317) 742-7509
+*
+* SL68-28
+*
+        ORG $0200
+START   LDS #$0FFF  ; SETUP STACK
+        JMP BEGIN   ; START THE PROGRAM
+* TEMPORARY STORAGE
+
+TAPE    RMB 1       ; LOADED FROM TAPE FLAG
+PLAY    RMB 1       ; RECORDER ON FLAG
+FIXREF  RMB 1       ; FIX REFERENCES FLAG
+TEMP1   RMB 2       ; TEMPORARY REGISTER
+TEMP2   RMB 2       ; TEMPORARY REGISTER
+TEMP3   RMB 2       ; TEMPORARY REGISTER
+CMPREG  RMB 2       ; 2 BYTE COMPARE REGISTER
+DRCPTR  RMB 2       ; DIRECT STACK POINTER
+OLDPTR  RMB 2       ; OLD PROGRAM POINTER
+NEWPTR  RMB 2       ; NEW PROGRAM POINTER
+OBJEND  RMB 2       ; END OF OLD PROGRAM
+RGBEG   RMB 2       ; RANGE BEGIN ADDRESS
+RGEND   RMB 2       ; RANGE END ADDRESS
+OFFSTL  RMB 1       ; LEFT HALF OFFSET
+OFFSTR  RMB 1       ; RIGHT HALF OFFSET
+
+* EXTERNAL ROUTINE JUMPS
+
+OUTCH   JMP $E1D1   ; OUTPUT ROUTINE
+INCH    JMP $E1AC   ; INPUT ROUTINE
+MONITR  JMP $E0E3   ; EXIT ADDRESS
+
+* PRINT STRINGS
+
+PNEXTS   INX
+PSTRNG   BSR PCRLF  ; PRINT CR AND LF
+PDATA    LDAA 0,X   ; GET CHARACTER
+         CMPA #4    ; IS IT EOT ?
+         BEQ RETURN
+         BSR OUTCH  ; OUTPUT IT
+         INX
+         BRA PDATA
+PCRLF    STX TEMP1  ; SAVE X REGISTER
+         LDX #CRLF  ; POINT TO STRING
+         BSR PDATA  ; PRINT THE STRING
+         LDX TEMP1  ; RESTORE X REGISTER
+RETURN   RTS
+
+* INPUT 1 HEX CHARACTER
+
+IN1HEX   BSR INCH   ; GET CHARACTER
+IN1HX1   SUBA #$47  ; IS IT VALID ?
+         BPL INERR
+         ADDA #6
+         BPL IN1HX2
+         ADDA #7
+         BPL INERR
+IN1HX2   ADDA #10
+         BMI INERR
+         RTS        ; IF SO, RETURN
+INERR    INS        ; IF NOT; ERROR
+         INS
+         TST PLAY   ; IS TAPE ON ?
+         BEQ INERR2
+         INS
+         INS
+         JMP ERROR  ; IF SO, TAPE ERROR
+INERR2   LDX #WHAT  ; ELSE REPORT KEY ERROR
+         BSR PDATA
+         BRA INADDR ; TRY AGAIN
+
+* INPUT NUMBER TO X REGISTER
+
+PINADD   BSR PSTRNG ; PRINT STRING FIRST
+INADDR   CLR TEMP1  ; CLEAR REGISTER
+         CLR TEMP1+1
+INADD0   BSR INCH   ; GET CHARACTER
+         CMPA #$0D  ; IS IT A RETURN ?
+         BEQ INADD2 ; IF SO WE'RE DONE
+         BSR IN1HX1 ; ELSE, CHECK FOR HEX
+         ASLA       ; SHIFT IT OVER
+         ASLA
+         ASLA
+         ASLA
+         LDAB #4
+INADD1   ASLA       ; AND INTO REGISTER
+         ROL TEMP1+1
+         ROL TEMP1
+         DECB
+         BNE INADD1
+         BRA INADD0 ; GO GET ANOTHER
+INADD2   LDX TEMP1
+         RTS
+
+* INPUT 2 HEX DIGITS
+
+IN2HEX   BSR IN1HEX ; GET 1ST DIGIT
+         ASLA       ; SHIFT IT OVER
+         ASLA
+         ASLA
+         ASLA
+         TAB        ; SAVE IT
+         BSR IN1HEX ; GET 2nd CHARACTER
+         ABA        ; ADD IN FIRST
+         TAB
+         ADDB TEMP2 ; ADD TO CHECKSUM
+         STAB TEMP2
+         RTS
+
+* LOAD A MIKBUG FORMAT TAPE
+
+LOAD     LDAA #$3C    ; SETUP CONTROL PIA
+         STAA $8007
+         LDX #TAPEON  ; PRINT CONTROL CHRS.
+         BSR PDATA
+LOAD1    JSR INCH     ; GET CHARACTER
+         CMPA #"S"    ; IS IT AN 'S'?
+         BNE LOAD1    ; LOOP IF NOT
+         JSR INCH     ; GET CHARACTER
+         CMPA #"9"    ; IS IT A '9' ?
+         BEQ LOAD4    ; IF SO WE'RE DONE
+         SUBA #"1"    ; COMPARE TO A '1'
+         BNE LOAD1    ; LOOP IF NOT EQUAL
+         STAA TEMP2   ; CLEAR CHECKSUM
+         BSR IN2HEX
+         SUBA #2      ; GET BYTE COUNT - 2
+         STAA TEMP2+1 ; SAVE IT
+         BSR IN2HEX   ; GET LOAD ADDRESS
+         STAA TEMP1
+         BSR IN2HEX
+         STAA TEMP1+1
+         LDX TEMP1
+         JSR CMPARE   ; COMPARE OLDPTR
+         BHI LOAD2    ; JUMP IF OUTSIDE RANGE
+         LDX OBJEND
+         JSR CMPX     ; COMPARE ADDRESS & OBJEND
+         BLS LOAD2
+         LDX #CMPREG  ; IF WITHIN RANGE,
+         JSR ADDOFF   ; ADD IN OFFSET
+LOAD2    LDX CMPREG   ; GET FINAL ADDRESS
+LOAD25   BSR IN2HEX   ; GET A BYTE
+         DEC TEMP2+1  ; DEC. BYTE COUNT
+         BEQ LOAD3    ; EXIT IF = 0
+         STAA 0,X     ; ELSE STORE BYTE
+         INX
+         BRA LOAD25   ; LOOP UNTIL DONE
+LOAD3    INC TEMP2    ; IS CHECKSUM RIGHT ?
+         BEQ LOAD1    ; IF SO, GET NEXT RECORD
+ERROR    BSR LOAD4    ; ERROR.. TURN OFF TAPE
+         BSR DELAY    ; PAUSE AWHILE
+         LDX #ERR
+         JSR PSTRNG   ; REPORT ERROR
+TRYAG    JSR INCH     ; GET RESPONE
+         CMPA #"Y"
+         BEQ LOAD35   ; IF YES, TRY AGAIN
+         CMPA #"N"
+         BNE TRYAG
+         JMP MONITR   ; IF NO, EXIT PROGRAM
+LOAD35   JMP LOAD
+LOAD4    LDAA #$34    ; RESET CONTROL PIA
+         STAA $8007
+         LDX #TAPOFF  ; PRINT CONTROL CHARS.
+         JSR PDATA
+         JSR PCRLF
+         RTS
+
+* DELAY ROUTINE
+
+DELAY    LDX #$FFFF
+DELAY1   DEX          ; DELAY AWHILE
+         INX
+         DEX
+         INX
+         DEX
+         BNE DELAY1
+         RTS
+
+* START MAIN PROGRAM
+
+BEGIN    JSR PCRLF    ; PRINT 2 LINE FEEDS
+         JSR PCRLF
+         CLR TAPE     ; CLEAR FLAGS
+         CLR FIXREF
+         CLR PLAY
+         LDX #DRBEG   ; SETUP DIRECT POINTER
+         STX DRCPTR
+         LDX #INTRO
+         JSR PSTRNG   ; PRINT INTRO MESSAGE
+         JSR PNEXTS
+         LDX #BEGADR
+         JSR PINADD   ; GET BEGIN ADDRESS
+         STX OLDPTR
+         STX RGBEG    ; SET RANGE BEGIN
+         LDX #ENDADR
+         JSR PINADD   ; GET END ADDRESS
+         STX OBJEND
+         STX RGEND    ; SET RANGE END
+         LDX #NEWBG
+         JSR PINADD   ; GET NEW BEGIN ADDRESS
+         STX NEWPTR
+         LDAA NEWPTR+1 ; CALCULATE OFFSET
+         SUBA OLDPTR+1
+         STAA OFFSTR
+         LDAA NEWPTR
+         SBCA OLDPTR
+         STAA OFFSTL
+         LDX #FIXRFS
+         JSR PSTRNG    ; ASK TO FIX REFERENCES
+         JSR INCH      ; GET RESPONSE
+         CMPA #"N"
+         BEQ LDFRPT
+         INC FIXREF    ; IF YES, SET FLAG
+LDFRPT   LDX #TAPSTR
+         JSR PSTRNG    ; LOADING FROM TAPE ?
+         JSR INCH      ; GET RESPONSE
+         CMPA #"Y"
+         BEQ LDFRT1
+         JMP NOTAPE    ; IF NOT, JUMP AHEAD
+LDFRT1   INC TAPE      ; IF SO, SET TAPE FLAG
+         INC PLAY
+         JSR LOAD      ; GO LOAD TAPE
+         CLR PLAY
+         JSR DELAY     ; PAUSE AWHILE
+         LDX #LOADED
+         JSR PSTRNG    ; REPORT LOAD COMPLETE
+WAIT     JSR INCH      ; GET A CHARACTER
+         CMPA #$20
+         BNE WAIT      ; BUT ONLY ACCEPT SPACE
+         TST FIXREF    ; FIXING REFERENCES ?
+         BNE TAPFIX
+         JMP MONITR    ; IF NOT, EXIT PROGRAM
+TAPFIX   LDX NEWPTR
+         STX OLDPTR    ; IF SO, FIX OLDPTR
+         LDX #OBJEND
+         JSR ADDOFF    ; AND OBJECT END
+
+* ENTER DIRECT DATA BLOCKS
+
+DRBLKS   LDX #DRBEG
+         STX TEMP3     ; SAVE DIRECT BEGIN
+         LDX #DRCTBK
+         JSR PSTRNG    ; ANY DIRECT RELOCATES?
+         JSR INCH
+         CMPA #"N"
+         BNE DRBLK1    ; IF SO GO GET THEM
+         LDX #$FFFF
+         BRA DIFFRG    ; IF NOT, JUMP AHEAD
+DRBLK1   JSR PCRLF
+         LDX #BEGADR
+         JSR PINADD    ; GET BLOCK BEGIN
+         CPX #$FFFF    ; FINISHED?
+         BEQ DIFFRG    ; IF SO, JUMP AHEAD
+         BSR ENTER     ; PUT ADDRESS ON STACK
+         LDX #ENDADR
+         JSR PINADD    ; GET BLOCKEND
+         BSR ENTER     ; PUT IT ON STACK
+         BRA DRBLK1    ; LOOP BACK
+ENTER    TST TAPE      ; LOADED FROM TAPE?
+         BEQ ENTER0    ; IF NOT GO AHEAD
+         LDX #TEMP1
+         JSR ADDOFF    ; IF SO, ADD OFFSET
+         LDX TEMP1
+ENTER0   STX TEMP2     ; SAVE ADDRESS
+         LDX TEMP3     ; POINT TO DIRECT STACK
+         LDAA TEMP2    ; PUT ADDRESS ON STACK
+         STAA 0,X
+         LDAA TEMP2+1
+         STAA 1,X
+ENTER1   INX           ; FIX DIRECT STACK PTR.
+         INX
+         STX TEMP3
+         RTS
+NOTAPE   TST FIXREF    ; FIXING REFERENCES?
+         BNE DRBLKS    ; IF SO, GO ENTER DIRECTS
+         LDX #$0000    ; IF NOT, MAKE THE
+         STX DRBEG     ; ENTIRE RAM SPACE INTO
+         LDX #$FFFF    ; A DIRECT RELOCATE BLOCK
+         STX DRBEG+2
+         STX DRBEG+4
+         BRA LOOP      ; START RELOCATION
+         
+* ROUTINE TO INCREMENT POINTERS
+
+INCPTR   LDX NEWPTR
+         INX           ; INCREMENT NEW POINTER
+         STX NEWPTR
+         LDX OLDPTR
+         INX           ; INCREMENT OLD POINTER
+         STX OLDPTR
+         RTS
+         
+* CHANGE REFERENCE RANGE ROUTINE
+
+DIFFRG   BSR ENTER0    ; SET DIRECT STACK END
+         LDX #CHANGE
+         JSR PSTRNG    ; ASK TO CHANGE RANGE
+         JSR INCH      ; GET RESPONSE
+         CMPA #"Y"
+         BNE LOOP      ; IF NO, START RELOCATION
+         LDX #BEGADR
+         JSR PINADD    ; GET RANGE BEGIN
+         STX RGBEG
+         LDX #ENDADR
+         JSR PINADD    ; GET RANGE END
+         STX RGEND
+         
+* MAIN RELOCATION LOOP
+
+LOOP     LDX OBJEND    ; IS OLDPTR > OBJEND?
+         JSR CMPARE
+         BLS LOOP1
+         JMP DONE      ; IF SO, WE'RE DONE
+LOOP1    LDX DRCPTR    ; IS IT A DIRECT BLOCK?
+         LDX 0,X
+         JSR CMPARE
+         BCS LOOP2
+         JMP DIRECT    ; IF SO, GO MOVE DIRECT
+LOOP2    LDAA 0,X      ; MOVE OPCODE
+         LDX NEWPTR
+         STAA 0,X
+         LDX OLDPTR
+         ANDA #$30     ; CHECK FOR 3 BYTE INST.
+         CMPA #$30
+         BEQ MAYBE3    ; COULD BE 3 BYTES
+         LDAA 0,X
+         CMPA #$CE     ; CHECK FOR LDX #
+         BEQ THREE
+         CMPA #$8C     ; CHECK FOR CPX #
+         BEQ THREE
+         CMPA #$8E     ; CHECK FOR LDS #
+         BEQ THREE       
+         CMPA #$5F     ; LOOK FOR 2 BYTE INST.
+         BHI TWO
+         ANDA #$F0     ; LOOK FOR 1 BYTE INST.
+         CMPA #$20
+         BEQ TWO
+
+* ONE BYTE INSTRUCTION
+
+ONE      JSR INCPTR
+         BRA LOOP      ; GET NEXT INSTRUCTION
+
+* TWO BYTE INSTRUCTION
+
+TWO      JSR INCPTR    ; POINT TO 2ND BYTE
+         LDAA 0,X      ; MOVE IT
+         LDX NEWPTR
+         STAA 0,X
+         BRA ONE       ; NEXT INSTRUCTION
+         
+MAYBE3   LDAA 0,X      ; CHECK 3 OR 1 BYTE INST.
+         BITA #$C0
+         BEQ ONE
+
+* THREE BYTE INSTRUCTION
+
+THREE    JSR INCPTR    ; POINT TO REFERENCE
+         LDX RGBEG     ; IS IT BELOW RANGE BEG?
+         STX CMPREG
+         LDX OLDPTR
+         LDX 0,X
+         JSR CMPX
+         BLO NOFFST    ; IF SO, NO OFFSET
+         LDX RGEND     ; IS IT ABOVE RANGE END?
+         STX CMPREG
+         LDX OLDPTR
+         LDX 0,X
+         JSR CMPX
+         BHI NOFFST    ; IF SO, NO OFFSET
+         LDX OLDPTR
+         DEX
+         LDAA 0,X      ; GET OPCODE
+         INX
+         CMPA #$7F     ; IS IT A JMP ?
+         BEQ OFFSET    ; IF SO, DO OFFSET
+         ANDA #$F0     ; CHECK FOR PAGE 0 REF.
+         CMPA #$70
+         BNE OFFSET
+         LDAA 0,X
+         BEQ NOFST1    ; IF PAGE 0, NO OFFSET
+OFFSET   LDAA 1,X      ; ADD OFFSET TO REFERENCE
+         ADDA OFFSTR
+         TAB
+         LDAA 0,X
+         ADCA OFFSTL
+NEXT     LDX NEWPTR    ; STORE RESULT
+         STAA 0,X
+         STAB 1,X
+         JSR INCPTR
+         BRA ONE       ; GET NEXT INSTRUCTION
+NOFFST   LDX OLDPTR    ; NO OFFSET ADDED
+         LDAA 0,X
+NOFST1   LDAB 1,X
+         BRA NEXT
+
+* MOVE DIRECT DATA BLOCK
+
+DRECT0   JSR INCPTR    ; BUMP POINTERS
+DIRECT   LDAA 0,X      ; MOVE ONE BYTE
+         LDX NEWPTR
+         STAA 0,X
+         LDX OBJEND
+         JSR CMPARE    ; END OF PROGRAM?
+         BEQ DONE      ; IF SO, WE'RE DONE
+         LDX DRCPTR    ; GET BLOCK END ADDRESS
+         LDX 2,X
+         JSR CMPARE    ; ARE WE THERE?
+         BNE DRECT0    ; IF NOT, MOVE ANOTHER
+         LDX DRCPTR    ; FIXUP DIRECT POINTER
+         INX
+         INX
+         INX
+         INX
+         STX DRCPTR
+         JMP ONE       ; GO TO NORMAL RELOCATION
+
+* CODE IS RELOCATED, CHECK FDB'S
+
+DONE     TST FIXREF    ; FIXING REFERENCE?
+         BEQ DONE2     ; IF NOT, ALL DONE
+         CLRB
+         LDX #FXFDBS
+         JSR PSTRNG    ; ASK TO FIX FDB'S
+         JSR INCH      ; GET RESPONSE
+         CMPA #"N"
+         BEQ DONE2     ; IF N, ALL DONE
+         CMPA #"Y"
+         BEQ DONE0     ; IF Y, JUMP AHEAD
+         INCB          ; ELSE SET FLAG
+DONE0    PSHB          ; SAVE FLAG
+         LDX #BEGADR+6
+         JSR PINADD    ; GET FDB ADDRESS
+         PULB          ; RESTORE FLAG
+         CPX #$FFFF    ; ANY MORE FDB'S?
+         BEQ DONE2     ; IF NOT, ALL DONE
+         TSTB          ; IS FDB WITHIN RANGE?
+         BNE DONE1     ; IF NOT, NO OFFSET
+         LDX #TEMP1
+         BSR ADDOFF    ; ELSE ADD IN OFFSET
+         LDX TEMP1
+DONE1    BSR ADDOFF    ; FIXUP THE FDB
+         BRA DONE0     ; ANY MORE?
+
+* ALL FINISHED ROUTINE
+
+DONE2    JSR PCRLF
+         JSR PCRLF
+         LDX #FINE
+         JSR PSTRNG    ; REPORT COMPLETION
+         JSR PCRLF
+         JMP MONITR    ; EXIT THE PROGRAM
+         
+* TWO BYTE COMPARE ROUTINE
+
+CMPARE   STX CMPREG
+         LDX OLDPTR
+CMPX     STX TEMP1     ; COMPARE CMPREG TO TEMP1
+         LDAA TEMP1
+         CMPA CMPREG
+         BNE CMPX1
+         LDAA TEMP1+1
+         CMPA CMPREG+1
+CMPX1    RTS
+
+* ROUTINE TO ADD IN OFFSET
+
+ADDOFF   LDAA 1,X      ; GET RIGHT HALF
+         ADDA OFFSTR   ; ADD OFFSET RIGHT
+         STAA 1,X
+         LDAA 0,X      ; GET LEFT HALF
+         ADCA OFFSTL   ; ADD OFFSET LEFT
+         STAA 0,X
+         RTS
+
+* STRINGS
+
+TAPEON   FCB 0,0,0,0,4
+TAPOFF   FCB 0,0,0,0,4
+CRLF     FCB $D,$A,0,0,0,0,4
+INTRO    FCC "* TSC 6800 RELOCATOR *"
+         FCB 4
+         FCC "PRESENT PROGRAM:"
+         FCB 4
+BEGADR   FCC "BEGIN ADDRESS? "
+         FCB 4
+ENDADR   FCC "  END ADDRESS? "
+         FCB 4
+NEWBG    FCC "      MOVE TO? "
+         FCB 4
+TAPSTR   FCC "LOAD FROM TAPE? "
+         FCB 4
+LOADED   FCC "...LOAD COMPLETED."
+         FCB 4
+FIXRFS   FCC "FIX REFERENCES? "
+         FCB 4
+DRCTBK   FCC "DATA BLOCKS? "
+         FCB 4
+CHANGE   FCC "ALTER RANGE? "
+         FCB 4
+FINE     FCC "RELOCATION COMPLETED !!!"
+         FCB 4
+FXFDBS   FCC "FIX FDB"
+         FCB $27,$53,$3F,$20,4
+ERR      FCC "LOAD ERROR!  TRY AGAIN? "
+         FCB 7,4
+WHAT     FCB 7,$20,$3F,$20,4
+DRBEG    RMB 20
+         END

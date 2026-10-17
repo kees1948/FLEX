@@ -1,0 +1,540 @@
+AS02 Assembler for M6802 [1.40].                                          Page    1
+---------------------------------- TSCRELOC.ASM -----------------------------------
+
+510 lines read, no errors in pass 1.
+                        *        COPYRIGHT (C) 1977 BY
+                        *   TECHNICAL SYSTEMS CONSULTANTS, INC.
+                        *  P.O. BOX 2574; W. LAFAYETTE, IN 47906
+                        *           (317) 742-7509
+                        *
+                        * SL68-28
+                        *
+0200 =                          ORG $0200
+0200 : 8e0fff           START   LDS #$0FFF  ; SETUP STACK
+0203 : 7e032f                   JMP BEGIN   ; START THE PROGRAM
+                        * TEMPORARY STORAGE
+                        
+0206 : 00               TAPE    RMB 1       ; LOADED FROM TAPE FLAG
+0207 : 00               PLAY    RMB 1       ; RECORDER ON FLAG
+0208 : 00               FIXREF  RMB 1       ; FIX REFERENCES FLAG
+0209 : 0000             TEMP1   RMB 2       ; TEMPORARY REGISTER
+020b : 0000             TEMP2   RMB 2       ; TEMPORARY REGISTER
+020d : 0000             TEMP3   RMB 2       ; TEMPORARY REGISTER
+020f : 0000             CMPREG  RMB 2       ; 2 BYTE COMPARE REGISTER
+0211 : 0000             DRCPTR  RMB 2       ; DIRECT STACK POINTER
+0213 : 0000             OLDPTR  RMB 2       ; OLD PROGRAM POINTER
+0215 : 0000             NEWPTR  RMB 2       ; NEW PROGRAM POINTER
+0217 : 0000             OBJEND  RMB 2       ; END OF OLD PROGRAM
+0219 : 0000             RGBEG   RMB 2       ; RANGE BEGIN ADDRESS
+021b : 0000             RGEND   RMB 2       ; RANGE END ADDRESS
+021d : 00               OFFSTL  RMB 1       ; LEFT HALF OFFSET
+021e : 00               OFFSTR  RMB 1       ; RIGHT HALF OFFSET
+                        
+                        * EXTERNAL ROUTINE JUMPS
+                        
+021f : 7ee1d1           OUTCH   JMP $E1D1   ; OUTPUT ROUTINE
+0222 : 7ee1ac           INCH    JMP $E1AC   ; INPUT ROUTINE
+0225 : 7ee0e3           MONITR  JMP $E0E3   ; EXIT ADDRESS
+                        
+                        * PRINT STRINGS
+                        
+0228 : 08               PNEXTS   INX
+0229 : 8d0b             PSTRNG   BSR PCRLF  ; PRINT CR AND LF
+022b : a600             PDATA    LDAA 0,X   ; GET CHARACTER
+022d : 8104                      CMPA #4    ; IS IT EOT ?
+022f : 2710                      BEQ RETURN
+0231 : 8dec                      BSR OUTCH  ; OUTPUT IT
+0233 : 08                        INX
+0234 : 20f5                      BRA PDATA
+0236 : ff0209           PCRLF    STX TEMP1  ; SAVE X REGISTER
+0239 : ce05bb                    LDX #CRLF  ; POINT TO STRING
+023c : 8ded                      BSR PDATA  ; PRINT THE STRING
+023e : fe0209                    LDX TEMP1  ; RESTORE X REGISTER
+0241 : 39               RETURN   RTS
+                        
+                        * INPUT 1 HEX CHARACTER
+                        
+0242 : 8dde             IN1HEX   BSR INCH   ; GET CHARACTER
+0244 : 8047             IN1HX1   SUBA #$47  ; IS IT VALID ?
+0246 : 2a0d                      BPL INERR
+0248 : 8b06                      ADDA #6
+024a : 2a04                      BPL IN1HX2
+024c : 8b07                      ADDA #7
+024e : 2a05                      BPL INERR
+0250 : 8b0a             IN1HX2   ADDA #10
+0252 : 2b01                      BMI INERR
+0254 : 39                        RTS        ; IF SO, RETURN
+AS02 Assembler for M6802 [1.40].                                          Page    2
+---------------------------------- TSCRELOC.ASM -----------------------------------
+
+0255 : 31               INERR    INS        ; IF NOT; ERROR
+0256 : 31                        INS
+0257 : 7d0207                    TST PLAY   ; IS TAPE ON ?
+025a : 2705                      BEQ INERR2
+025c : 31                        INS
+025d : 31                        INS
+025e : 7e02fa                    JMP ERROR  ; IF SO, TAPE ERROR
+0261 : ce06aa           INERR2   LDX #WHAT  ; ELSE REPORT KEY ERROR
+0264 : 8dc5                      BSR PDATA
+0266 : 2002                      BRA INADDR ; TRY AGAIN
+                        
+                        * INPUT NUMBER TO X REGISTER
+                        
+0268 : 8dbf             PINADD   BSR PSTRNG ; PRINT STRING FIRST
+026a : 7f0209           INADDR   CLR TEMP1  ; CLEAR REGISTER
+026d : 7f020a                    CLR TEMP1+1
+0270 : 8db0             INADD0   BSR INCH   ; GET CHARACTER
+0272 : 810d                      CMPA #$0D  ; IS IT A RETURN ?
+0274 : 2714                      BEQ INADD2 ; IF SO WE'RE DONE
+0276 : 8dcc                      BSR IN1HX1 ; ELSE, CHECK FOR HEX
+0278 : 48                        ASLA       ; SHIFT IT OVER
+0279 : 48                        ASLA
+027a : 48                        ASLA
+027b : 48                        ASLA
+027c : c604                      LDAB #4
+027e : 48               INADD1   ASLA       ; AND INTO REGISTER
+027f : 79020a                    ROL TEMP1+1
+0282 : 790209                    ROL TEMP1
+0285 : 5a                        DECB
+0286 : 26f6                      BNE INADD1
+0288 : 20e6                      BRA INADD0 ; GO GET ANOTHER
+028a : fe0209           INADD2   LDX TEMP1
+028d : 39                        RTS
+                        
+                        * INPUT 2 HEX DIGITS
+                        
+028e : 8db2             IN2HEX   BSR IN1HEX ; GET 1ST DIGIT
+0290 : 48                        ASLA       ; SHIFT IT OVER
+0291 : 48                        ASLA
+0292 : 48                        ASLA
+0293 : 48                        ASLA
+0294 : 16                        TAB        ; SAVE IT
+0295 : 8dab                      BSR IN1HEX ; GET 2nd CHARACTER
+0297 : 1b                        ABA        ; ADD IN FIRST
+0298 : 16                        TAB
+0299 : fb020b                    ADDB TEMP2 ; ADD TO CHECKSUM
+029c : f7020b                    STAB TEMP2
+029f : 39                        RTS
+                        
+                        * LOAD A MIKBUG FORMAT TAPE
+                        
+02a0 : 863c             LOAD     LDAA #$3C    ; SETUP CONTROL PIA
+02a2 : b78007                    STAA $8007
+02a5 : ce05b1                    LDX #TAPEON  ; PRINT CONTROL CHRS.
+02a8 : 8d81                      BSR PDATA
+02aa : bd0222           LOAD1    JSR INCH     ; GET CHARACTER
+02ad : 8153                      CMPA #"S"    ; IS IT AN 'S'?
+02af : 26f9                      BNE LOAD1    ; LOOP IF NOT
+02b1 : bd0222                    JSR INCH     ; GET CHARACTER
+02b4 : 8139                      CMPA #"9"    ; IS IT A '9' ?
+02b6 : 275d                      BEQ LOAD4    ; IF SO WE'RE DONE
+02b8 : 8031                      SUBA #"1"    ; COMPARE TO A '1'
+02ba : 26ee                      BNE LOAD1    ; LOOP IF NOT EQUAL
+AS02 Assembler for M6802 [1.40].                                          Page    3
+---------------------------------- TSCRELOC.ASM -----------------------------------
+
+02bc : b7020b                    STAA TEMP2   ; CLEAR CHECKSUM
+02bf : 8dcd                      BSR IN2HEX
+02c1 : 8002                      SUBA #2      ; GET BYTE COUNT - 2
+02c3 : b7020c                    STAA TEMP2+1 ; SAVE IT
+02c6 : 8dc6                      BSR IN2HEX   ; GET LOAD ADDRESS
+02c8 : b70209                    STAA TEMP1
+02cb : 8dc1                      BSR IN2HEX
+02cd : b7020a                    STAA TEMP1+1
+02d0 : fe0209                    LDX TEMP1
+02d3 : bd058a                    JSR CMPARE   ; COMPARE OLDPTR
+02d6 : 220e                      BHI LOAD2    ; JUMP IF OUTSIDE RANGE
+02d8 : fe0217                    LDX OBJEND
+02db : bd0590                    JSR CMPX     ; COMPARE ADDRESS & OBJEND
+02de : 2306                      BLS LOAD2
+02e0 : ce020f                    LDX #CMPREG  ; IF WITHIN RANGE,
+02e3 : bd05a2                    JSR ADDOFF   ; ADD IN OFFSET
+02e6 : fe020f           LOAD2    LDX CMPREG   ; GET FINAL ADDRESS
+02e9 : 8da3             LOAD25   BSR IN2HEX   ; GET A BYTE
+02eb : 7a020c                    DEC TEMP2+1  ; DEC. BYTE COUNT
+02ee : 2705                      BEQ LOAD3    ; EXIT IF = 0
+02f0 : a700                      STAA 0,X     ; ELSE STORE BYTE
+02f2 : 08                        INX
+02f3 : 20f4                      BRA LOAD25   ; LOOP UNTIL DONE
+02f5 : 7c020b           LOAD3    INC TEMP2    ; IS CHECKSUM RIGHT ?
+02f8 : 27b0                      BEQ LOAD1    ; IF SO, GET NEXT RECORD
+02fa : 8d19             ERROR    BSR LOAD4    ; ERROR.. TURN OFF TAPE
+02fc : 8d26                      BSR DELAY    ; PAUSE AWHILE
+02fe : ce0690                    LDX #ERR
+0301 : bd0229                    JSR PSTRNG   ; REPORT ERROR
+0304 : bd0222           TRYAG    JSR INCH     ; GET RESPONE
+0307 : 8159                      CMPA #"Y"
+0309 : 2707                      BEQ LOAD35   ; IF YES, TRY AGAIN
+030b : 814e                      CMPA #"N"
+030d : 26f5                      BNE TRYAG
+030f : 7e0225                    JMP MONITR   ; IF NO, EXIT PROGRAM
+0312 : 7e02a0           LOAD35   JMP LOAD
+0315 : 8634             LOAD4    LDAA #$34    ; RESET CONTROL PIA
+0317 : b78007                    STAA $8007
+031a : ce05b6                    LDX #TAPOFF  ; PRINT CONTROL CHARS.
+031d : bd022b                    JSR PDATA
+0320 : bd0236                    JSR PCRLF
+0323 : 39                        RTS
+                        
+                        * DELAY ROUTINE
+                        
+0324 : ceffff           DELAY    LDX #$FFFF
+0327 : 09               DELAY1   DEX          ; DELAY AWHILE
+0328 : 08                        INX
+0329 : 09                        DEX
+032a : 08                        INX
+032b : 09                        DEX
+032c : 26f9                      BNE DELAY1
+032e : 39                        RTS
+                        
+                        * START MAIN PROGRAM
+                        
+032f : bd0236           BEGIN    JSR PCRLF    ; PRINT 2 LINE FEEDS
+0332 : bd0236                    JSR PCRLF
+0335 : 7f0206                    CLR TAPE     ; CLEAR FLAGS
+0338 : 7f0208                    CLR FIXREF
+033b : 7f0207                    CLR PLAY
+033e : ce06af                    LDX #DRBEG   ; SETUP DIRECT POINTER
+0341 : ff0211                    STX DRCPTR
+AS02 Assembler for M6802 [1.40].                                          Page    4
+---------------------------------- TSCRELOC.ASM -----------------------------------
+
+0344 : ce05c2                    LDX #INTRO
+0347 : bd0229                    JSR PSTRNG   ; PRINT INTRO MESSAGE
+034a : bd0228                    JSR PNEXTS
+034d : ce05ea                    LDX #BEGADR
+0350 : bd0268                    JSR PINADD   ; GET BEGIN ADDRESS
+0353 : ff0213                    STX OLDPTR
+0356 : ff0219                    STX RGBEG    ; SET RANGE BEGIN
+0359 : ce05fa                    LDX #ENDADR
+035c : bd0268                    JSR PINADD   ; GET END ADDRESS
+035f : ff0217                    STX OBJEND
+0362 : ff021b                    STX RGEND    ; SET RANGE END
+0365 : ce060a                    LDX #NEWBG
+0368 : bd0268                    JSR PINADD   ; GET NEW BEGIN ADDRESS
+036b : ff0215                    STX NEWPTR
+036e : b60216                    LDAA NEWPTR+1 ; CALCULATE OFFSET
+0371 : b00214                    SUBA OLDPTR+1
+0374 : b7021e                    STAA OFFSTR
+0377 : b60215                    LDAA NEWPTR
+037a : b20213                    SBCA OLDPTR
+037d : b7021d                    STAA OFFSTL
+0380 : ce063e                    LDX #FIXRFS
+0383 : bd0229                    JSR PSTRNG    ; ASK TO FIX REFERENCES
+0386 : bd0222                    JSR INCH      ; GET RESPONSE
+0389 : 814e                      CMPA #"N"
+038b : 2703                      BEQ LDFRPT
+038d : 7c0208                    INC FIXREF    ; IF YES, SET FLAG
+0390 : ce061a           LDFRPT   LDX #TAPSTR
+0393 : bd0229                    JSR PSTRNG    ; LOADING FROM TAPE ?
+0396 : bd0222                    JSR INCH      ; GET RESPONSE
+0399 : 8159                      CMPA #"Y"
+039b : 2703                      BEQ LDFRT1
+039d : 7e0426                    JMP NOTAPE    ; IF NOT, JUMP AHEAD
+03a0 : 7c0206           LDFRT1   INC TAPE      ; IF SO, SET TAPE FLAG
+03a3 : 7c0207                    INC PLAY
+03a6 : bd02a0                    JSR LOAD      ; GO LOAD TAPE
+03a9 : 7f0207                    CLR PLAY
+03ac : bd0324                    JSR DELAY     ; PAUSE AWHILE
+03af : ce062b                    LDX #LOADED
+03b2 : bd0229                    JSR PSTRNG    ; REPORT LOAD COMPLETE
+03b5 : bd0222           WAIT     JSR INCH      ; GET A CHARACTER
+03b8 : 8120                      CMPA #$20
+03ba : 26f9                      BNE WAIT      ; BUT ONLY ACCEPT SPACE
+03bc : 7d0208                    TST FIXREF    ; FIXING REFERENCES ?
+03bf : 2603                      BNE TAPFIX
+03c1 : 7e0225                    JMP MONITR    ; IF NOT, EXIT PROGRAM
+03c4 : fe0215           TAPFIX   LDX NEWPTR
+03c7 : ff0213                    STX OLDPTR    ; IF SO, FIX OLDPTR
+03ca : ce0217                    LDX #OBJEND
+03cd : bd05a2                    JSR ADDOFF    ; AND OBJECT END
+                        
+                        * ENTER DIRECT DATA BLOCKS
+                        
+03d0 : ce06af           DRBLKS   LDX #DRBEG
+03d3 : ff020d                    STX TEMP3     ; SAVE DIRECT BEGIN
+03d6 : ce064f                    LDX #DRCTBK
+03d9 : bd0229                    JSR PSTRNG    ; ANY DIRECT RELOCATES?
+03dc : bd0222                    JSR INCH
+03df : 814e                      CMPA #"N"
+03e1 : 2605                      BNE DRBLK1    ; IF SO GO GET THEM
+03e3 : ceffff                    LDX #$FFFF
+03e6 : 2063                      BRA DIFFRG    ; IF NOT, JUMP AHEAD
+03e8 : bd0236           DRBLK1   JSR PCRLF
+03eb : ce05ea                    LDX #BEGADR
+AS02 Assembler for M6802 [1.40].                                          Page    5
+---------------------------------- TSCRELOC.ASM -----------------------------------
+
+03ee : bd0268                    JSR PINADD    ; GET BLOCK BEGIN
+03f1 : 8cffff                    CPX #$FFFF    ; FINISHED?
+03f4 : 2755                      BEQ DIFFRG    ; IF SO, JUMP AHEAD
+03f6 : 8d0a                      BSR ENTER     ; PUT ADDRESS ON STACK
+03f8 : ce05fa                    LDX #ENDADR
+03fb : bd0268                    JSR PINADD    ; GET BLOCKEND
+03fe : 8d02                      BSR ENTER     ; PUT IT ON STACK
+0400 : 20e6                      BRA DRBLK1    ; LOOP BACK
+0402 : 7d0206           ENTER    TST TAPE      ; LOADED FROM TAPE?
+0405 : 2709                      BEQ ENTER0    ; IF NOT GO AHEAD
+0407 : ce0209                    LDX #TEMP1
+040a : bd05a2                    JSR ADDOFF    ; IF SO, ADD OFFSET
+040d : fe0209                    LDX TEMP1
+0410 : ff020b           ENTER0   STX TEMP2     ; SAVE ADDRESS
+0413 : fe020d                    LDX TEMP3     ; POINT TO DIRECT STACK
+0416 : b6020b                    LDAA TEMP2    ; PUT ADDRESS ON STACK
+0419 : a700                      STAA 0,X
+041b : b6020c                    LDAA TEMP2+1
+041e : a701                      STAA 1,X
+0420 : 08               ENTER1   INX           ; FIX DIRECT STACK PTR.
+0421 : 08                        INX
+0422 : ff020d                    STX TEMP3
+0425 : 39                        RTS
+0426 : 7d0208           NOTAPE   TST FIXREF    ; FIXING REFERENCES?
+0429 : 26a5                      BNE DRBLKS    ; IF SO, GO ENTER DIRECTS
+042b : ce0000                    LDX #$0000    ; IF NOT, MAKE THE
+042e : ff06af                    STX DRBEG     ; ENTIRE RAM SPACE INTO
+0431 : ceffff                    LDX #$FFFF    ; A DIRECT RELOCATE BLOCK
+0434 : ff06b1                    STX DRBEG+2
+0437 : ff06b3                    STX DRBEG+4
+043a : 2030                      BRA LOOP      ; START RELOCATION
+                                 
+                        * ROUTINE TO INCREMENT POINTERS
+                        
+043c : fe0215           INCPTR   LDX NEWPTR
+043f : 08                        INX           ; INCREMENT NEW POINTER
+0440 : ff0215                    STX NEWPTR
+0443 : fe0213                    LDX OLDPTR
+0446 : 08                        INX           ; INCREMENT OLD POINTER
+0447 : ff0213                    STX OLDPTR
+044a : 39                        RTS
+                                 
+                        * CHANGE REFERENCE RANGE ROUTINE
+                        
+044b : 8dc3             DIFFRG   BSR ENTER0    ; SET DIRECT STACK END
+044d : ce065d                    LDX #CHANGE
+0450 : bd0229                    JSR PSTRNG    ; ASK TO CHANGE RANGE
+0453 : bd0222                    JSR INCH      ; GET RESPONSE
+0456 : 8159                      CMPA #"Y"
+0458 : 2612                      BNE LOOP      ; IF NO, START RELOCATION
+045a : ce05ea                    LDX #BEGADR
+045d : bd0268                    JSR PINADD    ; GET RANGE BEGIN
+0460 : ff0219                    STX RGBEG
+0463 : ce05fa                    LDX #ENDADR
+0466 : bd0268                    JSR PINADD    ; GET RANGE END
+0469 : ff021b                    STX RGEND
+                                 
+                        * MAIN RELOCATION LOOP
+                        
+046c : fe0217           LOOP     LDX OBJEND    ; IS OLDPTR > OBJEND?
+046f : bd058a                    JSR CMPARE
+0472 : 2303                      BLS LOOP1
+0474 : 7e0544                    JMP DONE      ; IF SO, WE'RE DONE
+AS02 Assembler for M6802 [1.40].                                          Page    6
+---------------------------------- TSCRELOC.ASM -----------------------------------
+
+0477 : fe0211           LOOP1    LDX DRCPTR    ; IS IT A DIRECT BLOCK?
+047a : ee00                      LDX 0,X
+047c : bd058a                    JSR CMPARE
+047f : 2503                      BCS LOOP2
+0481 : 7e051e                    JMP DIRECT    ; IF SO, GO MOVE DIRECT
+0484 : a600             LOOP2    LDAA 0,X      ; MOVE OPCODE
+0486 : fe0215                    LDX NEWPTR
+0489 : a700                      STAA 0,X
+048b : fe0213                    LDX OLDPTR
+048e : 8430                      ANDA #$30     ; CHECK FOR 3 BYTE INST.
+0490 : 8130                      CMPA #$30
+0492 : 2729                      BEQ MAYBE3    ; COULD BE 3 BYTES
+0494 : a600                      LDAA 0,X
+0496 : 81ce                      CMPA #$CE     ; CHECK FOR LDX #
+0498 : 2729                      BEQ THREE
+049a : 818c                      CMPA #$8C     ; CHECK FOR CPX #
+049c : 2725                      BEQ THREE
+049e : 818e                      CMPA #$8E     ; CHECK FOR LDS #
+04a0 : 2721                      BEQ THREE       
+04a2 : 815f                      CMPA #$5F     ; LOOK FOR 2 BYTE INST.
+04a4 : 220b                      BHI TWO
+04a6 : 84f0                      ANDA #$F0     ; LOOK FOR 1 BYTE INST.
+04a8 : 8120                      CMPA #$20
+04aa : 2705                      BEQ TWO
+                        
+                        * ONE BYTE INSTRUCTION
+                        
+04ac : bd043c           ONE      JSR INCPTR
+04af : 20bb                      BRA LOOP      ; GET NEXT INSTRUCTION
+                        
+                        * TWO BYTE INSTRUCTION
+                        
+04b1 : bd043c           TWO      JSR INCPTR    ; POINT TO 2ND BYTE
+04b4 : a600                      LDAA 0,X      ; MOVE IT
+04b6 : fe0215                    LDX NEWPTR
+04b9 : a700                      STAA 0,X
+04bb : 20ef                      BRA ONE       ; NEXT INSTRUCTION
+                                 
+04bd : a600             MAYBE3   LDAA 0,X      ; CHECK 3 OR 1 BYTE INST.
+04bf : 85c0                      BITA #$C0
+04c1 : 27e9                      BEQ ONE
+                        
+                        * THREE BYTE INSTRUCTION
+                        
+04c3 : bd043c           THREE    JSR INCPTR    ; POINT TO REFERENCE
+04c6 : fe0219                    LDX RGBEG     ; IS IT BELOW RANGE BEG?
+04c9 : ff020f                    STX CMPREG
+04cc : fe0213                    LDX OLDPTR
+04cf : ee00                      LDX 0,X
+04d1 : bd0590                    JSR CMPX
+04d4 : 253c                      BLO NOFFST    ; IF SO, NO OFFSET
+04d6 : fe021b                    LDX RGEND     ; IS IT ABOVE RANGE END?
+04d9 : ff020f                    STX CMPREG
+04dc : fe0213                    LDX OLDPTR
+04df : ee00                      LDX 0,X
+04e1 : bd0590                    JSR CMPX
+04e4 : 222c                      BHI NOFFST    ; IF SO, NO OFFSET
+04e6 : fe0213                    LDX OLDPTR
+04e9 : 09                        DEX
+04ea : a600                      LDAA 0,X      ; GET OPCODE
+04ec : 08                        INX
+04ed : 817f                      CMPA #$7F     ; IS IT A JMP ?
+04ef : 270a                      BEQ OFFSET    ; IF SO, DO OFFSET
+AS02 Assembler for M6802 [1.40].                                          Page    7
+---------------------------------- TSCRELOC.ASM -----------------------------------
+
+04f1 : 84f0                      ANDA #$F0     ; CHECK FOR PAGE 0 REF.
+04f3 : 8170                      CMPA #$70
+04f5 : 2604                      BNE OFFSET
+04f7 : a600                      LDAA 0,X
+04f9 : 271c                      BEQ NOFST1    ; IF PAGE 0, NO OFFSET
+04fb : a601             OFFSET   LDAA 1,X      ; ADD OFFSET TO REFERENCE
+04fd : bb021e                    ADDA OFFSTR
+0500 : 16                        TAB
+0501 : a600                      LDAA 0,X
+0503 : b9021d                    ADCA OFFSTL
+0506 : fe0215           NEXT     LDX NEWPTR    ; STORE RESULT
+0509 : a700                      STAA 0,X
+050b : e701                      STAB 1,X
+050d : bd043c                    JSR INCPTR
+0510 : 209a                      BRA ONE       ; GET NEXT INSTRUCTION
+0512 : fe0213           NOFFST   LDX OLDPTR    ; NO OFFSET ADDED
+0515 : a600                      LDAA 0,X
+0517 : e601             NOFST1   LDAB 1,X
+0519 : 20eb                      BRA NEXT
+                        
+                        * MOVE DIRECT DATA BLOCK
+                        
+051b : bd043c           DRECT0   JSR INCPTR    ; BUMP POINTERS
+051e : a600             DIRECT   LDAA 0,X      ; MOVE ONE BYTE
+0520 : fe0215                    LDX NEWPTR
+0523 : a700                      STAA 0,X
+0525 : fe0217                    LDX OBJEND
+0528 : bd058a                    JSR CMPARE    ; END OF PROGRAM?
+052b : 2717                      BEQ DONE      ; IF SO, WE'RE DONE
+052d : fe0211                    LDX DRCPTR    ; GET BLOCK END ADDRESS
+0530 : ee02                      LDX 2,X
+0532 : bd058a                    JSR CMPARE    ; ARE WE THERE?
+0535 : 26e4                      BNE DRECT0    ; IF NOT, MOVE ANOTHER
+0537 : fe0211                    LDX DRCPTR    ; FIXUP DIRECT POINTER
+053a : 08                        INX
+053b : 08                        INX
+053c : 08                        INX
+053d : 08                        INX
+053e : ff0211                    STX DRCPTR
+0541 : 7e04ac                    JMP ONE       ; GO TO NORMAL RELOCATION
+                        
+                        * CODE IS RELOCATED, CHECK FDB'S
+                        
+0544 : 7d0208           DONE     TST FIXREF    ; FIXING REFERENCE?
+0547 : 272f                      BEQ DONE2     ; IF NOT, ALL DONE
+0549 : 5f                        CLRB
+054a : ce0684                    LDX #FXFDBS
+054d : bd0229                    JSR PSTRNG    ; ASK TO FIX FDB'S
+0550 : bd0222                    JSR INCH      ; GET RESPONSE
+0553 : 814e                      CMPA #"N"
+0555 : 2721                      BEQ DONE2     ; IF N, ALL DONE
+0557 : 8159                      CMPA #"Y"
+0559 : 2701                      BEQ DONE0     ; IF Y, JUMP AHEAD
+055b : 5c                        INCB          ; ELSE SET FLAG
+055c : 37               DONE0    PSHB          ; SAVE FLAG
+055d : ce05f0                    LDX #BEGADR+6
+0560 : bd0268                    JSR PINADD    ; GET FDB ADDRESS
+0563 : 33                        PULB          ; RESTORE FLAG
+0564 : 8cffff                    CPX #$FFFF    ; ANY MORE FDB'S?
+0567 : 270f                      BEQ DONE2     ; IF NOT, ALL DONE
+0569 : 5d                        TSTB          ; IS FDB WITHIN RANGE?
+056a : 2608                      BNE DONE1     ; IF NOT, NO OFFSET
+056c : ce0209                    LDX #TEMP1
+AS02 Assembler for M6802 [1.40].                                          Page    8
+---------------------------------- TSCRELOC.ASM -----------------------------------
+
+056f : 8d31                      BSR ADDOFF    ; ELSE ADD IN OFFSET
+0571 : fe0209                    LDX TEMP1
+0574 : 8d2c             DONE1    BSR ADDOFF    ; FIXUP THE FDB
+0576 : 20e4                      BRA DONE0     ; ANY MORE?
+                        
+                        * ALL FINISHED ROUTINE
+                        
+0578 : bd0236           DONE2    JSR PCRLF
+057b : bd0236                    JSR PCRLF
+057e : ce066b                    LDX #FINE
+0581 : bd0229                    JSR PSTRNG    ; REPORT COMPLETION
+0584 : bd0236                    JSR PCRLF
+0587 : 7e0225                    JMP MONITR    ; EXIT THE PROGRAM
+                                 
+                        * TWO BYTE COMPARE ROUTINE
+                        
+058a : ff020f           CMPARE   STX CMPREG
+058d : fe0213                    LDX OLDPTR
+0590 : ff0209           CMPX     STX TEMP1     ; COMPARE CMPREG TO TEMP1
+0593 : b60209                    LDAA TEMP1
+0596 : b1020f                    CMPA CMPREG
+0599 : 2606                      BNE CMPX1
+059b : b6020a                    LDAA TEMP1+1
+059e : b10210                    CMPA CMPREG+1
+05a1 : 39               CMPX1    RTS
+                        
+                        * ROUTINE TO ADD IN OFFSET
+                        
+05a2 : a601             ADDOFF   LDAA 1,X      ; GET RIGHT HALF
+05a4 : bb021e                    ADDA OFFSTR   ; ADD OFFSET RIGHT
+05a7 : a701                      STAA 1,X
+05a9 : a600                      LDAA 0,X      ; GET LEFT HALF
+05ab : b9021d                    ADCA OFFSTL   ; ADD OFFSET LEFT
+05ae : a700                      STAA 0,X
+05b0 : 39                        RTS
+                        
+                        * STRINGS
+                        
+05b1 : 0000000004       TAPEON   FCB 0,0,0,0,4
+05b6 : 0000000004       TAPOFF   FCB 0,0,0,0,4
+05bb : 0d0a0000000004   CRLF     FCB $D,$A,0,0,0,0,4
+05c2 : 2a205453432036.. INTRO    FCC "* TSC 6800 RELOCATOR *"
+05d8 : 04                        FCB 4
+05d9 : 50524553454e54..          FCC "PRESENT PROGRAM:"
+05e9 : 04                        FCB 4
+05ea : 424547494e2041.. BEGADR   FCC "BEGIN ADDRESS? "
+05f9 : 04                        FCB 4
+05fa : 2020454e442041.. ENDADR   FCC "  END ADDRESS? "
+0609 : 04                        FCB 4
+060a : 2020202020204d.. NEWBG    FCC "      MOVE TO? "
+0619 : 04                        FCB 4
+061a : 4c4f4144204652.. TAPSTR   FCC "LOAD FROM TAPE? "
+062a : 04                        FCB 4
+062b : 2e2e2e4c4f4144.. LOADED   FCC "...LOAD COMPLETED."
+063d : 04                        FCB 4
+063e : 46495820524546.. FIXRFS   FCC "FIX REFERENCES? "
+064e : 04                        FCB 4
+064f : 4441544120424c.. DRCTBK   FCC "DATA BLOCKS? "
+065c : 04                        FCB 4
+065d : 414c5445522052.. CHANGE   FCC "ALTER RANGE? "
+066a : 04                        FCB 4
+066b : 52454c4f434154.. FINE     FCC "RELOCATION COMPLETED !!!"
+0683 : 04                        FCB 4
+AS02 Assembler for M6802 [1.40].                                          Page    9
+---------------------------------- TSCRELOC.ASM -----------------------------------
+
+0684 : 46495820464442   FXFDBS   FCC "FIX FDB"
+068b : 27533f2004                FCB $27,$53,$3F,$20,4
+0690 : 4c4f4144204552.. ERR      FCC "LOAD ERROR!  TRY AGAIN? "
+06a8 : 0704                      FCB 7,4
+06aa : 07203f2004       WHAT     FCB 7,$20,$3F,$20,4
+06af : 00000000000000.. DRBEG    RMB 20
+                                 END
+                        
+No errors in pass 2.

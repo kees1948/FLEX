@@ -42,6 +42,10 @@ A collection for the CPU09CMI ported software.
  WESTCHESTER, DBS
  SLEUTH,      Disassembler
  x02lats,     6502 translate to 6809
+ PASCAL-A,    Pascal compiler (.DOC = in Dutch)
+ Pascal-v392, Lucidata V3.9.2 pascal compiler
+ Pascal-v393, Lucidata V3.9.3 pascal compiler
+ Prose,       A Text Formatter
 
  
 * mc6839_FP-ROM.zip, MC6839 floating point rom.
