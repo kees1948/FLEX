@@ -31,10 +31,14 @@ A collection for the CPU09CMI ported software.
 
  DATAMAN,  Tom Gilchrist
  STYLO,    R.G.Nobles, Roger Snyder
- RMS,      ...
+ RMS,      Washington Computer Services
 
 -Not tested on the CPU09CMI did work on the old CS system
 
+ Blitz,       Screen editor
+ DGSCC-1,     B W Dugger C-Compiler
+ DGSCC-2,     B W Dugger C-Compiler
+ Filesort,    V6.3c Brian Bailey
  TSC F77,     TSC Fortran compiler
  TSC Pascal,  TSC Pascal compiler
  TSC SRTMRG,  TSC Sort Merge
@@ -46,6 +50,7 @@ A collection for the CPU09CMI ported software.
  Pascal-v392, Lucidata V3.9.2 pascal compiler
  Pascal-v393, Lucidata V3.9.3 pascal compiler
  Prose,       A Text Formatter
+ UTILS-2,     COPY99, DO, FLC, ZAP
 
  
 * mc6839_FP-ROM.zip, MC6839 floating point rom.
