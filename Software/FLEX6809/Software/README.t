@@ -36,8 +36,11 @@ A collection for the CPU09CMI ported software.
 -Not tested on the CPU09CMI did work on the old CS system
 
  Blitz,       Screen editor
+ DIAG-6809,   TSC 6809 FLEX Diagnostics disk
+ Disk-Utils,  Unsorted disk utils & sources
  DGSCC-1,     B W Dugger C-Compiler
  DGSCC-2,     B W Dugger C-Compiler
+ DGScc-3,     B W Dugger sources
  Filesort,    V6.3c Brian Bailey
  TSC F77,     TSC Fortran compiler
  TSC Pascal,  TSC Pascal compiler
