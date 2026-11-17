@@ -121,6 +121,8 @@ You can rename the IMA part 'Boot09name' in a FLEX disk name.
   Update '(Uni)FLEX.EXE' in 'WindowsTools.zip'.
   Now extended DIR and link FLEX, check IMG.CFG, more GOTEK info.
 
+17-11-2026
+  Update software on all IMA's.
 
 Note:
     If you are on cmi_sbug version 1.1 you can boot 

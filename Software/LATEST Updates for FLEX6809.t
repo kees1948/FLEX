@@ -1,12 +1,16 @@
              Latest software versions for FLEX6809
-                       2026-04-03
+                       2026-11-17
 
 Updates:
      * BOOTON   - 7.1 
+       COPY99   - 4.3:0
        CMILINK  - 1.0
      * CMISTEP  - 6.0 
      + DIR-COPY - 0.1
+       DISKEDIT - 6.0
+       DISKTEST - 1.1:2
        DPACH    - 1
+       EXAMINE  - 6.0
        EXTENDIR - 3.0
      * FORMAT5  - 5.2
      * FORMAT8  - 8.2
@@ -17,8 +21,10 @@ Updates:
        RBRDSK   - 1.0
        RBRDSKM  - 1.0
        SHOWDIR  - 2.0
-     * VDISK    - 9.7s  skip protection?
-     * VIRTUAL  - 9.7s  autorun VDISK, switch to block transfer on H63C09
+       TEST     - 6.0
+       VALIDATE - 6.0
+     * VDISK    - 9.8  
+     * VIRTUAL  - 9.8  Change disk format for diagnostic tools.
 
      * works on all drivers 
      + JCP script
@@ -41,10 +47,15 @@ Latest monitors:
 
 
 Notes:
-    TSC 'DISKTEST.CMD' will work on the IDE formated disks
-    if you use not more than 255 tracks.
-    It will give a error message and ask to use 'FE/FF'.
-    Just enter 'Y'.
+    TSC 6808 Diagnostic v6.0:
+        'TEST.CMD' will work on all 5" & 8" (v)disk formats, Vdisk & SD.
+        'EXAMINE.CMD' will work on all 5" & 8" (v)disk formats, Vdisk & SD.
+        'VALIDATE.CMD' will work on all 5" & 8" (v)disk formats.
+    
+    DISKEDIT v6.0 will work on all 5" & 8" (v)disk formats and Vdisk.
+
+    DISKTEST will work on all 5" & 8" (v)disk formats and Vdisk & SD card 
+             accept the "Maximum Track/Sector Read Was:" message.
 
     All utils version 6.0 and version 6 drivers are assembled for IO $F000,
     so they still works on the older drivers/monitors.

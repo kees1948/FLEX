@@ -26,6 +26,10 @@ Partition 1
 2025-12-20
    Latest SDimage, FLX7IDE.SYS boot version.
 
+2026-11-17
+   Update SDimage, FLX7IDE.SYS boot version.
+
+
 Info:
    When you use Linux to put the SDimage on a SD card, 
    the dd command will say 'transferred 64MB', 
