@@ -48,11 +48,11 @@ If you have a GotTek with 'FlashFloppy' your lucky
 
 'PC cable BOOT' also have a FLEX2DRV.DSDD80-5.IMA and FLEX2DRV.DSDD77-8.IMA, 
    ready to boot and run FLEX2DRV.SYS
-   Jumper both drives as 1 and MOT on.
+   Jumper both drives as 1 and on modified GoTek MOT on!
 
 'FLEX cable BOOT' also have a FLEX4DRV.DSDD80-5.IMA and FLEX4DRV.DSDD77-8.IMA, 
    ready to boot and run FLEX4DRV.SYS
-   Jumper the drives as 0, 1, 2 and MOT on.
+   Jumper the drives as 0, 1, 2 and on modified GoTek MOT on!
 
 If you are on cmi_sbug version 1.3 or up you can use from 'FLEX cable BOOT' 
 the FLEXCMI.DSDD80-5.IMA or FLEXCMI.DSDD77-8.IMA to boot and run FLEXCMI.SYS
