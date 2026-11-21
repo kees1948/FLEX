@@ -1,5 +1,5 @@
 How to build a stable FLEX system that works reliably 
-at Crystal frequency from 4MHz to 20MHz 
+at Crystal frequency from 4 MHz to 20 MHz 
 and ambient temperature of 18 - 38 degrees Celsius.
 
 Some problems with 5 Mhz bus 
@@ -23,11 +23,13 @@ For a stable system within the above ranges.:
 
 
 Note:
-    If you still encounter issues with a 20MHz crystal, 
-    try a 19.6608MHz or 19.2MHz one.
-    The bus will then operate at 4.91MHz or 4.8 MHz.
+    A system is only as good as its power supply.
+    If you still encounter issues with a 20 MHz crystal, 
+    check the power supply (see Documents\Power Supply\Power Supply FLEX System.pdf).
+    Else try a 19.9334 MHz, 19.6608 MHz or 19.2 MHz xtal.
+    The bus will then operate at 4.98 MHz, 4.91 MHz or 4.8 MHz.
     The 63C09 being used may experience startup problems at 5 MHz.
-    Typically, this issue occurs at frequencies above 5 MHz. 
+    Typically, this issue occurs at 5.5 MHz. 
 
     Testing of the UniFLEX system indicated disk structure issues 
     at an ambient temperature of 33 – 35°C.
